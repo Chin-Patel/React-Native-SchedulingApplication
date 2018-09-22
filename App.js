@@ -1,12 +1,15 @@
 import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from 'react-navigation'
 import HomeScreen from './src/HomeScreen';
-import AboutScreen from './src/AboutScreen';
-import ContactScreen from './src/ContactScreen';
 import LoginScreen from './src/LoginScreen';
 import SignUpScreen from './src/SignUpScreen';
 import ResetPasswordScreen from './src/ResetPasswordScreen';
+import CompletedTasksScreen from './src/CompletedTasksScreen';
+import SettingsScreen from './src/SettingsScreen';
+//Main screens
+import CategoriesScreen from './src/CategoriesScreen';
 import * as firebase from 'firebase';
 
+console.disableYellowBox = true;
 
 const firebaseConfig = {
   apiKey: "AIzaSyDAJwL-20mzpMRDtngY6BCBQnhtZIQzivU",
@@ -38,16 +41,22 @@ const AppTabNavigator = createBottomTabNavigator({
       tabBarLabel: 'HOME',
     }
   },
-  AboutScreen: {
-    screen: AboutScreen,
+  CategoriesScreen: {
+    screen: CategoriesScreen,
     navigationOptions: {
-      tabBarLabel: 'About',
+      tabBarLabel: 'Categories',
     }
   },
-  ContactScreen: {
-    screen: ContactScreen,
+  CompletedTasksScreen: {
+    screen: CompletedTasksScreen,
     navigationOptions: {
-      tabBarLabel: 'Contact',
+      tabBarLabel: 'Completed Tasks',
+    }
+  },
+  SettingsScreen: {
+    screen: SettingsScreen,
+    navigationOptions: {
+      tabBarLabel: 'Settings',
     }
   }
 })
