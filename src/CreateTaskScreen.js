@@ -2,13 +2,14 @@ import React from 'react';
 import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'react-native';
 //https://www.npmjs.com/package/react-native-modal-datetime-picker
 import DateTimePicker from 'react-native-modal-datetime-picker';
+import * as firebase from 'firebase';
 
 
 export default class CreateTaskScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = state = { email: '', password: '', errorMessage: null, isDateTimePickerVisible: false, date: '', id: ''}
+        this.state = state = { taskTitle: '', taskDescription: '', errorMessage: null, isDateTimePickerVisible: false, date: '', id: ''}
         const { navigation } = this.props;
         this.state.id = navigation.getParam('userId', 'Default');
         alert(this.state.id);
@@ -16,7 +17,24 @@ export default class CreateTaskScreen extends React.Component {
     }
 
     createTask() {
-        alert("hello " + this.state.id)
+        let taskTitle = this.state.taskTitle;
+        let taskDescription = this.state.taskDescription;
+        let taskDate = this.state.date;
+        // let taskCategory = this.state.category;
+        //alert(taskDate);
+        firebase.database().ref('userProfile/'+this.state.id+'/tasksList/').push({
+            //taskCategory : taskCategory,
+            tasting : "wtf",
+            taskDate : "" + taskDate,
+            taskTitle: taskTitle,
+            taskDescription: taskDescription
+        }).then(this.props.navigation.navigate('HomeScreen'));
+
+        //For future reference
+
+
+
+        //push to firebase
     }
 
     _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
@@ -26,9 +44,9 @@ export default class CreateTaskScreen extends React.Component {
     _handleDatePicked = (date) => {
       console.log('A date has been picked: ', date);
       //this.setState(date) = date;
-      
+      this.state.date = date;
       this._hideDateTimePicker();
-      alert(date);
+      //alert(date);
     };
 
     render() {
@@ -43,8 +61,8 @@ export default class CreateTaskScreen extends React.Component {
                     style={styles.textInput}
                     autoCapitalize="none"
                     placeholder="Title"
-                    onChangeText={email => this.setState({ email })}
-                //value={this.state.email}
+                    onChangeText={taskTitle => this.setState({ taskTitle })}
+                    value={this.state.taskTitle}
 
                 />
                 <View style={styles.textAreaContainer} >
@@ -55,6 +73,8 @@ export default class CreateTaskScreen extends React.Component {
                         placeholderTextColor="grey"
                         numberOfLines={10}
                         multiline={true}
+                        onChangeText={taskDescription => this.setState({ taskDescription })}
+                         value={this.state.taskDescription}
                     />
                 </View>
 
@@ -65,8 +85,8 @@ export default class CreateTaskScreen extends React.Component {
         </TouchableOpacity>
         <DateTimePicker
           isVisible={this.state.isDateTimePickerVisible}
-          onConfirm={this._handleDatePicked}
-          onCancel={this._hideDateTimePicker}
+          onConfirm={this._handleDatePicked.bind(this)}
+          onCancel={this._hideDateTimePicker.bind(this)}
         />
       </View>
 

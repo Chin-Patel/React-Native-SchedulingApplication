@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, ListView, FlatList } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem } from 'native-base'
+import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body } from 'native-base'
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
 
@@ -64,7 +64,18 @@ export default class HomeScreen extends React.Component {
     var newData = [...this.state.listViewData];
     newData.splice(rowId, 1)
     this.setState({ listViewData: newData });
+  }
 
+  completeTask(secId, rowId, rowMap, data){
+    firebase.database().ref('userProfile/'+this.userId+'/completedTasksList').push({
+      taskTitle: data.taskTitle,
+      taskDescription: data.taskDescription,
+      //taskDate: data.taskDate,
+      //taskCategory: taskCategory,
+      //taskCompletionTime: taskCompletionTime
+    }).then(newEvent => {
+      this.deleteRow(secId, rowId, rowMap, data);
+    });
   }
 
 
@@ -104,12 +115,14 @@ export default class HomeScreen extends React.Component {
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
             renderRow={data =>
               <ListItem>
-                <Text>{data.taskTitle}</Text>
-                {/* <Text> {data.val().name}</Text> */}
+              <Body>
+              <Text>{data.taskTitle}</Text>
+                <Text note>{data.taskDescription}</Text>
+              </Body>
               </ListItem>
             }
-            renderLeftHiddenRow={data =>
-              <Button full>
+            renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
+              <Button full onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
                 {/* <Icon name="information-circle" /> */}
               </Button>
             }
