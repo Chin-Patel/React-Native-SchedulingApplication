@@ -1,3 +1,4 @@
+import React from 'react';
 import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from 'react-navigation'
 import HomeScreen from './src/HomeScreen';
 import LoginScreen from './src/LoginScreen';
@@ -9,6 +10,7 @@ import CreateTaskScreen from './src/CreateTaskScreen';
 //Main screens
 import CategoriesScreen from './src/CategoriesScreen';
 import * as firebase from 'firebase';
+import {  Icon,  } from 'native-base'
 
 console.disableYellowBox = true;
 
@@ -40,24 +42,36 @@ const AppTabNavigator = createBottomTabNavigator({
     screen: HomeScreen,
     navigationOptions: {
       tabBarLabel: 'HOME',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="home" color={tintColor} size={24} />
+      )
     }
   },
   CategoriesScreen: {
     screen: CategoriesScreen,
     navigationOptions: {
       tabBarLabel: 'Categories',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="md-apps" color={tintColor} size={24} />
+      )
     }
   },
   CompletedTasksScreen: {
     screen: CompletedTasksScreen,
     navigationOptions: {
       tabBarLabel: 'Completed Tasks',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="md-bulb" color={tintColor} size={24} />
+      )
     }
   },
   SettingsScreen: {
     screen: SettingsScreen,
     navigationOptions: {
       tabBarLabel: 'Settings',
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="md-settings" color={tintColor} size={24} />
+      )
     }
   }
 })

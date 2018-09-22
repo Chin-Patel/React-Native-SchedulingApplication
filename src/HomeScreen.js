@@ -94,21 +94,6 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Header style={{ marginTop: StatusBar.currentHeight }}>
-          <Content>
-            <Item>
-              <Input
-                onChangeText={(newContact) => this.setState({ newContact })}
-                placeholder="Add name"
-              />
-              <Button onPress={() => this.addRow(this.state.newContact)}>
-                {/* <Icon name="add" /> */}
-                <Text>OO</Text>
-              </Button>
-            </Item>
-          </Content>
-        </Header>
-
         <Content>
           <List
             enableEmptySections
@@ -123,12 +108,16 @@ export default class HomeScreen extends React.Component {
             }
             renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
               <Button full onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
+                        <Icon name='medal' />
+
                 {/* <Icon name="information-circle" /> */}
               </Button>
             }
             renderRightHiddenRow={(data, secId, rowId, rowMap) =>
               <Button full danger onPress={() => this.deleteRow(secId, rowId, rowMap, data)}>
                 {/* <Icon name="trash" /> */}
+                <Icon name='trash' />
+
               </Button>
             }
             leftOpenValue={+75}

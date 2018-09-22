@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'rea
 //https://www.npmjs.com/package/react-native-modal-datetime-picker
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as firebase from 'firebase';
+import {  Icon,  } from 'native-base'
 
 
 export default class CreateTaskScreen extends React.Component {
