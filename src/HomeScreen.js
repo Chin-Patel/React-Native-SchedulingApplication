@@ -2,7 +2,9 @@ import React from 'react';
 import { StyleSheet, Text, View, StatusBar, ListView, FlatList } from 'react-native';
 import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem } from 'native-base'
 import * as firebase from 'firebase';
+import FAB from 'react-native-fab'
 
+//https://www.npmjs.com/package/react-native-fab
 
 var data = []
 var items = []
@@ -111,6 +113,8 @@ export default class HomeScreen extends React.Component {
             rightOpenValue={-75}
           />
         </Content>
+        <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {console.log("FAB pressed")}} visible={true} iconTextComponent={<Text>+</Text>} />
+
       </Container>
     );
   }
