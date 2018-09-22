@@ -104,7 +104,7 @@ export default class HomeScreen extends React.Component {
             renderRow={data =>
               <ListItem onPress={() => this.showInformation(data)}>
               <Body>
-              <Text>{data.taskTitle}</Text>
+              <Text style={{fontWeight: "bold"}}>{data.taskTitle}</Text>
                 <Text note>{data.taskDescription}</Text>
               </Body>
               </ListItem>
@@ -140,4 +140,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     height: 44,
   },
+  
 })

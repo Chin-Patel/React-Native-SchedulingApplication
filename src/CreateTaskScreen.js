@@ -4,6 +4,8 @@ import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'rea
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as firebase from 'firebase';
 import {  Icon,  } from 'native-base'
+//https://www.npmjs.com/package/react-native-datepicker
+import DatePicker from 'react-native-datepicker'
 
 
 export default class CreateTaskScreen extends React.Component {
@@ -38,18 +40,6 @@ export default class CreateTaskScreen extends React.Component {
         //push to firebase
     }
 
-    _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
- 
-    _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
-   
-    _handleDatePicked = (date) => {
-      console.log('A date has been picked: ', date);
-      //this.setState(date) = date;
-      this.state.date = date;
-      this._hideDateTimePicker();
-      //alert(date);
-    };
-
     render() {
         return (
             <View style={styles.container}>
@@ -78,21 +68,36 @@ export default class CreateTaskScreen extends React.Component {
                          value={this.state.taskDescription}
                     />
                 </View>
-
-
-                      <View style={{ flex: 1 }}>
-        <TouchableOpacity onPress={this._showDateTimePicker}>
-          <Text>Show DatePicker</Text>
-        </TouchableOpacity>
-        <DateTimePicker
-          isVisible={this.state.isDateTimePickerVisible}
-          onConfirm={this._handleDatePicked.bind(this)}
-          onCancel={this._hideDateTimePicker.bind(this)}
-        />
-      </View>
+       <DatePicker
+        style={{width: 200}}
+        date={this.state.date}
+        mode="date"
+        placeholder="select date"
+        format="DD-MM-YYYY"
+        minDate="01-01-2001"
+        maxDate="31-12-2030"
+        confirmBtnText="Confirm"
+        cancelBtnText="Cancel"
+        customStyles={{
+          dateIcon: {
+            position: 'absolute',
+            left: 0,
+            top: 4,
+            marginLeft: 0
+          },
+          dateInput: {
+            marginLeft: 36
+          }
+          // ... You can check the source to find the other keys.
+        }}
+        onDateChange={(date) => {this.setState({date: date})}}
+      />
 
                 <Button title="Create Task" onPress={this.createTask.bind(this)} />
             </View>
+
+
+
         );
     }
 }
