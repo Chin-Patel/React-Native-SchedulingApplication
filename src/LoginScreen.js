@@ -1,6 +1,7 @@
 import React from 'react';
-import {StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import {StyleSheet, Text, View, TextInput, Image, ImageBackground } from 'react-native';
 import * as firebase from 'firebase';
+import { Container, Content, Header, Form, Input, Button, Item, Label, Icon } from 'native-base'
 
 export default class LoginScreen extends React.Component {
     static navigatorStyle = {
@@ -26,58 +27,67 @@ export default class LoginScreen extends React.Component {
       
   render() {
         return (
-          <View style={styles.container}>
-          <Text>Login</Text>
-          {this.state.errorMessage &&
-            <Text style={{ color: 'red' }}>
-              {this.state.errorMessage}
-            </Text>}
-          <TextInput
-            style={styles.textInput}
-            autoCapitalize="none"
-            placeholder="Email"
-            onChangeText={email => this.setState({ email })}
-            //value={this.state.email}
-            value={"test@test.com"}
+          <Container style={styles.container}>
+                <Form>
+                    <Item floatingLabel>
+                        <Label>Email</Label>
+                        <Input
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            placeholder="Email"
+                            onChangeText={email => this.setState({ email })}
+                            //value={this.state.email}
+                            value={"test@test.com"}
+                        />
 
-          />
-          <TextInput
-            secureTextEntry
-            style={styles.textInput}
-            autoCapitalize="none"
+                    </Item>
+
+                    <Item floatingLabel>
+                        <Label>Password</Label>
+                        <Input
+                            secureTextEntry={true}
+                            autoCorrect={false}
+                            autoCapitalize="none"
             placeholder="Password"
             onChangeText={password => this.setState({ password })}
             //value={this.state.password}
             value={"password"}
+                        />
+                    </Item>
 
-          />
-          <Button title="Login" onPress={this.handleLogin} />
-        <Button
-          title="Sign Up"
-          onPress={() => this.props.navigation.navigate('SignUpScreen')}
-        />
-        <Button
-          title="Forgot Password?"
-          onPress={() => this.props.navigation.navigate('ResetPasswordScreen')}
-        />
-        </View>
+           <Button style={styles.buttonStyle}
+               full
+               rounded
+               //success
+               onPress={this.handleLogin}
+           >
+                        <Text style={{ color: 'white' }}> Login</Text>
+                    </Button>
+                </Form>
+                <Text style = {styles.textStyle} onPress={() => this.props.navigation.navigate('ResetPasswordScreen')}> Forgot Password? </Text>
+                <Text style = {styles.textStyle} onPress={() => this.props.navigation.navigate('SignUpScreen')}> Create a new account </Text>
+            </Container>
     );
-
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+      flex: 1,
+      backgroundColor: '#fff',
+      justifyContent: 'center',
+      padding: 10
   },
-  textInput: {
-    height: 40,
-    width: '90%',
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginTop: 8
+  buttonStyle: {
+    backgroundColor: "#445df7",
+    marginTop: 10
+  },
+  textStyle: {
+    color: '#445df7',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontWeight: 'bold',
+    alignSelf: 'center',
+
   }
-})
-  
+});
