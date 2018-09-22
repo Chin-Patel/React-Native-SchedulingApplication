@@ -67,6 +67,15 @@ export default class HomeScreen extends React.Component {
 
   }
 
+
+  loadCreateTaskScreen(){
+    //alert(this.userId);
+    this.props.navigation.navigate('CreateTaskScreen',{
+      userId: this.userId
+    });
+    //alert("yah");
+  }
+
   showInformation() {
 
   }
@@ -113,7 +122,7 @@ export default class HomeScreen extends React.Component {
             rightOpenValue={-75}
           />
         </Content>
-        <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {console.log("FAB pressed")}} visible={true} iconTextComponent={<Text>+</Text>} />
+        <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.loadCreateTaskScreen()}} visible={true} iconTextComponent={<Text>+</Text>} />
 
       </Container>
     );

@@ -5,6 +5,7 @@ import SignUpScreen from './src/SignUpScreen';
 import ResetPasswordScreen from './src/ResetPasswordScreen';
 import CompletedTasksScreen from './src/CompletedTasksScreen';
 import SettingsScreen from './src/SettingsScreen';
+import CreateTaskScreen from './src/CreateTaskScreen';
 //Main screens
 import CategoriesScreen from './src/CategoriesScreen';
 import * as firebase from 'firebase';
@@ -64,6 +65,12 @@ const AppTabNavigator = createBottomTabNavigator({
 const AppStackNavigator = createStackNavigator({
   AppTabNavigator: {
     screen: AppTabNavigator,
+  },
+  CreateTaskScreen: {
+    screen: CreateTaskScreen,
+    navigationOptions: {
+      tabBarLabel: 'Create Task',
+    }
   }
 })
 
@@ -79,5 +86,7 @@ AppTabNavigator.navigationOptions = ({ navigation }) => {
 
 export default createSwitchNavigator({
   Auth: AuthStackNavigator,
-  App: AppStackNavigator
+  App: AppStackNavigator,
+  
+
 })
