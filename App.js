@@ -7,6 +7,7 @@ import ResetPasswordScreen from './src/ResetPasswordScreen';
 import CompletedTasksScreen from './src/CompletedTasksScreen';
 import SettingsScreen from './src/SettingsScreen';
 import CreateTaskScreen from './src/CreateTaskScreen';
+import TaskInformationScreen from './src/TaskInformation';
 //Main screens
 import CategoriesScreen from './src/CategoriesScreen';
 import * as firebase from 'firebase';
@@ -84,6 +85,12 @@ const AppStackNavigator = createStackNavigator({
     screen: CreateTaskScreen,
     navigationOptions: {
       tabBarLabel: 'Create Task',
+    }
+  },
+  TaskInformationScreen:  {
+    screen: TaskInformationScreen,
+    navigationOptions:{
+      tabBarLabel: 'Task',
     }
   }
 })

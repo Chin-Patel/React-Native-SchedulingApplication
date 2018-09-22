@@ -87,8 +87,11 @@ export default class HomeScreen extends React.Component {
     //alert("yah");
   }
 
-  showInformation() {
-
+  showInformation(data) {
+    this.props.navigation.navigate('TaskInformationScreen',{
+      data: data,
+      userId: this.userId
+    });
   }
 
   render() {
@@ -99,7 +102,7 @@ export default class HomeScreen extends React.Component {
             enableEmptySections
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
             renderRow={data =>
-              <ListItem>
+              <ListItem onPress={() => this.showInformation(data)}>
               <Body>
               <Text>{data.taskTitle}</Text>
                 <Text note>{data.taskDescription}</Text>
@@ -107,17 +110,13 @@ export default class HomeScreen extends React.Component {
               </ListItem>
             }
             renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
-              <Button full onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
-                        <Icon name='medal' />
-
-                {/* <Icon name="information-circle" /> */}
+              <Button full secondary onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
+                <Icon name='checkmark'/>
               </Button>
             }
             renderRightHiddenRow={(data, secId, rowId, rowMap) =>
               <Button full danger onPress={() => this.deleteRow(secId, rowId, rowMap, data)}>
-                {/* <Icon name="trash" /> */}
                 <Icon name='trash' />
-
               </Button>
             }
             leftOpenValue={+75}
