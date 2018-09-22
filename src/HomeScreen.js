@@ -11,12 +11,7 @@ export default class HomeScreen extends React.Component {
     super(props);
     var userId = "a";
     var tasksReference;
-
-    console.log("heloooo000");
-    //alert("hello" + userId);
-    //alert("hmm " + this.tasksReference);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
-
     this.state = {
       listViewData: data,
       newContact: ""
@@ -38,7 +33,6 @@ export default class HomeScreen extends React.Component {
         this.userId = `${user.uid}`;
         //alert("hellop " + `${user.uid}`);
         //alert("hmm " + this.tasksReference);
-
         this.tasksReference.on("value", tasksList => {
           this.items = [];
           tasksList.forEach(snap => {
@@ -48,64 +42,13 @@ export default class HomeScreen extends React.Component {
               taskDescription: snap.val().taskDescription,
             });
           });
-          alert("pls" + this.items.length);
           that.setState({ listViewData: this.items })
         });
       }
     });
-
-
-
-
-    // var ref = this.getTaskReference();
-    // var that = this
-    // //alert("Right path: " + firebase.database().ref('/userProfile/' + this.userId + '/tasksList'));
-    // await alert("Left path: " + this.getTaskReference());
-    // await firebase.database().ref('/userProfile/' + this.userId + '/tasksList').on('child_added', function (data) {
-
-    //   var newData = [...that.state.listViewData]
-    //   newData.push(data)
-    //   that.setState({ listViewData: newData })
-    //   alert("=>" + this.newData.length);
-    // })
-
-    // ref.on("child_added", function(snapshot) {
-    //   alert("=> " + snapshot.key);
-    // });
-
-    // this.getTaskReference().once("value", tasksList => {
-    //   this.items = [];
-    //   tasksList.forEach(snap => {
-    //     this.items.push({
-    //       id: snap.key,
-    //       taskTitle: snap.val().taskTitle,
-    //       taskDescription: snap.val().taskDescription,
-    //       taskDate: snap.val().taskDate,
-    //       taskCategory: snap.val().taskCategory
-    //     });
-    //   });
-    //   alert("Size is " + this.items.length);
-    // });
-
-    // var that = this
-    // this.getTaskReference().on('child_added', function (data) {
-
-    // //this.getTaskReference().on('child_added', function (data) {
-
-    // //firebase.database().ref('/contacts').on('child_added', function (data) {
-
-    //   var newData = [...that.state.listViewData]
-    //   newData.push(data)
-    //   that.setState({ listViewData: newData })
-
-    // })
-
   }
 
   addRow(data) {
-    // alert("test " + this.userId);
-    // var key = firebase.database().ref('/contacts').push().key
-    // firebase.database().ref('/contacts').child(key).set({ name: data })
     this.getTaskReference().push({
       taskTitle: data,
       taskDescription: "taskDescription",
@@ -113,9 +56,8 @@ export default class HomeScreen extends React.Component {
   }
 
   async deleteRow(secId, rowId, rowMap, data) {
-
-    await firebase.database().ref('contacts/' + data.key).set(null)
-
+    //alert(firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id));
+    await firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id).remove();
     rowMap[`${secId}${rowId}`].props.closeRow();
     var newData = [...this.state.listViewData];
     newData.splice(rowId, 1)
