@@ -1,5 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import * as firebase from 'firebase';
 
 export default class LoginScreen extends React.Component {
     static navigatorStyle = {
@@ -7,58 +8,67 @@ export default class LoginScreen extends React.Component {
     };
     constructor(props) {
         super(props);
-        this.state = { text: 'Enter Name' };
+        this.state =   state = { email: '', password: '', errorMessage: null }
+      }
+
+
+      handleLogin = () => {
+        const { email, password } = this.state
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(email, password)
+          .then(() => this.props.navigation.navigate('HomeScreen'))
+          .catch(error => this.setState({ errorMessage: error.message }))
       }
       
 
       
   render() {
         return (
-      <View style={styles.container}>
-      <Text>What is your Nameee?</Text>
-      <TextInput
-      style={{height: 40, borderColor: 'gray', borderWidth: 1}}
-      onChangeText={(text) => this.setState({text})}
-      placeholder = "enter here..."
-      />
+          <View style={styles.container}>
+          <Text>Login</Text>
+          {this.state.errorMessage &&
+            <Text style={{ color: 'red' }}>
+              {this.state.errorMessage}
+            </Text>}
+          <TextInput
+            style={styles.textInput}
+            autoCapitalize="none"
+            placeholder="Email"
+            onChangeText={email => this.setState({ email })}
+            value={this.state.email}
+          />
+          <TextInput
+            secureTextEntry
+            style={styles.textInput}
+            autoCapitalize="none"
+            placeholder="Password"
+            onChangeText={password => this.setState({ password })}
+            value={this.state.password}
+          />
+          <Button title="Login" onPress={this.handleLogin} />
         <Button
-          title="Login"
-          onPress={() => this.props.navigation.navigate('HomeScreen',{
-            username: this.state.text
-          }
-        )}
+          title="Sign Up"
+          onPress={() => this.props.navigation.navigate('SignUpScreen')}
         />
-
-        <Button
-          title="Create new account"
-          onPress={() => this.props.navigation.navigate('SignUpScreen',{
-            username: this.state.text
-          }
-        )}
-        />
-      </View>
+        </View>
     );
 
   }
 }
 
-
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#F5FCFF',
-    },
-    welcome: {
-      fontSize: 20,
-      textAlign: 'center',
-      margin: 10,
-    },
-    instructions: {
-      textAlign: 'center',
-      color: '#333333',
-      marginBottom: 5,
-    },
-  });
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  textInput: {
+    height: 40,
+    width: '90%',
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginTop: 8
+  }
+})
   
