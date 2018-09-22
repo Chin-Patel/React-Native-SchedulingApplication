@@ -4,6 +4,7 @@ import AboutScreen from './src/AboutScreen';
 import ContactScreen from './src/ContactScreen';
 import LoginScreen from './src/LoginScreen';
 import SignUpScreen from './src/SignUpScreen';
+import ResetPasswordScreen from './src/ResetPasswordScreen';
 import * as firebase from 'firebase';
 
 
@@ -19,7 +20,8 @@ firebase.initializeApp(firebaseConfig);
 
 const AuthStackNavigator = createStackNavigator({
   LoginScreen: LoginScreen,
-  SignUpScreen: SignUpScreen
+  SignUpScreen: SignUpScreen,
+  ResetPasswordScreen: ResetPasswordScreen
 })
 
 LoginScreen.navigationOptions = ({ navigation }) => {

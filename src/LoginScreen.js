@@ -51,6 +51,10 @@ export default class LoginScreen extends React.Component {
           title="Sign Up"
           onPress={() => this.props.navigation.navigate('SignUpScreen')}
         />
+        <Button
+          title="Forgot Password?"
+          onPress={() => this.props.navigation.navigate('ResetPasswordScreen')}
+        />
         </View>
     );
 
