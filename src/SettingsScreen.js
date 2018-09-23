@@ -1,18 +1,129 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
+import * as firebase from 'firebase';
+import { Container, Header, Content, Body, Text, Title, Icon, Item, Label, Input, Button, List, ListItem, Switch, Right } from 'native-base';
 
-export default class SettingsScreen extends React.Component {
+export default class Settings extends React.Component {
   constructor(props) {
     super(props);
+    var userId = "a";
+
+    this.state = state = { id: '', taskDelete: true, categoryDelete: true }
+    const { navigation } = this.props;
+    this.state.id = navigation.getParam('userId', 'Default');
   }
+
+  updateSettings() {
+    firebase.database().ref('userProfile/' + this.userId + '/settings/' + this.state.id).push({
+      taskDelete: this.state.taskDelete,
+      categoryDelete: this.state.categoryDelete,
+    });
+  }
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      if(user){
+        this.tasksReference = firebase
+        .database()
+        .ref(`/userProfile/${user.uid}/settings`);
+        this.userId = `${user.uid}`;
+        this.tasksReference.on("value", tasksList => {
+          tasksList.forEach(snap => {
+            this.state.id = snap.val().id;
+            this.state.taskDelete = snap.val().taskDelete;
+            this.state.categoryDelete = snap.val().categoryDelete;
+          });
+        });
+      }
+    });
+  }
+
   render() {
     return (
-      <View>
-        <Text>Hi there {global.username}</Text>
-        <Text>This is more dummy text</Text>
-        <Text>Contrary to popular belief, Lorem Ipsum is not simply random text. It has 
-          roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old.</Text>
-      </View>
+      <Container style={styles.container}>
+        <Content>
+          <Header style={styles.header}>
+            <Body>
+              <Title style={styles.title}>Settings</Title>
+            </Body>
+          </Header>
+          <List>
+            <ListItem itemDivider>
+              <Text>Manage Account</Text>
+            </ListItem>
+            <ListItem>
+              <Body>
+                <Text>Account Details</Text>
+              </Body>
+            </ListItem>
+            <ListItem>
+              <Body>
+                <Text style={styles.signout}>Sign Out</Text>
+              </Body>
+            </ListItem>
+            <ListItem itemDivider>
+              <Text>General</Text>
+            </ListItem>
+            <ListItem>
+              <Body>
+                <Text>Task Deletion Confirmation</Text>
+              </Body>
+              <Right>
+                <Switch value={this.state.taskDelete}
+                  onValueChange={taskDelete => {
+                    this.setState({ taskDelete }),
+                    this.updateSettings()
+                  }}
+                  value={this.state.taskDelete}
+                />
+              </Right>
+            </ListItem>
+            <ListItem>
+              <Body>
+                <Text>Category Deletion Confirmation</Text>
+              </Body>
+              <Right>
+                <Switch
+                  onValueChange={categoryDelete => 
+                    this.setState({ categoryDelete })}
+                  value={this.state.categoryDelete}
+                />
+              </Right>
+            </ListItem>
+            <ListItem itemDivider>
+              <Text>About</Text>
+            </ListItem>
+            <ListItem>
+              <Body>
+                <Text>Version 1.1-demo</Text>
+              </Body>
+            </ListItem>
+          </List>
+        </Content>
+      </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+  header: {
+    backgroundColor: '#445df7',
+    fontWeight: 'bold',
+
+  },
+  title: {
+    fontWeight: 'bold',
+
+  },
+  signout: {
+    color: 'red'
+  }
+})
