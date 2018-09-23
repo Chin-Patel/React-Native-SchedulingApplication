@@ -68,11 +68,9 @@ export default class HomeScreen extends React.Component {
   }
 
   async deleteRow(secId, rowId, rowMap, data) {
-    //alert(firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id));
     await firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id).remove();
     rowMap[`${secId}${rowId}`].props.closeRow();
     var newData = [...this.state.listViewData];
-    newData.splice(rowId, 1)
     this.setState({ listViewData: newData });
   }
 
@@ -83,7 +81,7 @@ export default class HomeScreen extends React.Component {
       //taskDate: data.taskDate,
       //taskCategory: taskCategory,
       taskCompletionTime: this.getCompletetionTime()
-    }).then(newEvent => {
+    }).then(() => {
       this.deleteRow(secId, rowId, rowMap, data);
     });
   }
@@ -100,6 +98,10 @@ export default class HomeScreen extends React.Component {
       data: data,
       userId: this.userId
     });
+  }
+
+  test(){
+    alert(this.state.listViewData.length);
   }
 
   render() {
@@ -144,6 +146,7 @@ export default class HomeScreen extends React.Component {
           />
         </Content>
         <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.loadCreateTaskScreen()}} visible={true} iconTextComponent={<Text>+</Text>} />
+        {/* <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.test()}} visible={true} iconTextComponent={<Text>debug</Text>} /> */}
 
       </Container>
     );

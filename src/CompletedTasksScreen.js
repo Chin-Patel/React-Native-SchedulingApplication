@@ -62,7 +62,6 @@ export default class CompletedTasksScreen extends React.Component {
     await firebase.database().ref('userProfile/'+this.userId+'/completedTasksList/' + data.id).remove();
     rowMap[`${secId}${rowId}`].props.closeRow();
     var newData = [...this.state.listViewData];
-    newData.splice(rowId, 1)
     this.setState({ listViewData: newData });
   }
 
