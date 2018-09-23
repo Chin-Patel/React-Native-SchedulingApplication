@@ -90,11 +90,9 @@ export default class HomeScreen extends React.Component {
 
 
   loadCreateTaskScreen(){
-    //alert(this.userId);
     this.props.navigation.navigate('CreateTaskScreen',{
       userId: this.userId
     });
-    //alert("yah");
   }
 
   showInformation(data) {
@@ -120,18 +118,19 @@ export default class HomeScreen extends React.Component {
               <Image style ={styles.images} source={require('../assets/imgs/emptyState1.png')} />
           )}
           <List
+            
             enableEmptySections
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
             renderRow={data =>
               <ListItem onPress={() => this.showInformation(data)}>
               <Body>
-              <Text style={{fontWeight: "bold"}}>{data.taskTitle}</Text>
-                <Text note>{data.taskDescription}</Text>
+              <Text style={styles.taskText }>{data.taskTitle}</Text>
+                <Text note style={styles.text}>{data.taskDescription}</Text>
               </Body>
               </ListItem>
             }
             renderRightHiddenRow={(data, secId, rowId, rowMap) =>
-              <Button full secondary onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
+              <Button full success onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
                 <Icon name='checkmark'/>
               </Button>
             }
@@ -172,6 +171,16 @@ const styles = StyleSheet.create({
   images:{
     width: '100%',
     height: 500
-  }
+  },
+  taskText: {
+    color: 'black',
+    paddingLeft: 10,
+    paddingRight: 10
+  },
+  text:{
+    color: 'grey',
+    paddingLeft: 10,
+    paddingRight: 10
+  },
   
 })

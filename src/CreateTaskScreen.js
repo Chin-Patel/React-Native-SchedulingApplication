@@ -36,15 +36,15 @@ export default class CreateTaskScreen extends React.Component {
             <Container style={styles.container}>
                 <Content>
                     <Header style={styles.header}>
-                    <Body>
+                        <Body>
                             <Title style={styles.title}>Create A Task</Title>
                         </Body>
-                    <Right>
-            <Button transparent onPress={() => this.props.navigation.navigate('HomeScreen')}>
-              <Icon name='close' />
-            </Button>
-          </Right>
-                        
+                        <Right>
+                            <Button transparent onPress={() => this.props.navigation.navigate('HomeScreen')}>
+                                <Icon name='close' />
+                            </Button>
+                        </Right>
+
                     </Header>
 
                     <Form>
@@ -146,9 +146,9 @@ const styles = StyleSheet.create({
         marginTop: 10,
         textAlignVertical: "top"
     },
-    date:{
-         width: 200,
-         marginLeft: 15,
+    date: {
+        width: 200,
+        marginLeft: 15,
         color: 'black'
     }
 })

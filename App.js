@@ -117,6 +117,11 @@ CreateTaskScreen.navigationOptions = ({navigation}) => {
  } 
 }
 
+TaskInformationScreen.navigationOptions = ({navigation}) => {
+  return {
+    header: () => null
+ } 
+}
 
 AppTabNavigator.navigationOptions = ({ navigation }) => {
   let { routeName } = navigation.state.routes[navigation.state.index];
