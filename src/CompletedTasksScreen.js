@@ -119,7 +119,7 @@ export default class CompletedTasksScreen extends React.Component {
               </Button>
             }
             renderRightHiddenRow={(data, secId, rowId, rowMap) =>
-              <Button full onPress={() => this.swap(secId, rowId, rowMap, data)}>
+              <Button full success onPress={() => this.swap(secId, rowId, rowMap, data)}>
                 <Icon name='swap' />
               </Button>
             }

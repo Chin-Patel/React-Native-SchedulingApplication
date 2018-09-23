@@ -17,8 +17,8 @@ export default class LoginScreen extends React.Component {
         const { email, password } = this.state
         firebase
           .auth()
-          .signInWithEmailAndPassword("test@test.com", "password")
-          //.signInWithEmailAndPassword(email, password)
+          //.signInWithEmailAndPassword("test@test.com", "password")
+          .signInWithEmailAndPassword(email, password)
           .then(() => this.props.navigation.navigate('HomeScreen'))
           .catch(error => this.setState({ errorMessage: error.message }))
       }
@@ -39,10 +39,10 @@ export default class LoginScreen extends React.Component {
                         <Input
                             autoCorrect={false}
                             autoCapitalize="none"
-                            placeholder="Email"
+                            //placeholder="Email"
                             onChangeText={email => this.setState({ email })}
-                            //value={this.state.email}
-                            value={"test@test.com"}
+                            value={this.state.email}
+                            //value={"test@test.com"}
                         />
 
                     </Item>
@@ -53,10 +53,10 @@ export default class LoginScreen extends React.Component {
                             secureTextEntry={true}
                             autoCorrect={false}
                             autoCapitalize="none"
-            placeholder="Password"
+            //placeholder="Password"
             onChangeText={password => this.setState({ password })}
-            //value={this.state.password}
-            value={"password"}
+            value={this.state.password}
+            //value={"password"}
                         />
                     </Item>
 

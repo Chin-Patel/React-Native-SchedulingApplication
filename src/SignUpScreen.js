@@ -16,8 +16,28 @@ export default class SignUpScreen extends React.Component {
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
-      .then(user => this.props.navigation.navigate('LoginScreen'))
+      .then(user => {
+        //this.setDefaults(user.uid);
+        firebase.database().ref(`/userProfile/${user.uid}/settings`).push({
+          taskDelete: true,
+          categoryDelete: true,
+        });
+        this.props.navigation.navigate('LoginScreen')
+      })
       .catch(error => this.setState({ errorMessage: error.message }))
+  }
+
+  setDefaults(){
+    firebase.auth().onAuthStateChanged(user => {
+
+      if(user){
+        alert("in here");
+        this.tasksReference = firebase
+        .database()
+        .ref(`/userProfile/${user.uid}/settings`);
+
+      }
+    });
   }
 
 
@@ -51,10 +71,12 @@ export default class SignUpScreen extends React.Component {
             <Item floatingLabel>
               <Label>Password</Label>
               <Input
+                              secureTextEntry
+
                 autoCorrect={false}
                 autoCapitalize="none"
                 onChangeText={password => this.setState({ password })}
-                value={this.state.email}
+                value={this.state.password}
               />
 
             </Item>

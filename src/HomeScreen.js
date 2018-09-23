@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, ListView, FlatList, Image } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, ListView, FlatList, Image, Alert } from 'react-native';
 import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title,  } from 'native-base'
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
@@ -17,7 +17,9 @@ export default class HomeScreen extends React.Component {
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
     this.state = {
       listViewData: data,
-      newContact: ""
+      newContact: "",
+      taskDelete: true,
+      categoryDelete: true
     }
 
   }
@@ -28,6 +30,10 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     var that = this
+    alert(firebase.auth().currentUser.uid);
+
+  
+
     firebase.auth().onAuthStateChanged(user => {
       if(user){
         this.tasksReference = firebase
@@ -46,6 +52,24 @@ export default class HomeScreen extends React.Component {
             });
           });
           that.setState({ listViewData: this.items })
+          this.loadSettings();
+        });
+      }
+    });
+  }
+
+  loadSettings(){
+    firebase.auth().onAuthStateChanged(user => {
+      if(user){
+        this.tasksReference = firebase
+        .database()
+        .ref(`/userProfile/${user.uid}/settings`);
+        this.userId = `${user.uid}`;
+        this.tasksReference.on("value", tasksList => {
+          tasksList.forEach(snap => {
+            this.state.taskDelete = snap.val().taskDelete;
+            this.state.categoryDelete = snap.val().categoryDelete;
+          });
         });
       }
     });
@@ -67,7 +91,24 @@ export default class HomeScreen extends React.Component {
     return datetime;
   }
 
+  throwAlert(secId, rowId, rowMap, data){
+    if(this.state.taskDelete == true){
+      Alert.alert(
+        'Are you sure you want to delete?',
+        'You wont be able to get it back',
+        [
+          {text: 'Cancel', onPress: () => console.log(''), style: 'cancel'},
+          {text: 'OK', onPress: () => {this.deleteRow(secId, rowId, rowMap, data)}},
+        ],
+        { cancelable: false }
+      )
+    }else{
+      this.deleteRow(secId, rowId, rowMap, data);
+    }
+  }
+
   async deleteRow(secId, rowId, rowMap, data) {
+
     await firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id).remove();
     rowMap[`${secId}${rowId}`].props.closeRow();
     var newData = [...this.state.listViewData];
@@ -111,11 +152,19 @@ export default class HomeScreen extends React.Component {
       <Container style={styles.container}>
       
         <Content>
+
+
+          
         <Header  style={styles.header}>
           <Body>
             <Title style={styles.title}>Your Tasks</Title>
           </Body>
         </Header>
+
+
+
+
+
           {renderIf(this.state.listViewData == 0, 
               <Image style ={styles.images} source={require('../assets/imgs/emptyState1.png')} />
           )}
@@ -137,7 +186,7 @@ export default class HomeScreen extends React.Component {
               </Button>
             }
             renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
-              <Button full danger onPress={() => this.deleteRow(secId, rowId, rowMap, data)}>
+              <Button full danger onPress={() => this.throwAlert(secId, rowId, rowMap, data)}>
                 <Icon name='trash' />
               </Button>
             }

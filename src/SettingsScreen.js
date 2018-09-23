@@ -9,13 +9,20 @@ export default class Settings extends React.Component {
     var userId = "a";
 
     this.state = state = { id: '', taskDelete: true, categoryDelete: true }
-    const { navigation } = this.props;
-    this.state.id = navigation.getParam('userId', 'Default');
+    //const { navigation } = this.props;
+    //this.state.id = navigation.getParam('userId', 'Default');
   }
 
   updateSettings() {
-    firebase.database().ref('userProfile/' + this.userId + '/settings/' + this.state.id).push({
-      taskDelete: this.state.taskDelete,
+    //alert(firebase.database().ref('userProfile/' + this.userId + '/settings/' + this.state.id));
+    let toUp;
+    if(this.state.taskDelete == true){
+      toUp = false;
+    }else{
+      toUp = true;
+    }
+    firebase.database().ref('userProfile/' + this.userId + '/settings/' + this.state.id).update({
+      taskDelete: toUp ,
       categoryDelete: this.state.categoryDelete,
     });
   }
@@ -29,7 +36,7 @@ export default class Settings extends React.Component {
         this.userId = `${user.uid}`;
         this.tasksReference.on("value", tasksList => {
           tasksList.forEach(snap => {
-            this.state.id = snap.val().id;
+            this.state.id = snap.key;
             this.state.taskDelete = snap.val().taskDelete;
             this.state.categoryDelete = snap.val().categoryDelete;
           });
