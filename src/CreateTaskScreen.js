@@ -15,8 +15,6 @@ export default class CreateTaskScreen extends React.Component {
         this.state = state = { taskTitle: '', taskDescription: '', errorMessage: null, isDateTimePickerVisible: false, date: '', id: ''}
         const { navigation } = this.props;
         this.state.id = navigation.getParam('userId', 'Default');
-        alert(this.state.id);
-
     }
 
     createTask() {
@@ -24,7 +22,6 @@ export default class CreateTaskScreen extends React.Component {
         let taskDescription = this.state.taskDescription;
         let taskDate = this.state.date;
         // let taskCategory = this.state.category;
-        //alert(taskDate);
         firebase.database().ref('userProfile/'+this.state.id+'/tasksList/').push({
             //taskCategory : taskCategory,
             tasting : "wtf",
@@ -32,12 +29,6 @@ export default class CreateTaskScreen extends React.Component {
             taskTitle: taskTitle,
             taskDescription: taskDescription
         }).then(this.props.navigation.navigate('HomeScreen'));
-
-        //For future reference
-
-
-
-        //push to firebase
     }
 
     render() {

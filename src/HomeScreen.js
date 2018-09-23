@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, ListView, FlatList } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, ListView, FlatList, Image } from 'react-native';
 import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title } from 'native-base'
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
+import renderIf from './renderIf';
 
 //https://www.npmjs.com/package/react-native-fab
 
@@ -76,7 +77,6 @@ export default class HomeScreen extends React.Component {
   }
 
   completeTask(secId, rowId, rowMap, data){
-    alert(this.getCompletetionTime());
     firebase.database().ref('userProfile/'+this.userId+'/completedTasksList').push({
       taskTitle: data.taskTitle,
       taskDescription: data.taskDescription,
@@ -105,6 +105,8 @@ export default class HomeScreen extends React.Component {
   }
 
   render() {
+    const emptyState = <Image style ={styles.images} source={require('../assets/imgs/A.png')} />;
+
     return (
       <Container style={styles.container}>
       
@@ -114,6 +116,9 @@ export default class HomeScreen extends React.Component {
             <Title style={styles.title}>Your Tasks</Title>
           </Body>
         </Header>
+          {renderIf(this.state.listViewData == 0, 
+              <Image style ={styles.images} source={require('../assets/imgs/emptyState1.png')} />
+          )}
           <List
             enableEmptySections
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
@@ -163,6 +168,10 @@ const styles = StyleSheet.create({
   title:{
     fontWeight: 'bold',
 
+  },
+  images:{
+    width: '100%',
+    height: 500
   }
   
 })
