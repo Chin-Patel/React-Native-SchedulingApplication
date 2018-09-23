@@ -15,15 +15,6 @@ export default class CategoriesScreen extends Component {
             <Title style={styles.title}>Categories</Title>
           </Body>
         </Header>
-          <Card>
-            <CardItem >
-              <Body>
-                <Text>
-                   Work
-                </Text>
-              </Body>
-            </CardItem>
-          </Card>
         </Content>
       </Container>
     );

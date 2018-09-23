@@ -111,6 +111,12 @@ const AppStackNavigator = createStackNavigator({
   }
 })
 
+CreateTaskScreen.navigationOptions = ({navigation}) => {
+  return {
+    header: () => null
+ } 
+}
+
 
 AppTabNavigator.navigationOptions = ({ navigation }) => {
   let { routeName } = navigation.state.routes[navigation.state.index];

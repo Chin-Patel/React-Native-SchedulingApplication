@@ -1,9 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet } from 'react-native';
 //https://www.npmjs.com/package/react-native-modal-datetime-picker
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as firebase from 'firebase';
-import {  Icon,  } from 'native-base'
+import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
 //https://www.npmjs.com/package/react-native-datepicker
 import DatePicker from 'react-native-datepicker'
 
@@ -12,7 +12,7 @@ export default class CreateTaskScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = state = { taskTitle: '', taskDescription: '', errorMessage: null, isDateTimePickerVisible: false, date: '', id: ''}
+        this.state = state = { taskTitle: '', taskDescription: '', errorMessage: null, isDateTimePickerVisible: false, date: '', id: '' }
         const { navigation } = this.props;
         this.state.id = navigation.getParam('userId', 'Default');
     }
@@ -22,10 +22,10 @@ export default class CreateTaskScreen extends React.Component {
         let taskDescription = this.state.taskDescription;
         let taskDate = this.state.date;
         // let taskCategory = this.state.category;
-        firebase.database().ref('userProfile/'+this.state.id+'/tasksList/').push({
+        firebase.database().ref('userProfile/' + this.state.id + '/tasksList/').push({
             //taskCategory : taskCategory,
-            tasting : "wtf",
-            taskDate : "" + taskDate,
+            tasting: "wtf",
+            taskDate: "" + taskDate,
             taskTitle: taskTitle,
             taskDescription: taskDescription
         }).then(this.props.navigation.navigate('HomeScreen'));
@@ -33,62 +33,75 @@ export default class CreateTaskScreen extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <Text>Create task</Text>
-                {this.state.errorMessage &&
-                    <Text style={{ color: 'red' }}>
-                        {this.state.errorMessage}
-                    </Text>}
-                <TextInput
-                    style={styles.textInput}
-                    autoCapitalize="none"
-                    placeholder="Title"
-                    onChangeText={taskTitle => this.setState({ taskTitle })}
-                    value={this.state.taskTitle}
+            <Container style={styles.container}>
+                <Content>
+                    <Header style={styles.header}>
+                    <Body>
+                            <Title style={styles.title}>Create A Task</Title>
+                        </Body>
+                    <Right>
+            <Button transparent onPress={() => this.props.navigation.navigate('HomeScreen')}>
+              <Icon name='close' />
+            </Button>
+          </Right>
+                        
+                    </Header>
 
-                />
-                <View style={styles.textAreaContainer} >
-                    <TextInput
-                        style={styles.textArea}
-                        underlineColorAndroid="transparent"
-                        placeholder="Add a description"
-                        placeholderTextColor="grey"
-                        numberOfLines={10}
-                        multiline={true}
-                        onChangeText={taskDescription => this.setState({ taskDescription })}
-                         value={this.state.taskDescription}
+                    <Form>
+                        <Item floatingLabel>
+                            <Label>Title</Label>
+                            <Input
+                                autoCorrect={false}
+                                autoCapitalize="none"
+                                onChangeText={taskTitle => this.setState({ taskTitle })}
+                                value={this.state.taskTitle}
+                            />
+                        </Item>
+
+                        <Item floatingLabel>
+                            <Label>Details</Label>
+                            <Input
+                                multiline={true}
+                                numberOfLines={5}
+                                onChangeText={taskDescription => this.setState({ taskDescription })}
+                                value={this.state.taskDescription}
+                                style={styles.textArea}
+                            />
+                        </Item>
+                    </Form>
+                    <DatePicker
+                        style={styles.date}
+                        date={this.state.date}
+                        mode="date"
+                        placeholder="Event Date"
+                        format="DD-MM-YYYY"
+                        minDate="01-01-2001"
+                        maxDate="31-12-2030"
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        showIcon={false}
+                        hideText={false}
+                        customStyles={{
+                            dateInput: {
+                                borderLeftWidth: 0,
+                                borderRightWidth: 0,
+                                borderTopWidth: 0,
+                                padding: 5,
+                                alignItems: 'flex-start'
+                            }
+                        }}
+                        onDateChange={(date) => { this.setState({ date: date }) }}
                     />
-                </View>
-       <DatePicker
-        style={{width: 200}}
-        date={this.state.date}
-        mode="date"
-        placeholder="select date"
-        format="DD-MM-YYYY"
-        minDate="01-01-2001"
-        maxDate="31-12-2030"
-        confirmBtnText="Confirm"
-        cancelBtnText="Cancel"
-        customStyles={{
-          dateIcon: {
-            position: 'absolute',
-            left: 0,
-            top: 4,
-            marginLeft: 0
-          },
-          dateInput: {
-            marginLeft: 36
-          }
-          // ... You can check the source to find the other keys.
-        }}
-        onDateChange={(date) => {this.setState({date: date})}}
-      />
 
-                <Button title="Create Task" onPress={this.createTask.bind(this)} />
-            </View>
-
-
-
+                    <Button style={styles.buttonStyle}
+                        full
+                        rounded
+                        onPress={this.createTask.bind(this)}
+                    >
+                        <Text style={{ color: 'white' }}> Create Task</Text>
+                    </Button>
+                </Content>
+            </Container>
         );
     }
 }
@@ -96,27 +109,46 @@ export default class CreateTaskScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        //justifyContent: 'center',
-        alignItems: 'center'
     },
-    textInput: {
-        height: 40,
-        width: '90%',
-        borderColor: 'gray',
-        borderWidth: 1,
-        marginTop: 8
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
     },
-    textAreaContainer: {
-        borderWidth: 1,
-        padding: 5,
-        width: '90%',
-        borderColor: 'gray',
+    taskText: {
+        textDecorationLine: 'line-through',
+        color: 'black',
+        marginLeft: 10,
+        marginRight: 10
+    },
+    text: {
+        color: 'grey',
+        marginLeft: 10,
+        marginRight: 10
+    },
+    header: {
+        backgroundColor: '#445df7',
+        fontWeight: 'bold',
 
     },
+    title: {
+        fontWeight: 'bold',
+
+    },
+    buttonStyle: {
+        backgroundColor: "#445df7",
+        margin: 10,
+    },
     textArea: {
-        height: 150,
-        width: '90%',
-        borderColor: 'gray',
-        //justifyContent: "flex-start"
+        height: 200,
+        marginLeft: 10,
+        marginRight: 10,
+        marginTop: 10,
+        textAlignVertical: "top"
+    },
+    date:{
+         width: 200,
+         marginLeft: 15,
+        color: 'black'
     }
 })

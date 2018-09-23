@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, TextInput, Image, ImageBackground } from 'react-native';
 import * as firebase from 'firebase';
-import { Container, Content, Header, Form, Input, Button, Item, Label, Icon } from 'native-base'
+import { Container, Content, Header, Form, Input, Button, Item, Label, Icon, Textarea } from 'native-base'
 
 export default class LoginScreen extends React.Component {
     static navigatorStyle = {
