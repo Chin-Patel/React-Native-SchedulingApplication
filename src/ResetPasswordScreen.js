@@ -1,23 +1,23 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Button, Alert } from 'react-native'
+import { StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
+import { Container, Header, Content, Body, Text, Title, Icon, Item, Label, Form, Input, Button, List, ListItem, Switch, Left } from 'native-base';
 
 export default class ResetPasswordScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = { email: '', password: '', errorMessage: null }
-
   }
 
-  displayAlert(){
+  displayAlert() {
     Alert.alert(
-        'Check your email!',
-        'Welcome to Swen325 Start App ',
-        [
-          {text: 'OK', onPress: () => console.log('OK Pressed')},
-        ],
-        { cancelable: false }
-      )
+      'Check your email!',
+      'Welcome to Swen325 Start App ',
+      [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false }
+    )
   }
 
   handleResetPassword = () => {
@@ -30,38 +30,77 @@ export default class ResetPasswordScreen extends React.Component {
   }
 
 
+
   render() {
     return (
-    <View style={styles.container}>
-        <Text>Sign Up</Text>
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>}
-        <TextInput
-          placeholder="Enter Email"
-          autoCapitalize="none"
-          style={styles.textInput}
-          onChangeText={email => this.setState({ email })}
-          value={this.state.email}
-        />
-        <Button title="ResetPassword" onPress={this.handleResetPassword} />
-      </View>
+      <Container style={styles.container}>
+        <Content>
+          <Header style={styles.header}>
+            <Left style={styles.headerLeft}>
+              <Button transparent onPress={() => this.props.navigation.navigate('LoginScreen')}>
+                <Icon name='arrow-back' />
+              </Button>
+            </Left>
+            <Body>
+              <Title style={styles.title}>Reset Password</Title>
+            </Body>
+          </Header>
+          <Form>
+            <Item floatingLabel>
+              <Label>Email</Label>
+              <Input
+                autoCorrect={false}
+                autoCapitalize="none"
+                //placeholder="Email"
+                onChangeText={email => this.setState({ email })}
+                value={this.state.email}
+              />
+
+            </Item>
+            <Button style={styles.buttonStyle}
+              full
+              rounded
+              //success
+              onPress={this.handleResetPassword}
+            >
+              <Text style={{ color: 'white' }}> Reset Password</Text>
+            </Button>
+          </Form>
+
+        </Content>
+      </Container>
     );
   }
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    textInput: {
-      height: 40,
-      width: '90%',
-      borderColor: 'gray',
-      borderWidth: 1,
-      marginTop: 8
-    }
-  })
+  container: {
+    flex: 1,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+  header: {
+    backgroundColor: '#445df7',
+    fontWeight: 'bold',
+
+  },
+  title: {
+    fontWeight: 'bold',
+
+  },
+  signout: {
+    color: 'red'
+  },
+  buttonStyle: {
+    backgroundColor: "#445df7",
+    margin: 10,
+  },
+  headerLeft: {
+    flex: 0,
+    paddingLeft: 6,
+    width: 62
+  }
+})

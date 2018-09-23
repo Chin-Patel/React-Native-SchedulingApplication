@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
+import { StyleSheet } from 'react-native'
 import * as firebase from 'firebase';
+import { Container, Header, Content, Body, Text, Title, Icon, Item, Label, Form, Input, Button, List, ListItem, Switch, Left } from 'native-base';
+
 
 export default class SignUpScreen extends React.Component {
   constructor(props) {
@@ -21,44 +23,85 @@ export default class SignUpScreen extends React.Component {
 
   render() {
     return (
-    <View style={styles.container}>
-        <Text>Sign Up</Text>
-        {this.state.errorMessage &&
-          <Text style={{ color: 'red' }}>
-            {this.state.errorMessage}
-          </Text>}
-        <TextInput
-          placeholder="Email"
-          autoCapitalize="none"
-          style={styles.textInput}
-          onChangeText={email => this.setState({ email })}
-          value={this.state.email}
-        />
-        <TextInput
-          secureTextEntry
-          placeholder="Password"
-          autoCapitalize="none"
-          style={styles.textInput}
-          onChangeText={password => this.setState({ password })}
-          value={this.state.password}
-        />
-        <Button title="Sign Up" onPress={this.handleSignUp} />
-      </View>
+      <Container style={styles.container}>
+        <Content>
+          <Header style={styles.header}>
+            <Left style={styles.headerLeft}>
+              <Button transparent onPress={() => this.props.navigation.navigate('LoginScreen')}>
+                <Icon name='arrow-back' />
+              </Button>
+            </Left>
+            <Body>
+              <Title style={styles.title}>Create An Account</Title>
+            </Body>
+          </Header>
+          <Form>
+            <Item floatingLabel>
+              <Label>Email</Label>
+              <Input
+                autoCorrect={false}
+                autoCapitalize="none"
+                //placeholder="Email"
+                onChangeText={email => this.setState({ email })}
+                value={this.state.email}
+              />
+
+            </Item>
+
+            <Item floatingLabel>
+              <Label>Password</Label>
+              <Input
+                autoCorrect={false}
+                autoCapitalize="none"
+                onChangeText={password => this.setState({ password })}
+                value={this.state.email}
+              />
+
+            </Item>
+            <Button style={styles.buttonStyle}
+              full
+              rounded
+              //success
+              onPress={this.handleSignUp}
+            >
+              <Text style={{ color: 'white' }}> Create Account</Text>
+            </Button>
+          </Form>
+
+        </Content>
+      </Container>
     );
   }
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center'
-    },
-    textInput: {
-      height: 40,
-      width: '90%',
-      borderColor: 'gray',
-      borderWidth: 1,
-      marginTop: 8
-    }
-  })
+  container: {
+    flex: 1,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+  header: {
+    backgroundColor: '#445df7',
+    fontWeight: 'bold',
+
+  },
+  title: {
+    fontWeight: 'bold',
+
+  },
+  signout: {
+    color: 'red'
+  },
+  buttonStyle: {
+    backgroundColor: "#445df7",
+    margin: 10,
+  },
+  headerLeft: {
+    flex: 0,
+    paddingLeft: 6,
+    width: 62
+  }
+})

@@ -117,7 +117,19 @@ CreateTaskScreen.navigationOptions = ({navigation}) => {
  } 
 }
 
+ResetPasswordScreen.navigationOptions = ({navigation}) => {
+  return {
+    header: () => null
+ } 
+}
+
 TaskInformationScreen.navigationOptions = ({navigation}) => {
+  return {
+    header: () => null
+ } 
+}
+
+SignUpScreen.navigationOptions = ({navigation}) => {
   return {
     header: () => null
  } 
