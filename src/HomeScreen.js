@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, ListView, FlatList } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body } from 'native-base'
+import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title } from 'native-base'
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
 
@@ -57,6 +57,15 @@ export default class HomeScreen extends React.Component {
     })
   }
 
+  getCompletetionTime() {
+    var currentdate = new Date();
+    var datetime = "Completed On " + currentdate.getDate() + "/" + (currentdate.getMonth() + 1)
+      + "/" + currentdate.getFullYear() + " at "
+      + currentdate.getHours() + ":"
+      + currentdate.getMinutes();
+    return datetime;
+  }
+
   async deleteRow(secId, rowId, rowMap, data) {
     //alert(firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id));
     await firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id).remove();
@@ -67,12 +76,13 @@ export default class HomeScreen extends React.Component {
   }
 
   completeTask(secId, rowId, rowMap, data){
+    alert(this.getCompletetionTime());
     firebase.database().ref('userProfile/'+this.userId+'/completedTasksList').push({
       taskTitle: data.taskTitle,
       taskDescription: data.taskDescription,
       //taskDate: data.taskDate,
       //taskCategory: taskCategory,
-      //taskCompletionTime: taskCompletionTime
+      taskCompletionTime: this.getCompletetionTime()
     }).then(newEvent => {
       this.deleteRow(secId, rowId, rowMap, data);
     });
@@ -97,7 +107,13 @@ export default class HomeScreen extends React.Component {
   render() {
     return (
       <Container style={styles.container}>
+      
         <Content>
+        <Header  style={styles.header}>
+          <Body>
+            <Title style={styles.title}>Your Tasks</Title>
+          </Body>
+        </Header>
           <List
             enableEmptySections
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
@@ -109,12 +125,12 @@ export default class HomeScreen extends React.Component {
               </Body>
               </ListItem>
             }
-            renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
+            renderRightHiddenRow={(data, secId, rowId, rowMap) =>
               <Button full secondary onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
                 <Icon name='checkmark'/>
               </Button>
             }
-            renderRightHiddenRow={(data, secId, rowId, rowMap) =>
+            renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
               <Button full danger onPress={() => this.deleteRow(secId, rowId, rowMap, data)}>
                 <Icon name='trash' />
               </Button>
@@ -133,12 +149,20 @@ export default class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
    flex: 1,
-   paddingTop: 22
   },
   item: {
     padding: 10,
     fontSize: 18,
     height: 44,
   },
+  header:{
+    backgroundColor: '#445df7',
+    fontWeight: 'bold',
+
+  },
+  title:{
+    fontWeight: 'bold',
+
+  }
   
 })

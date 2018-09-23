@@ -44,7 +44,11 @@ LoginScreen.navigationOptions = ({navigation}) => {
  } 
 }
 
-
+CategoriesScreen.navigationOptions = ({navigation}) => {
+  return {
+    header: () => null
+ } 
+}
 
 const AppTabNavigator = createBottomTabNavigator({
   HomeScreen: {
@@ -60,6 +64,8 @@ const AppTabNavigator = createBottomTabNavigator({
     screen: CategoriesScreen,
     navigationOptions: {
       tabBarLabel: 'Categories',
+      headerMode: 'none',
+      visible: false,
       tabBarIcon: ({ tintColor }) => (
         <Icon name="md-apps" color={tintColor} size={24} />
       )
@@ -69,6 +75,8 @@ const AppTabNavigator = createBottomTabNavigator({
     screen: CompletedTasksScreen,
     navigationOptions: {
       tabBarLabel: 'Completed Tasks',
+      headerMode: 'none',
+      visible: false,
       tabBarIcon: ({ tintColor }) => (
         <Icon name="md-bulb" color={tintColor} size={24} />
       )
@@ -107,8 +115,12 @@ const AppStackNavigator = createStackNavigator({
 AppTabNavigator.navigationOptions = ({ navigation }) => {
   let { routeName } = navigation.state.routes[navigation.state.index];
   let headerTitle = routeName.replace('Screen', ' ');
+  // return {
+  //   headerTitle,
+  // };
+
   return {
-    headerTitle,
+      header: () => null
   };
 };
 

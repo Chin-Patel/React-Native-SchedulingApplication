@@ -1,8 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, ListView, FlatList } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body } from 'native-base'
+import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Left, Right, Title } from 'native-base'
 import * as firebase from 'firebase';
-import FAB from 'react-native-fab'
 
 //https://www.npmjs.com/package/react-native-fab
 
@@ -42,6 +41,7 @@ export default class CompletedTasksScreen extends React.Component {
               id: snap.key,
               taskTitle: snap.val().taskTitle,
               taskDescription: snap.val().taskDescription,
+              taskCompletionTime: snap.val().taskCompletionTime,
             });
           });
           that.setState({ listViewData: this.items })
@@ -98,15 +98,20 @@ export default class CompletedTasksScreen extends React.Component {
     return (
       <Container style={styles.container}>
         <Content>
+        <Header  style={styles.header}>
+          <Body>
+            <Title style={styles.title}>Completed Tasks</Title>
+          </Body>
+        </Header>
           <List
             enableEmptySections
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
             renderRow={data =>
               <ListItem onPress={() => this.showInformation(data)}>
-              {/* <Body> */}
-              <Text style={{ textDecorationLine: 'line-through' }}>{data.taskTitle}</Text>
-                {/* <Text note>{data.taskDescription}</Text>
-              </Body> */}
+              <Body>
+              <Text style={styles.taskText}>{data.taskTitle}</Text>
+              <Text note style = {styles.text}>{data.taskCompletionTime} </Text>       
+              </Body> 
               </ListItem>
             }
             renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
@@ -123,8 +128,6 @@ export default class CompletedTasksScreen extends React.Component {
             rightOpenValue={-75}
           />
         </Content>
-        <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.loadCreateTaskScreen()}} visible={true} iconTextComponent={<Text>+</Text>} />
-
       </Container>
     );
   }
@@ -133,11 +136,30 @@ export default class CompletedTasksScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
    flex: 1,
-   paddingTop: 22
   },
   item: {
     padding: 10,
     fontSize: 18,
     height: 44,
   },
+  taskText: {
+    textDecorationLine: 'line-through',
+    color: 'black',
+    marginLeft: 10,
+    marginRight: 10
+  },
+  text:{
+    color: 'grey',
+    marginLeft: 10,
+    marginRight: 10
+  },
+  header:{
+    backgroundColor: '#445df7',
+    fontWeight: 'bold',
+
+  },
+  title:{
+    fontWeight: 'bold',
+
+  }
 })
