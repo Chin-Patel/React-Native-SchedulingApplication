@@ -27,7 +27,12 @@ export default class LoginScreen extends React.Component {
       
   render() {
         return (
+          
           <Container style={styles.container}>
+                          <ImageBackground source={require('../assets/imgs/bg.jpg')} style={{width: '100%', height: '100%'}}>
+
+          {/* <Image source={require('../assets/imgs/D.png')} />; */}
+          <Image style ={styles.images} source={require('../assets/imgs/A.png')} />
                 <Form>
                     <Item floatingLabel>
                         <Label>Email</Label>
@@ -64,9 +69,12 @@ export default class LoginScreen extends React.Component {
                         <Text style={{ color: 'white' }}> Login</Text>
                     </Button>
                 </Form>
+
                 <Text style = {styles.textStyle} onPress={() => this.props.navigation.navigate('ResetPasswordScreen')}> Forgot Password? </Text>
                 <Text style = {styles.textStyle} onPress={() => this.props.navigation.navigate('SignUpScreen')}> Create a new account </Text>
-            </Container>
+
+                </ImageBackground>
+           </Container>
     );
   }
 }
@@ -76,11 +84,10 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#fff',
       justifyContent: 'center',
-      padding: 10
   },
   buttonStyle: {
     backgroundColor: "#445df7",
-    marginTop: 10
+    margin: 10,
   },
   textStyle: {
     color: '#445df7',
@@ -88,6 +95,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     fontWeight: 'bold',
     alignSelf: 'center',
-
+  },
+  images:{
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
   }
 });

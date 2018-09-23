@@ -26,17 +26,25 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const AuthStackNavigator = createStackNavigator({
-  LoginScreen: LoginScreen,
+  LoginScreen: {
+    screen: LoginScreen,
+    navigationOptions: {
+      headerMode: 'none',
+      visible: false,
+      
+    }
+  },
   SignUpScreen: SignUpScreen,
   ResetPasswordScreen: ResetPasswordScreen
 })
 
-LoginScreen.navigationOptions = ({ navigation }) => {
-  let headerTitle = "Login";
+LoginScreen.navigationOptions = ({navigation}) => {
   return {
-    headerTitle,
-  };
-};
+    header: () => null
+ } 
+}
+
+
 
 const AppTabNavigator = createBottomTabNavigator({
   HomeScreen: {
