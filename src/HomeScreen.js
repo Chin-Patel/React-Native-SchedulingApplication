@@ -30,7 +30,7 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     var that = this
-    alert(firebase.auth().currentUser.uid);
+    //alert(firebase.auth().currentUser.uid);
 
   
 

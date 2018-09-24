@@ -24,7 +24,7 @@ export default class CreateTaskScreen extends React.Component {
         // let taskCategory = this.state.category;
         firebase.database().ref('userProfile/' + this.state.id + '/tasksList/').push({
             //taskCategory : taskCategory,
-            tasting: "wtf",
+            //tasting: "wtf",
             taskDate: "" + taskDate,
             taskTitle: taskTitle,
             taskDescription: taskDescription

@@ -28,19 +28,25 @@ export default class Settings extends React.Component {
   }
 
   componentDidMount() {
+    var that = this
     firebase.auth().onAuthStateChanged(user => {
       if(user){
         this.tasksReference = firebase
         .database()
         .ref(`/userProfile/${user.uid}/settings`);
         this.userId = `${user.uid}`;
+        var taskDelete;
+        var categoryDelete;
         this.tasksReference.on("value", tasksList => {
           tasksList.forEach(snap => {
             this.state.id = snap.key;
-            this.state.taskDelete = snap.val().taskDelete;
-            this.state.categoryDelete = snap.val().categoryDelete;
+            taskDelete = snap.val().taskDelete;
+            categoryDelete = snap.val().categoryDelete;
           });
         });
+        
+        that.setState({ taskDelete: taskDelete })
+        that.setState({ categoryDelete: categoryDelete })
       }
     });
   }
