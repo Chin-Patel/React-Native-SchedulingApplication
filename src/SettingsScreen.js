@@ -52,7 +52,9 @@ export default class Settings extends React.Component {
   }
 
   render() {
+
     return (
+
       <Container style={styles.container}>
         <Content>
           <Header style={styles.header}>

@@ -145,26 +145,21 @@ export default class HomeScreen extends React.Component {
     alert(this.state.listViewData.length);
   }
 
+  
+
   render() {
     const emptyState = <Image style ={styles.images} source={require('../assets/imgs/A.png')} />;
+    if(this.state.listViewData.length == 0){
 
+    }
     return (
       <Container style={styles.container}>
-      
         <Content>
-
-
-          
         <Header  style={styles.header}>
           <Body>
             <Title style={styles.title}>Your Tasks</Title>
           </Body>
         </Header>
-
-
-
-
-
           {renderIf(this.state.listViewData == 0, 
               <Image style ={styles.images} source={require('../assets/imgs/emptyState1.png')} />
           )}
@@ -196,7 +191,6 @@ export default class HomeScreen extends React.Component {
         </Content>
         <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.loadCreateTaskScreen()}} visible={true} iconTextComponent={<Text>+</Text>} />
         {/* <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.test()}} visible={true} iconTextComponent={<Text>debug</Text>} /> */}
-
       </Container>
     );
   }

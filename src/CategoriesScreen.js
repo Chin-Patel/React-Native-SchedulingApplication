@@ -1,54 +1,92 @@
 import React, { Component } from 'react';
-import {StyleSheet} from 'react-native';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title } from 'native-base';
+
+import { StyleSheet } from 'react-native';
+import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon } from 'native-base';
+
 export default class CategoriesScreen extends Component {
 
-    constructor(props) {
+  constructor(props) {
     super(props);
+
+    this.state = {
+      laps: [{ headline: "Test", text: "Test text", send_at: "test date" },
+      { headline: "Test2", text: "Test text2", send_at: "test date" },
+      { headline: "Test3", text: "Test text3", send_at: "test date" }]
+    };
   }
+
   render() {
     return (
       <Container style={styles.container}>
         <Content>
-        <Header  style={styles.header}>
-          <Body>
-            <Title style={styles.title}>Categories</Title>
-          </Body>
-        </Header>
+          <Header style={styles.header}>
+            <Body>
+              <Title style={styles.title}>Categories</Title>
+            </Body>
+          </Header>
+          {this.lapsList()}
         </Content>
       </Container>
-    );
+    )
   }
-}
 
+  showInformation(data) {
+    alert(data.headline);
+  }
+
+  lapsList() {
+
+    return this.state.laps.map((data) => {
+      return (
+        <Card style={styles.card}>
+          <CardItem style={styles.cardItem} header button onPress={() => this.showInformation(data)}>
+            <Body>
+              <Text>
+                {data.headline}
+              </Text>
+              <Text>{data.text}</Text>
+            </Body>
+            <Right>
+              <Icon name="close" onPress={(data) => this.showInformation(data)} />
+            </Right>
+          </CardItem>
+        </Card>
+      );
+    })
+
+  }
+
+}
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
+    flex: 1,
   },
   item: {
     padding: 10,
     fontSize: 18,
     height: 44,
   },
-  taskText: {
-    textDecorationLine: 'line-through',
-    color: 'black',
+  card: {
+    borderRadius: 20,
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
+    marginTop: 10,
+    elevation: 5
   },
-  text:{
-    color: 'grey',
-    marginLeft: 10,
-    marginRight: 10
+  cardItem: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20
   },
-  header:{
+  header: {
     backgroundColor: '#445df7',
     fontWeight: 'bold',
 
   },
-  title:{
+  title: {
     fontWeight: 'bold',
 
-  }
+  },
 })
