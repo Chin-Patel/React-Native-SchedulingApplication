@@ -1,18 +1,22 @@
 import React from 'react';
+import {Root} from 'native-base'
+
 import { StyleSheet } from 'react-native';
 //https://www.npmjs.com/package/react-native-modal-datetime-picker
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as firebase from 'firebase';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, ActionSheet, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
 //https://www.npmjs.com/package/react-native-datepicker
 import DatePicker from 'react-native-datepicker'
 
-
+var BUTTONS = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
+var DESTRUCTIVE_INDEX = 3;
+var CANCEL_INDEX = 4;
 export default class CreateTaskScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = state = { taskTitle: '', taskDescription: '', errorMessage: null, isDateTimePickerVisible: false, date: '', id: '' }
+        this.state = state = { taskTitle: '', taskDescription: '', errorMessage: null, isDateTimePickerVisible: false, date: '', id: '', clicked: '' }
         const { navigation } = this.props;
         this.state.id = navigation.getParam('userId', 'Default');
     }
@@ -33,6 +37,8 @@ export default class CreateTaskScreen extends React.Component {
 
     render() {
         return (
+            <Root>
+
             <Container style={styles.container}>
                 <Content>
                     <Header style={styles.header}>
@@ -93,6 +99,24 @@ export default class CreateTaskScreen extends React.Component {
                         onDateChange={(date) => { this.setState({ date: date }) }}
                     />
 
+
+                    <Button
+                        onPress={() =>
+                            ActionSheet.show(
+                                {
+                                    options: BUTTONS,
+                                    cancelButtonIndex: CANCEL_INDEX,
+                                    destructiveButtonIndex: DESTRUCTIVE_INDEX,
+                                    title: "Testing ActionSheet"
+                                },
+                                (buttonIndex) => {
+                                    this.setState({ clicked: BUTTONS[buttonIndex] });
+                                    alert("test: " + this.state.clicked)
+                                }
+                            )}
+                    >
+                        <Text>Actionsheet</Text>
+                    </Button>
                     <Button style={styles.buttonStyle}
                         full
                         rounded
@@ -102,6 +126,7 @@ export default class CreateTaskScreen extends React.Component {
                     </Button>
                 </Content>
             </Container>
+            </Root>
         );
     }
 }

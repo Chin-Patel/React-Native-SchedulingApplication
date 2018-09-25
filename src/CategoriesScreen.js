@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 
 import { StyleSheet } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon } from 'native-base';
-
+import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, FormInput, Button, Input, Form, Item, ListItem, Footer } from 'native-base';
 export default class CategoriesScreen extends Component {
 
   constructor(props) {
@@ -13,25 +12,6 @@ export default class CategoriesScreen extends Component {
       { headline: "Test2", text: "Test text2", send_at: "test date" },
       { headline: "Test3", text: "Test text3", send_at: "test date" }]
     };
-  }
-
-  render() {
-    return (
-      <Container style={styles.container}>
-        <Content>
-          <Header style={styles.header}>
-            <Body>
-              <Title style={styles.title}>Categories</Title>
-            </Body>
-          </Header>
-          {this.lapsList()}
-        </Content>
-      </Container>
-    )
-  }
-
-  showInformation(data) {
-    alert(data.headline);
   }
 
   lapsList() {
@@ -55,6 +35,39 @@ export default class CategoriesScreen extends Component {
     })
 
   }
+
+  render() {
+    return (
+      <Container style={styles.container}>
+        <Content>
+          <Header style={styles.header}>
+            <Body>
+              <Title style={styles.title}>Categories</Title>
+            </Body>
+          </Header>
+          {this.lapsList()}
+          <Content>
+          </Content>
+        </Content>
+        <Footer style={styles.footer}>
+          <Input placeholder='Create Category...' placeholderTextColor='grey' style={styles.input} />
+          <Right>
+            <Icon name="arrow-up" onPress={() => this.other()} style={styles.createIcon}></Icon>
+          </Right>
+        </Footer>
+      </Container>
+    )
+  }
+
+  other() {
+    alert("yuhh");
+  }
+
+  showInformation(data) {
+    alert(data.headline);
+  }
+
+
 
 }
 
@@ -89,4 +102,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
 
   },
+  content: {
+    position: 'absolute',
+    bottom: 10,
+    left: 0,
+    right: 0
+  },
+  input: {
+    marginLeft: 10,
+  },
+  footer: {
+    backgroundColor: 'white'
+  },
+  createIcon: {
+    marginRight: 10
+  }
 })
