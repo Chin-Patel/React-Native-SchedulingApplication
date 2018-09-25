@@ -54,7 +54,7 @@ export default class CategoriesScreen extends Component {
     return this.state.categoriesToRender.map((data) => {
       return (
         <Card style={styles.card}>
-          <CardItem style={styles.cardItem} header button onPress={() => this.showInformation(data)}>
+          <CardItem style={styles.cardItem} header button onPress={() => this.openCategory(data)}>
             <Body>
               <Text>
                 {data.categoryName}
@@ -97,6 +97,12 @@ export default class CategoriesScreen extends Component {
         </Footer>
       </Container>
     )
+  }
+
+  openCategory(data){
+    this.props.navigation.navigate('SelectedCategoryScreen',{
+      data: data
+    });
   }
 
 

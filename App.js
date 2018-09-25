@@ -8,6 +8,7 @@ import CompletedTasksScreen from './src/CompletedTasksScreen';
 import SettingsScreen from './src/SettingsScreen';
 import CreateTaskScreen from './src/CreateTaskScreen';
 import TaskInformationScreen from './src/TaskInformation';
+import SelectedCategoryScreen from './src/SelectedCategoryScreen';
 //Main screens
 import CategoriesScreen from './src/CategoriesScreen';
 import * as firebase from 'firebase';
@@ -109,7 +110,14 @@ const AppStackNavigator = createStackNavigator({
     navigationOptions:{
       tabBarLabel: 'Task',
     }
+  },
+  SelectedCategoryScreen: {
+    screen: SelectedCategoryScreen,
+    navigationOptions:{
+      tabBarLabel: 'SelectedCategoryScreen'
+    }
   }
+
 })
 
 CreateTaskScreen.navigationOptions = ({navigation}) => {
@@ -131,6 +139,12 @@ TaskInformationScreen.navigationOptions = ({navigation}) => {
 }
 
 SignUpScreen.navigationOptions = ({navigation}) => {
+  return {
+    header: () => null
+ } 
+}
+
+SelectedCategoryScreen.navigationOptions = ({navigation}) => {
   return {
     header: () => null
  } 
