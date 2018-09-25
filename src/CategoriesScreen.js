@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as firebase from 'firebase';
 
 import { StyleSheet } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, FormInput, Button, Input, Form, Item, ListItem, Footer } from 'native-base';
@@ -10,9 +11,20 @@ export default class CategoriesScreen extends Component {
     this.state = {
       laps: [{ headline: "Test", text: "Test text", send_at: "test date" },
       { headline: "Test2", text: "Test text2", send_at: "test date" },
-      { headline: "Test3", text: "Test text3", send_at: "test date" }]
+      { headline: "Test3", text: "Test text3", send_at: "test date" }], categoryName: '', inputText: ''
     };
   }
+
+  createCategory() {
+    //this.state.inputText = '';
+    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').push({
+      categoryName: this.state.categoryName,
+      categoryCount: 0,
+      categoryLetter : this.state.categoryName.substring(0,1).toUpperCase()
+    }).then(this.state.categoryName = '');//TODO then what??
+}
+
+
 
   lapsList() {
 
@@ -50,18 +62,21 @@ export default class CategoriesScreen extends Component {
           </Content>
         </Content>
         <Footer style={styles.footer}>
-          <Input placeholder='Create Category...' placeholderTextColor='grey' style={styles.input} />
+          <Input 
+          placeholder='Create Category...'
+           placeholderTextColor='grey' 
+           style={styles.input} 
+           onChangeText={categoryName => this.setState({ categoryName })}
+           value = {this.state.categoryName}
+           />
           <Right>
-            <Icon name="arrow-up" onPress={() => this.other()} style={styles.createIcon}></Icon>
+            <Icon name="arrow-up" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
           </Right>
         </Footer>
       </Container>
     )
   }
 
-  other() {
-    alert("yuhh");
-  }
 
   showInformation(data) {
     alert(data.headline);
