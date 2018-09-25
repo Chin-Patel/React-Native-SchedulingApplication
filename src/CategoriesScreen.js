@@ -3,15 +3,15 @@ import * as firebase from 'firebase';
 
 import { StyleSheet } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, FormInput, Button, Input, Form, Item, ListItem, Footer } from 'native-base';
-export default class CategoriesScreen extends Component {
 
+var data = []
+
+export default class CategoriesScreen extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      laps: [{ headline: "Test", text: "Test text", send_at: "test date" },
-      { headline: "Test2", text: "Test text2", send_at: "test date" },
-      { headline: "Test3", text: "Test text3", send_at: "test date" }], categoryName: '', inputText: ''
+      categoryName: '', inputText: '', categoriesToRender: data
     };
   }
 
@@ -20,32 +20,54 @@ export default class CategoriesScreen extends Component {
     firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').push({
       categoryName: this.state.categoryName,
       categoryCount: 0,
-      categoryLetter : this.state.categoryName.substring(0,1).toUpperCase()
+      categoryLetter: this.state.categoryName.substring(0, 1).toUpperCase()
     }).then(this.state.categoryName = '');//TODO then what??
-}
+  }
+
+  deleteCategory(category){
+    alert("weeeee " + category.categoryKey + " " + category.categoryName);
+    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/' + category.categoryKey).remove();
+  }
+
+  componentDidMount() {
+    var that = this
+    //alert(firebase.auth().currentUser.uid);
+    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
+      this.categoriesList = [];
+      categories.forEach(snap => {
+        this.categoriesList.push({
+          categoryKey: snap.key,
+          categoryCount: snap.val().categoryCount,
+          categoryLetter: snap.val().categoryLetter,
+          categoryName: snap.val().categoryName,
+        });
+      });
+      that.setState({ categoriesToRender: this.categoriesList })
+    });
+  }
+
+
 
 
 
   lapsList() {
-
-    return this.state.laps.map((data) => {
+    return this.state.categoriesToRender.map((data) => {
       return (
         <Card style={styles.card}>
           <CardItem style={styles.cardItem} header button onPress={() => this.showInformation(data)}>
             <Body>
               <Text>
-                {data.headline}
+                {data.categoryName}
               </Text>
-              <Text>{data.text}</Text>
+              <Text>{data.categoryCount} Items</Text>
             </Body>
             <Right>
-              <Icon name="close" onPress={(data) => this.showInformation(data)} />
+              <Icon name="close" onPress={() => this.deleteCategory(data)} />
             </Right>
           </CardItem>
         </Card>
       );
     })
-
   }
 
   render() {
@@ -62,13 +84,13 @@ export default class CategoriesScreen extends Component {
           </Content>
         </Content>
         <Footer style={styles.footer}>
-          <Input 
-          placeholder='Create Category...'
-           placeholderTextColor='grey' 
-           style={styles.input} 
-           onChangeText={categoryName => this.setState({ categoryName })}
-           value = {this.state.categoryName}
-           />
+          <Input
+            placeholder='Create Category...'
+            placeholderTextColor='grey'
+            style={styles.input}
+            onChangeText={categoryName => this.setState({ categoryName })}
+            value={this.state.categoryName}
+          />
           <Right>
             <Icon name="arrow-up" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
           </Right>
@@ -79,7 +101,7 @@ export default class CategoriesScreen extends Component {
 
 
   showInformation(data) {
-    alert(data.headline);
+    alert(data.categoryName);
   }
 
 

@@ -19,7 +19,8 @@ export default class HomeScreen extends React.Component {
       listViewData: data,
       newContact: "",
       taskDelete: true,
-      categoryDelete: true
+      categoryDelete: true,
+      categoriesToRender: data
     }
 
   }
@@ -49,10 +50,12 @@ export default class HomeScreen extends React.Component {
               id: snap.key,
               taskTitle: snap.val().taskTitle,
               taskDescription: snap.val().taskDescription,
+              taskCategory: snap.val().taskCategory
             });
           });
           that.setState({ listViewData: this.items })
           this.loadSettings();
+          this.loadCategories();
         });
       }
     });
@@ -75,6 +78,23 @@ export default class HomeScreen extends React.Component {
     });
   }
 
+
+  loadCategories(){
+    var that = this
+    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
+      this.categoriesList = [];
+      categories.forEach(snap => {
+        this.categoriesList.push({
+          categoryKey: snap.key,
+          categoryCount: snap.val().categoryCount,
+          categoryLetter: snap.val().categoryLetter,
+          categoryName: snap.val().categoryName,
+        });
+      });
+      that.setState({ categoriesToRender: this.categoriesList })
+    });
+  }
+
   addRow(data) {
     this.getTaskReference().push({
       taskTitle: data,
@@ -90,6 +110,47 @@ export default class HomeScreen extends React.Component {
       + currentdate.getMinutes();
     return datetime;
   }
+
+  async deleteRow(secId, rowId, rowMap, data) {
+    this.updateCategoryCount(data.taskCategory);
+    await firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id).remove();
+    rowMap[`${secId}${rowId}`].props.closeRow();
+    var newData = [...this.state.listViewData];
+    this.setState({ listViewData: newData });
+  }
+
+    updateCategoryCount(categoryName){
+     // alert("Helo: " + categoryName)
+      let newCategoryCount = this.getDecreaseCategoryCount(this.state.categoriesToRender, categoryName);
+      alert(this.state.categoriesToRender.length + " <-> " + categoryName);
+      let categoryId = this.findCategoryId(this.state.categoriesToRender, categoryName);
+      //alert("hmm " + categoryId)
+
+     // alert("HI " + newCategoryCount + "  <-> " + categoryId);
+      firebase.database().ref('userProfile/'+firebase.auth().currentUser.uid+'/categoriesList/' + categoryId).update({
+          categoryCount : newCategoryCount
+        });
+
+  }
+
+  findCategoryId(categoriesList, categoryName) {
+      for (let i = 0; i < categoriesList.length; i++) {
+        if (categoriesList[i].categoryName === categoryName) {
+          return categoriesList[i].categoryKey;
+        }
+      }
+    }
+
+  getDecreaseCategoryCount(categoriesList, categoryName) {
+      
+      for (let i = 0; i < categoriesList.length; i++) {
+        if (categoriesList[i].categoryName === categoryName) {
+          let original = categoriesList[i].categoryCount;
+          return original - 1;
+        }
+      }
+      return 0;
+    }
 
   throwAlert(secId, rowId, rowMap, data){
     if(this.state.taskDelete == true){
@@ -107,13 +168,7 @@ export default class HomeScreen extends React.Component {
     }
   }
 
-  async deleteRow(secId, rowId, rowMap, data) {
 
-    await firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id).remove();
-    rowMap[`${secId}${rowId}`].props.closeRow();
-    var newData = [...this.state.listViewData];
-    this.setState({ listViewData: newData });
-  }
 
   completeTask(secId, rowId, rowMap, data){
     firebase.database().ref('userProfile/'+this.userId+'/completedTasksList').push({
