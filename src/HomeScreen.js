@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, ListView, FlatList, Image, Alert } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title,  } from 'native-base'
+import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title, Right } from 'native-base'
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
 import renderIf from './renderIf';
@@ -219,22 +219,29 @@ export default class HomeScreen extends React.Component {
               <Image style ={styles.images} source={require('../assets/imgs/emptyState1.png')} />
           )}
           <List
-            
             enableEmptySections
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
             renderRow={data =>
-              <ListItem onPress={() => this.showInformation(data)}>
-              <Body>
+              <ListItem icon onPress={() => this.showInformation(data)}>
+            <Body>
               <Text style={styles.taskText }>{data.taskTitle}</Text>
                 <Text note style={styles.text}>{data.taskDescription}</Text>
               </Body>
+
+                        <Right>
+            <Icon name="md-arrow-forward" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
+          </Right>  
               </ListItem>
             }
+            
             renderRightHiddenRow={(data, secId, rowId, rowMap) =>
               <Button full success onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
                 <Icon name='checkmark'/>
               </Button>
+              
             }
+
+
             renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
               <Button full danger onPress={() => this.throwAlert(secId, rowId, rowMap, data)}>
                 <Icon name='trash' />
@@ -242,6 +249,8 @@ export default class HomeScreen extends React.Component {
             }
             leftOpenValue={+75}
             rightOpenValue={-75}
+
+            
           />
         </Content>
         <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.loadCreateTaskScreen()}} visible={true} iconTextComponent={<Text>+</Text>} />

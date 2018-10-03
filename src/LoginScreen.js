@@ -35,6 +35,7 @@ export default class LoginScreen extends React.Component {
                     <Image style={styles.images} source={require('../assets/imgs/A.png')} />
                     <Form>
                         <Item floatingLabel>
+
                             <Label>Email</Label>
                             <Input
                                 autoCorrect={false}
@@ -42,7 +43,7 @@ export default class LoginScreen extends React.Component {
                                 //placeholder="Email"
                                 onChangeText={email => this.setState({ email })}
                                 //value={this.state.email}
-                                value={"test@test.com"}
+                             value={"test@test.com"}
                             />
 
                         </Item>
@@ -55,10 +56,15 @@ export default class LoginScreen extends React.Component {
                                 autoCapitalize="none"
                                 //placeholder="Password"
                                 onChangeText={password => this.setState({ password })}
-                                // value={this.state.password}
-                                value={"123456"}
+                                //value={this.state.password}
+                            value={"123456"}
                             />
                         </Item>
+
+                        {this.state.errorMessage &&
+                            <Text style={styles.errorMessage}>
+                                {this.state.errorMessage}
+                            </Text>}
 
                         <Button style={styles.buttonStyle}
                             full
@@ -100,5 +106,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         alignSelf: 'center',
+    },
+    errorMessage: {
+        color: 'red',
+        justifyContent: 'center',
+        alignSelf: 'center',
+
     }
 });

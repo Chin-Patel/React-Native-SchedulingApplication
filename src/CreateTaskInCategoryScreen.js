@@ -8,7 +8,6 @@ import * as firebase from 'firebase';
 import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, ActionSheet, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
 //https://www.npmjs.com/package/react-native-datepicker
 import DatePicker from 'react-native-datepicker'
-import TaskProvider from './TaskProvider'
 var categoriesThing = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
 
 var BUTTONS = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
@@ -16,7 +15,7 @@ var BUTTONS = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
 //var CANCEL_INDEX = 4;
 var data = []
 var c = [];
-export default class CreateTaskScreen extends React.Component {
+export default class CreateTaskInCategoryScreen extends React.Component {
 
     constructor(props) {
         super(props);
@@ -28,12 +27,10 @@ export default class CreateTaskScreen extends React.Component {
             date: '',
             id: '',
             clicked: 'Default',
-            categoriesToRender: data,
-            TaskData: TaskProvider.getInstance()
+            categoriesToRender: data
         }
         const { navigation } = this.props;
         this.state.id = navigation.getParam('userId', 'Default');
-        //TaskProvider = new TaskProvider()
     }
 
     componentDidMount() {
@@ -73,31 +70,24 @@ export default class CreateTaskScreen extends React.Component {
     }
 
     createTask() {
+        //alert(this.state.clicked + " <-0 ")
         let taskTitle = this.state.taskTitle;
         let taskDescription = this.state.taskDescription;
         let taskDate = this.state.date;
         let taskCategory = this.state.clicked;
-        this.state.TaskData.createTask(taskTitle, taskDescription, taskDate, taskCategory);
-
-
-        // //alert(this.state.clicked + " <-0 ")
-        // let taskTitle = this.state.taskTitle;
-        // let taskDescription = this.state.taskDescription;
-        // let taskDate = this.state.date;
-        // let taskCategory = this.state.clicked;
-        // // let taskCategory = this.state.category;
-        // firebase.database().ref('userProfile/' + this.state.id + '/tasksList/').push({
-        //     //taskCategory : taskCategory,
-        //     //tasting: "wtf",
-        //     taskDate: "" + taskDate,
-        //     taskTitle: taskTitle,
-        //     taskDescription: taskDescription,
-        //     taskCategory: taskCategory
-        // }).then(()=>{
-        //     this.updateCategoryCount();
-        //     this.props.navigation.navigate('HomeScreen')
-        //  }
-        //     );
+        // let taskCategory = this.state.category;
+        firebase.database().ref('userProfile/' + this.state.id + '/tasksList/').push({
+            //taskCategory : taskCategory,
+            //tasting: "wtf",
+            taskDate: "" + taskDate,
+            taskTitle: taskTitle,
+            taskDescription: taskDescription,
+            taskCategory: taskCategory
+        }).then(()=>{
+            this.updateCategoryCount();
+            this.props.navigation.navigate('HomeScreen')
+         }
+            );
     }
 
     updateCategoryCount(){
@@ -188,62 +178,21 @@ export default class CreateTaskScreen extends React.Component {
                                     borderRightWidth: 0,
                                     borderTopWidth: 0,
                                     padding: 5,
-                                    alignItems: 'flex-start',
-                                },
-                                placeholderText: {
-                                    color: '#234456'
+                                    alignItems: 'flex-start'
                                 }
                             }}
                             onDateChange={(date) => { this.setState({ date: date }) }}
                         />
 
 
-                        {/* <Button
-                            onPress={() =>
-                                ActionSheet.show(
-                                    {
-                                        options: c,
-                                        //options: BUTTONS,
-                                        cancelButtonIndex: 2,
-                                        //destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                                        title: "Testing ActionSheet"
-                                    },
-                                    (buttonIndex) => {
-                                        this.setState({ clicked: c[buttonIndex] });
-                                        //this.doMethod();
-                                        //alert("test: " + this.state.clicked)
-                                    }
-                                )}
-                        >
+                        <Button>
                             <Text>{this.state.clicked}</Text>
-                        </Button> */}
-                        
-                        <Button full transparent dark style={styles.categoryButton}                             onPress={() =>
-                                ActionSheet.show(
-                                    {
-                                        options: c,
-                                        //options: BUTTONS,
-                                        cancelButtonIndex: 2,
-                                        //destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                                        title: "Testing ActionSheet"
-                                    },
-                                    (buttonIndex) => {
-                                        this.setState({ clicked: c[buttonIndex] });
-                                        //this.doMethod();
-                                        //alert("test: " + this.state.clicked)
-                                    }
-                                )}
-                        >
-                            <Text>{this.state.clicked}</Text>
-          </Button>
-
-
-                        <Button transparent style={styles.buttonStyle}
+                        </Button>
+                        <Button style={styles.buttonStyle}
                             full
                             rounded
                             onPress={this.createTask.bind(this)}
                         >
-                                  
                             <Text style={{ color: 'white' }}> Create Task</Text>
                         </Button>
                     </Content>
@@ -298,19 +247,8 @@ const styles = StyleSheet.create({
         textAlignVertical: "top"
     },
     date: {
-        width: '100%',
+        width: 200,
         marginLeft: 15,
-        marginTop: 10,
-        marginRight: 15,
         color: 'black'
-    },
-    categoryButton:{
-        borderWidth: 0.5,
-        borderColor:'black',
-        margin:10,
-        borderLeftWidth: 0,
-        borderRightWidth: 0,
-        borderTopWidth: 0,
-        justifyContent: "flex-start"
     }
 })

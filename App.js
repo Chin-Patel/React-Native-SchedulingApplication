@@ -9,6 +9,7 @@ import SettingsScreen from './src/SettingsScreen';
 import CreateTaskScreen from './src/CreateTaskScreen';
 import TaskInformationScreen from './src/TaskInformation';
 import SelectedCategoryScreen from './src/SelectedCategoryScreen';
+import CreateTaskInCategoryScreen from './src/CreateTaskInCategoryScreen';
 //Main screens
 import CategoriesScreen from './src/CategoriesScreen';
 import * as firebase from 'firebase';
@@ -116,9 +117,20 @@ const AppStackNavigator = createStackNavigator({
     navigationOptions:{
       tabBarLabel: 'SelectedCategoryScreen'
     }
+  },
+  CreateTaskInCategoryScreen:{
+    screen: CreateTaskInCategoryScreen,
+    navigationOptions:{
+      tabBarLabel: 'CreateTaskInCategoryScreen'
+    }
   }
-
 })
+
+CreateTaskInCategoryScreen.navigationOptions = ({navigation}) => {
+  return {
+    header: () => null
+ } 
+}
 
 CreateTaskScreen.navigationOptions = ({navigation}) => {
   return {
