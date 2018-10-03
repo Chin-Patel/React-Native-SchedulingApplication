@@ -2,8 +2,11 @@ import * as firebase from 'firebase';
 import React, { Component } from 'react';
 
 
-export default class TaskProvider {
+export default class TaskProvider extends React.Component{
     static providerInstance;
+    constructor(props) {
+        super(props);
+    }
     static getInstance() {
         if (TaskProvider.providerInstance == null) {
             TaskProvider.providerInstance = new TaskProvider();

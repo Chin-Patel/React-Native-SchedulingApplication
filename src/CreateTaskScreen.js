@@ -9,6 +9,7 @@ import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, Ac
 //https://www.npmjs.com/package/react-native-datepicker
 import DatePicker from 'react-native-datepicker'
 import TaskProvider from './TaskProvider'
+import CategoryProvider from './Providers/CategoryProvider'
 var categoriesThing = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
 
 var BUTTONS = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
@@ -29,7 +30,8 @@ export default class CreateTaskScreen extends React.Component {
             id: '',
             clicked: 'Default',
             categoriesToRender: data,
-            TaskData: TaskProvider.getInstance()
+            TaskData: TaskProvider.getInstance(),
+            CategoryData: CategoryProvider.getInstance()
         }
         const { navigation } = this.props;
         this.state.id = navigation.getParam('userId', 'Default');
@@ -78,38 +80,13 @@ export default class CreateTaskScreen extends React.Component {
         let taskDate = this.state.date;
         let taskCategory = this.state.clicked;
         this.state.TaskData.createTask(taskTitle, taskDescription, taskDate, taskCategory);
-
-
-        // //alert(this.state.clicked + " <-0 ")
-        // let taskTitle = this.state.taskTitle;
-        // let taskDescription = this.state.taskDescription;
-        // let taskDate = this.state.date;
-        // let taskCategory = this.state.clicked;
-        // // let taskCategory = this.state.category;
-        // firebase.database().ref('userProfile/' + this.state.id + '/tasksList/').push({
-        //     //taskCategory : taskCategory,
-        //     //tasting: "wtf",
-        //     taskDate: "" + taskDate,
-        //     taskTitle: taskTitle,
-        //     taskDescription: taskDescription,
-        //     taskCategory: taskCategory
-        // }).then(()=>{
-        //     this.updateCategoryCount();
-        //     this.props.navigation.navigate('HomeScreen')
-        //  }
-        //     );
-    }
-
-    updateCategoryCount(){
-
+        // Update the category count
         let newCategoryCount = this.getIncreaseCategoryCount(this.state.categoriesToRender, this.state.clicked);
         let categoryId = this.findCategoryId(this.state.categoriesToRender, this.state.clicked);
-        alert("HI " + newCategoryCount + "  <-> " + categoryId);
-        firebase.database().ref('userProfile/'+firebase.auth().currentUser.uid+'/categoriesList/' + categoryId).update({
-            categoryCount : newCategoryCount
-          });
-
+        this.state.CategoryData.updateCategoryCount(newCategoryCount, categoryId)
+        this.props.navigation.navigate('HomeScreen');
     }
+
 
     findCategoryId(categoriesList, categoryName) {
         for (let i = 0; i < categoriesList.length; i++) {
