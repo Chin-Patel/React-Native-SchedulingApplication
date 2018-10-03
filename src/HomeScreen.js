@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, ListView, FlatList, Image, Alert } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title, Right } from 'native-base'
+import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title, Right, Spinner  } from 'native-base'
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
 import renderIf from './renderIf';
+
 
 //https://www.npmjs.com/package/react-native-fab
 
@@ -20,7 +21,8 @@ export default class HomeScreen extends React.Component {
       newContact: "",
       taskDelete: true,
       categoryDelete: true,
-      categoriesToRender: data
+      categoriesToRender: data,
+      loading : true
     }
 
   }
@@ -54,6 +56,7 @@ export default class HomeScreen extends React.Component {
             });
           });
           that.setState({ listViewData: this.items })
+          this.setState({ loading: false})
           this.loadSettings();
           this.loadCategories();
         });
@@ -209,15 +212,20 @@ export default class HomeScreen extends React.Component {
     }
     return (
       <Container style={styles.container}>
-        <Content>
         <Header  style={styles.header}>
           <Body>
             <Title style={styles.title}>Your Tasks</Title>
           </Body>
         </Header>
-          {renderIf(this.state.listViewData == 0, 
-              <Image style ={styles.images} source={require('../assets/imgs/emptyState1.png')} />
-          )}
+        {this.state.loading ? <Spinner />:
+
+        <Content>
+
+          {
+            this.state.listViewData.length == 0 ? 
+            <Image style ={styles.images} source={require('../assets/imgs/emptyState1.png')} />
+            :
+            
           <List
             enableEmptySections
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
@@ -252,7 +260,11 @@ export default class HomeScreen extends React.Component {
 
             
           />
+        }
         </Content>
+      }
+
+
         <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.loadCreateTaskScreen()}} visible={true} iconTextComponent={<Text>+</Text>} />
         {/* <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.test()}} visible={true} iconTextComponent={<Text>debug</Text>} /> */}
       </Container>
