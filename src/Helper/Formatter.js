@@ -1,11 +1,16 @@
-export default function formatTitle(taskTitle){
+export function formatTitle(taskTitle){
     return taskTitle == undefined ? "Unlabelled" : taskTitle;
 }
 
-export default function formatDescription(taskDescription) {
+export function formatDescription(taskDescription) {
+    alert(taskDescription)
     return taskDescription == undefined ? "Empty" : taskDescription;
   }
 
-export default function formatCategory(taskCategory) {
+export function formatCategory(taskCategory) {
     return taskCategory == undefined ? "Default" : taskCategory;
+}
+
+export function formatDate(date){
+
 }

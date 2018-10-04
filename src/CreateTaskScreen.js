@@ -12,6 +12,7 @@ import TaskProvider from './TaskProvider'
 import CategoryProvider from './Providers/CategoryProvider'
 import helpme from './Helper/Helper'
 import {findCategoryId, getIncreaseCategoryCount} from './Helper/CategoryUpdater'
+import {taskIsValid} from './Helper/Validator'
 var categoriesThing = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
 
 var BUTTONS = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
@@ -167,13 +168,27 @@ export default class CreateTaskScreen extends React.Component {
                         >
                             <Text>{this.state.clicked}</Text>
                         </Button>
-                        <Button transparent style={styles.buttonStyle}
-                            full
-                            rounded
-                            onPress={this.createTask.bind(this)}
-                        >
-                            <Text style={{ color: 'white' }}> Create Task</Text>
-                        </Button>
+
+                        {taskIsValid(this.state.taskTitle, this.state.taskDescription) == true ? 
+                            <Button transparent style={styles.buttonStyle}
+                                full
+                                rounded
+                                onPress={this.createTask.bind(this)}
+                            >
+                                <Text style={{ color: 'white' }}> Create Task</Text>
+                            </Button>
+                            :
+                            <Button disabled
+                                full
+                                rounded
+                            >
+                                <Text style={{ color: 'white' }}> Create Task</Text>
+                            </Button>
+        
+                        }
+
+
+                        
                     </Content>
                 </Container>
             </Root>

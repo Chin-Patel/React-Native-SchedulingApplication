@@ -1,5 +1,6 @@
 import * as firebase from 'firebase';
 import React, { Component } from 'react';
+import {formatTitle, formatDescription, formatCategory} from './Helper/Formatter'
 
 
 export default class TaskProvider extends React.Component{
@@ -17,9 +18,9 @@ export default class TaskProvider extends React.Component{
     createTask(taskTitle, taskDescription, taskDate, taskCategory) {
         this.getReference().push({
             taskDate: "" + taskDate,
-            taskTitle: taskTitle,
-            taskDescription: taskDescription,
-            taskCategory: taskCategory
+            taskTitle: formatTitle(taskTitle),
+            taskDescription: formatDescription(taskDescription),
+            taskCategory: formatCategory(taskCategory)
         });
     }
 

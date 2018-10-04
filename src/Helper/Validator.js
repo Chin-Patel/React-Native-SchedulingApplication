@@ -1,4 +1,4 @@
-export default function checkTaskCreation(taskTitle, taskDescription){
-    if(taskTitle == undefined && taskDescription == undefined) return false;
+export function taskIsValid(taskTitle, taskDescription){
+    if(taskTitle == '' && taskDescription == '') return false;
     return true;
 }
