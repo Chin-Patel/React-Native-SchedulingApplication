@@ -1,7 +1,7 @@
 import * as firebase from 'firebase';
 import React, { Component } from 'react';
 import { findCategoryId, getIncreaseCategoryCount, getDecreaseCategoryCount } from '../Helper/CategoryUpdater'
-import TaskProvider from '../TaskProvider'
+import TaskProvider from '../TaskProvider';
 
 export default class CategoryProvider extends React.Component {
     static categoryInstance;
@@ -26,10 +26,38 @@ export default class CategoryProvider extends React.Component {
             newCategoryCount = getDecreaseCategoryCount(catorgoriesList, categoryToUpdate)
         }
         let categoryId = findCategoryId(catorgoriesList, categoryToUpdate);
+        //alert("=> " + newCategoryCount)
         this.getCategoryReference(categoryId).update({
             categoryCount: newCategoryCount
         });
     }
+
+    // updateCategoryCount(categoryToUpdate, modifier) {
+    //     this.getReference().on("value", tasksList => {
+    //         let categoriesList = [];
+    //         tasksList.forEach(snap => {
+    //             categoriesList.push({
+    //                 id: snap.key,
+    //                 categoryName: snap.val().categoryName,
+    //                 categoryCount: snap.val().categoryCount
+    //             });
+    //         });
+    //         let newCategoryCount;
+    //         if (modifier == 'plus') {
+    //             newCategoryCount = getIncreaseCategoryCount(categoriesList, categoryToUpdate)
+    //         } else if (modifier = 'minus') {
+    //             newCategoryCount = getDecreaseCategoryCount(categoriesList, categoryToUpdate)
+    //         }
+    //         //alert("SIZE IS " + categoriesList.length + " " + JSON.stringify(categoriesList) + " " + newCategoryCount);
+
+    //         let categoryId = findCategoryId(categoriesList, categoryToUpdate);
+    //         //alert(categoryId);
+    //         this.getCategoryReference('-LNxYa_AoUg6DcI-4MTd').update({
+    //             categoryCount: newCategoryCount
+    //         });
+
+    //     });
+    // }
 
     createCategory(categoryName) {
         this.getReference().push({
@@ -52,7 +80,7 @@ export default class CategoryProvider extends React.Component {
                     keySet.push(snap.key);
                 }
             });
-            for(let i = 0; i < keySet.length; i++){
+            for (let i = 0; i < keySet.length; i++) {
                 this.state.TaskData.deleteTaskFromKey(keySet[i]);
             }
         });

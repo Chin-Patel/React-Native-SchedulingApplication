@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, View, StatusBar, ListView, FlatList } from 'react-native';
 import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Left, Right, Title } from 'native-base'
 import * as firebase from 'firebase';
-
-//https://www.npmjs.com/package/react-native-fab
+import CompleteTasksProvider from './Providers/CompleteTasksProvider'
+import TaskProvider from './TaskProvider'
 
 var data = []
 var items = []
@@ -11,17 +11,15 @@ export default class CompletedTasksScreen extends React.Component {
   constructor(props) {
     super(props);
     var userId = "a";
-    var tasksReference;
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
     this.state = {
       listViewData: data,
-      newContact: ""
+      newContact: "",
+      CompletedData: CompleteTasksProvider.getInstance(),
+      TaskData: TaskProvider.getInstance(),
+      categoriesList: data
     }
 
-  }
-
-  getTaskReference(){
-    return this.tasksReference;
   }
 
   componentDidMount() {
@@ -39,39 +37,52 @@ export default class CompletedTasksScreen extends React.Component {
               id: snap.key,
               taskTitle: snap.val().taskTitle,
               taskDescription: snap.val().taskDescription,
+              taskDate: snap.val().taskDate,
+              taskCategory: snap.val().taskCategory,
               taskCompletionTime: snap.val().taskCompletionTime,
             });
           });
           that.setState({ listViewData: this.items })
+          this.loadCategories();
         });
       }
     });
   }
 
-  addRow(data) {
-    this.getTaskReference().push({
-      taskTitle: data,
-      taskDescription: "taskDescription",
-    })
+  loadCategories() {
+    var that = this
+    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
+      this.categoriesList = [];
+      categories.forEach(snap => {
+        this.categoriesList.push({
+          id: snap.key,
+          categoryCount: snap.val().categoryCount,
+          categoryLetter: snap.val().categoryLetter,
+          categoryName: snap.val().categoryName,
+        });
+      });
+      that.setState({ categoriesList: this.categoriesList })
+    });
   }
 
-  async deleteRow(secId, rowId, rowMap, data) {
-    await firebase.database().ref('userProfile/'+this.userId+'/completedTasksList/' + data.id).remove();
+  deleteRow(secId, rowId, rowMap, data) {
     rowMap[`${secId}${rowId}`].props.closeRow();
     var newData = [...this.state.listViewData];
     this.setState({ listViewData: newData });
+    this.state.CompletedData.deleteCompletedTask(data);
   }
 
+
+
   swap(secId, rowId, rowMap, data){
-    firebase.database().ref('userProfile/'+this.userId+'/tasksList').push({
-      taskTitle: data.taskTitle,
-      taskDescription: data.taskDescription,
-      //taskDate: data.taskDate,
-      //taskCategory: taskCategory,
-      //taskCompletionTime: taskCompletionTime
-    }).then(newEvent => {
-      this.deleteRow(secId, rowId, rowMap, data);
-    });
+    this.state.TaskData.createTask(
+      data.taskTitle,
+      data.taskDescription,
+      data.taskDate,
+      data.taskCategory
+    );
+    this.deleteRow(secId, rowId, rowMap, data);
+    this.state.CompletedData.updateCategoryCount(this.state.categoriesList, data.taskCategory);
   }
 
 
@@ -154,6 +165,5 @@ const styles = StyleSheet.create({
   },
   title:{
     fontWeight: 'bold',
-
   }
 })
