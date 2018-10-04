@@ -1,3 +1,3 @@
-export default function formatTaskTitle(){
-
+export function findDefault(array){
+    
 }

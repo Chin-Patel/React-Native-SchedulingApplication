@@ -32,8 +32,6 @@ export default class CompletedTasksScreen extends React.Component {
         .database()
         .ref(`/userProfile/${user.uid}/completedTasksList`);
         this.userId = `${user.uid}`;
-        //alert("hellop " + `${user.uid}`);
-        //alert("hmm " + this.tasksReference);
         this.tasksReference.on("value", tasksList => {
           this.items = [];
           tasksList.forEach(snap => {
@@ -58,7 +56,6 @@ export default class CompletedTasksScreen extends React.Component {
   }
 
   async deleteRow(secId, rowId, rowMap, data) {
-    //alert(firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id));
     await firebase.database().ref('userProfile/'+this.userId+'/completedTasksList/' + data.id).remove();
     rowMap[`${secId}${rowId}`].props.closeRow();
     var newData = [...this.state.listViewData];
@@ -79,11 +76,9 @@ export default class CompletedTasksScreen extends React.Component {
 
 
   loadCreateTaskScreen(){
-    //alert(this.userId);
     this.props.navigation.navigate('CreateTaskScreen',{
       userId: this.userId
     });
-    //alert("yah");
   }
 
   showInformation(data) {

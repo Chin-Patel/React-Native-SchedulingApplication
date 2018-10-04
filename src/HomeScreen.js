@@ -45,8 +45,6 @@ export default class HomeScreen extends React.Component {
           .database()
           .ref(`/userProfile/${user.uid}/tasksList`);
         this.userId = `${user.uid}`;
-        //alert("hellop " + `${user.uid}`);
-        //alert("hmm " + this.tasksReference);
         this.tasksReference.on("value", tasksList => {
           this.items = [];
           tasksList.forEach(snap => {
@@ -147,12 +145,6 @@ export default class HomeScreen extends React.Component {
     });
   }
 
-  test() {
-    alert(this.state.listViewData.length);
-  }
-
-
-
   render() {
     return (
       <Container style={styles.container}>
@@ -161,13 +153,12 @@ export default class HomeScreen extends React.Component {
             <Title style={styles.title}>Your Tasks</Title>
           </Body>
         </Header>
-        {this.state.loading ? <Spinner /> :
+        {this.state.loading ? <Spinner color='blue' /> :
           <Content>
             {
               this.state.listViewData.length == 0 ?
                 <Image style={styles.images} source={require('../assets/imgs/emptyState1.png')} />
                 :
-
                 <List
                   enableEmptySections
                   dataSource={this.ds.cloneWithRows(this.state.listViewData)}

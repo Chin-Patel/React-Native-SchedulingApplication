@@ -1,23 +1,14 @@
 import React from 'react';
 import { Root } from 'native-base'
-
 import { StyleSheet } from 'react-native';
-//https://www.npmjs.com/package/react-native-modal-datetime-picker
-import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as firebase from 'firebase';
 import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, ActionSheet, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
-//https://www.npmjs.com/package/react-native-datepicker
 import DatePicker from 'react-native-datepicker'
 import TaskProvider from './TaskProvider'
 import CategoryProvider from './Providers/CategoryProvider'
-import helpme from './Helper/Helper'
-import {findCategoryId, getIncreaseCategoryCount} from './Helper/CategoryUpdater'
 import {taskIsValid} from './Helper/Validator'
-var categoriesThing = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
+import {sortArrayOfNames} from './Helper/Sorter'
 
-var BUTTONS = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
-//var DESTRUCTIVE_INDEX = 3;
-//var CANCEL_INDEX = 4;
 var data = []
 var c = [];
 export default class CreateTaskScreen extends React.Component {
@@ -38,7 +29,6 @@ export default class CreateTaskScreen extends React.Component {
         }
         const { navigation } = this.props;
         this.state.id = navigation.getParam('userId', 'Default');
-        //helpme();
     }
 
     componentDidMount() {
@@ -71,7 +61,7 @@ export default class CreateTaskScreen extends React.Component {
         for (let i = 0; i < this.state.categoriesToRender.length; i++) {
             c.push(this.state.categoriesToRender[i].categoryName);
         }
-
+        c = sortArrayOfNames(c);
     }
 
     createTask() {
@@ -154,15 +144,11 @@ export default class CreateTaskScreen extends React.Component {
                             ActionSheet.show(
                                 {
                                     options: c,
-                                    //options: BUTTONS,
-                                    cancelButtonIndex: 2,
-                                    //destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                                    title: "Testing ActionSheet"
+                                    cancelButtonIndex: c.indexOf('Default'),
+                                    title: "Choose a category"
                                 },
                                 (buttonIndex) => {
                                     this.setState({ clicked: c[buttonIndex] });
-                                    //this.doMethod();
-                                    //alert("test: " + this.state.clicked)
                                 }
                             )}
                         >
@@ -196,7 +182,7 @@ export default class CreateTaskScreen extends React.Component {
     }
 
     doMethod() {
-        alert("HMMMM " + this.state.clicked);
+        //alert("HMMMM " + this.state.clicked);
     }
 }
 

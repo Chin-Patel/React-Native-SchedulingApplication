@@ -23,14 +23,35 @@ export default class CategoryProvider extends React.Component {
             newCategoryCount = getDecreaseCategoryCount(catorgoriesList, categoryToUpdate)
         }
         let categoryId = findCategoryId(catorgoriesList, categoryToUpdate);
-        this.getReference(categoryId).update({
+        this.getCategoryReference(categoryId).update({
             categoryCount: newCategoryCount
         });
     }
 
-    getReference(categoryId) {
+    createCategory(categoryName) {
+        this.getReference().push({
+            categoryName: categoryName,
+            categoryCount: 0,
+            categoryLetter: categoryName.substring(0, 1).toUpperCase()
+        });
+    }
+
+    deleteCategory(id){
+        this.getCategoryReference(id).remove();
+    }
+
+
+    getReference(){
+        return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/');
+    }
+
+
+    getCategoryReference(categoryId) {
         return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/' + categoryId);
     }
+
+
+
 }
 
 

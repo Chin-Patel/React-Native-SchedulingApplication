@@ -1,37 +1,34 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-
 import { StyleSheet } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, FormInput, Button, Input, Form, Item, ListItem, Footer } from 'native-base';
-
+import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, Input, Footer } from 'native-base';
+import { sortCategoryNames } from './Helper/Sorter'
+import CategoryProvider from './Providers/CategoryProvider'
+import {categoryIsValid } from './Helper/Validator'
 var data = []
 
 export default class CategoriesScreen extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
-      categoryName: '', inputText: '', categoriesToRender: data
+      categoryName: '', 
+      inputText: '', 
+      categoriesToRender: data,
+      CategoryData: CategoryProvider.getInstance(),
     };
   }
 
   createCategory() {
-    //this.state.inputText = '';
-    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').push({
-      categoryName: this.state.categoryName,
-      categoryCount: 0,
-      categoryLetter: this.state.categoryName.substring(0, 1).toUpperCase()
-    }).then(this.state.categoryName = '');//TODO then what??
+    this.state.CategoryData.createCategory(this.state.categoryName);
+    this.state.categoryName = ''
   }
 
   deleteCategory(category){
-    alert("weeeee " + category.categoryKey + " " + category.categoryName);
-    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/' + category.categoryKey).remove();
+    this.state.CategoryData.deleteCategory(category.categoryKey);
   }
 
   componentDidMount() {
     var that = this
-    //alert(firebase.auth().currentUser.uid);
     firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
       this.categoriesList = [];
       categories.forEach(snap => {
@@ -42,13 +39,15 @@ export default class CategoriesScreen extends Component {
           categoryName: snap.val().categoryName,
         });
       });
-      that.setState({ categoriesToRender: this.categoriesList })
+      that.setState({ categoriesToRender: sortCategoryNames(this.categoriesList) })
     });
   }
 
-
-
-
+  openCategory(data){
+    this.props.navigation.navigate('SelectedCategoryScreen',{
+      data: data
+    });
+  }
 
   lapsList() {
     return this.state.categoriesToRender.map((data) => {
@@ -92,26 +91,16 @@ export default class CategoriesScreen extends Component {
             value={this.state.categoryName}
           />
           <Right>
-            <Icon name="arrow-up" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
+            {categoryIsValid(this.state.categoryName, this.state.categoriesToRender) == true ? 
+                <Icon name="arrow-up" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
+                :
+                <Icon name="arrow-up" style={styles.createIconDisabled}></Icon>
+            }
           </Right>
         </Footer>
       </Container>
     )
   }
-
-  openCategory(data){
-    this.props.navigation.navigate('SelectedCategoryScreen',{
-      data: data
-    });
-  }
-
-
-  showInformation(data) {
-    alert(data.categoryName);
-  }
-
-
-
 }
 
 const styles = StyleSheet.create({
@@ -158,6 +147,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   createIcon: {
-    marginRight: 10
+    marginRight: 10,
+  },
+  createIconDisabled: {
+    marginRight: 10,
+    color: '#808080'
   }
 })

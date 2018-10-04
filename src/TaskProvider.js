@@ -35,10 +35,6 @@ export default class TaskProvider extends React.Component{
     getTaskReference(id){
         return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/tasksList/' + id);
     }
-
-    // getReference(id){
-    //     return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/tasksList/' + id);
-    // }
 }
 
 

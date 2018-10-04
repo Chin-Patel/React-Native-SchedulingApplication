@@ -41,8 +41,6 @@ export default class CreateTaskInCategoryScreen extends React.Component {
             .database()
             .ref(`/userProfile/${user.uid}/categoriesList`);
             this.userId = `${user.uid}`;
-            //alert("hellop " + `${user.uid}`);
-            //alert("hmm " + this.tasksReference);
             this.tasksReference.on("value", tasksList => {
               this.items = [];
               tasksList.forEach(snap => {
@@ -63,22 +61,18 @@ export default class CreateTaskInCategoryScreen extends React.Component {
     initArrays(){
         c= [];
         for(let i = 0; i < this.state.categoriesToRender.length; i++){
-            //alert(this.state.categoriesToRender[i].categoryName + " <-");
             c.push(this.state.categoriesToRender[i].categoryName);
         }
 
     }
 
     createTask() {
-        //alert(this.state.clicked + " <-0 ")
         let taskTitle = this.state.taskTitle;
         let taskDescription = this.state.taskDescription;
         let taskDate = this.state.date;
         let taskCategory = this.state.clicked;
         // let taskCategory = this.state.category;
         firebase.database().ref('userProfile/' + this.state.id + '/tasksList/').push({
-            //taskCategory : taskCategory,
-            //tasting: "wtf",
             taskDate: "" + taskDate,
             taskTitle: taskTitle,
             taskDescription: taskDescription,
@@ -94,7 +88,6 @@ export default class CreateTaskInCategoryScreen extends React.Component {
 
         let newCategoryCount = this.getIncreaseCategoryCount(this.state.categoriesToRender, this.state.clicked);
         let categoryId = this.findCategoryId(this.state.categoriesToRender, this.state.clicked);
-        alert("HI " + newCategoryCount + "  <-> " + categoryId);
         firebase.database().ref('userProfile/'+firebase.auth().currentUser.uid+'/categoriesList/' + categoryId).update({
             categoryCount : newCategoryCount
           });
@@ -202,7 +195,7 @@ export default class CreateTaskInCategoryScreen extends React.Component {
     }
 
     doMethod(){
-        alert("HMMMM " + this.state.clicked);
+        //alert("HMMMM " + this.state.clicked);
     }
 }
 
