@@ -10,6 +10,7 @@ import CreateTaskScreen from './src/CreateTaskScreen';
 import TaskInformationScreen from './src/TaskInformation';
 import SelectedCategoryScreen from './src/SelectedCategoryScreen';
 import CreateTaskInCategoryScreen from './src/CreateTaskInCategoryScreen';
+import ViewCompletedTaskScreen from './src/ViewCompletedTaskScreen';
 //Main screens
 import CategoriesScreen from './src/CategoriesScreen';
 import * as firebase from 'firebase';
@@ -123,8 +124,20 @@ const AppStackNavigator = createStackNavigator({
     navigationOptions:{
       tabBarLabel: 'CreateTaskInCategoryScreen'
     }
+  },
+  ViewCompletedTaskScreen:{
+    screen: ViewCompletedTaskScreen,
+    navigationOptions:{
+      tabBarLabel: 'ViewCompletedTaskScreen'
+    }
   }
 })
+
+ViewCompletedTaskScreen.navigationOptions = ({navigation}) => {
+  return {
+    header: () => null
+ } 
+}
 
 CreateTaskInCategoryScreen.navigationOptions = ({navigation}) => {
   return {

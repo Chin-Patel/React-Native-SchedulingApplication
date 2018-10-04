@@ -85,17 +85,9 @@ export default class CompletedTasksScreen extends React.Component {
     this.state.CompletedData.updateCategoryCount(this.state.categoriesList, data.taskCategory);
   }
 
-
-  loadCreateTaskScreen(){
-    this.props.navigation.navigate('CreateTaskScreen',{
-      userId: this.userId
-    });
-  }
-
-  showInformation(data) {
-    this.props.navigation.navigate('TaskInformationScreen',{
-      data: data,
-      userId: this.userId
+  showInformation(task) {
+    this.props.navigation.navigate('ViewCompletedTaskScreen', {
+      task: task
     });
   }
 
