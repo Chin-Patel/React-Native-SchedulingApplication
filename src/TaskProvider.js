@@ -1,9 +1,9 @@
 import * as firebase from 'firebase';
 import React, { Component } from 'react';
-import {formatTitle, formatDescription, formatCategory, formatDate} from './Helper/Formatter'
+import { formatTitle, formatDescription, formatCategory, formatDate } from './Helper/Formatter'
 
 
-export default class TaskProvider extends React.Component{
+export default class TaskProvider extends React.Component {
     static providerInstance;
     constructor(props) {
         super(props);
@@ -24,15 +24,31 @@ export default class TaskProvider extends React.Component{
         });
     }
 
-    deleteTask(data){
+    getKeySet(category) {
+        this.getReference().on("value", tasksList => {
+            let keySet = [];
+            tasksList.forEach(snap => {
+                if (snap.val().taskCategory == category) {
+                    keySet.push(snap.key);
+                }
+            });
+            return keySet;
+        });
+    }
+
+    deleteTask(data) {
         this.getTaskReference(data.id).remove();
+    }
+
+    deleteTaskFromKey(id){
+        this.getTaskReference(id).remove();
     }
 
     getReference() {
         return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/tasksList/');
     }
 
-    getTaskReference(id){
+    getTaskReference(id) {
         return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/tasksList/' + id);
     }
 }

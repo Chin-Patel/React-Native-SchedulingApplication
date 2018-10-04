@@ -24,7 +24,7 @@ export default class CategoriesScreen extends Component {
   }
 
   deleteCategory(category){
-    this.state.CategoryData.deleteCategory(category.categoryKey);
+    this.state.CategoryData.deleteCategory(category);
   }
 
   componentDidMount() {
@@ -42,6 +42,8 @@ export default class CategoriesScreen extends Component {
       that.setState({ categoriesToRender: sortCategoryNames(this.categoriesList) })
     });
   }
+
+
 
   openCategory(data){
     this.props.navigation.navigate('SelectedCategoryScreen',{
