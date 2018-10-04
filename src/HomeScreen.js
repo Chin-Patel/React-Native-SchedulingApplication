@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, ListView, FlatList, Image, Alert } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title, Right, Spinner  } from 'native-base'
+import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title, Right, Spinner } from 'native-base'
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
 import renderIf from './renderIf';
@@ -22,12 +22,12 @@ export default class HomeScreen extends React.Component {
       taskDelete: true,
       categoryDelete: true,
       categoriesToRender: data,
-      loading : true
+      loading: true
     }
 
   }
 
-  getTaskReference(){
+  getTaskReference() {
     return this.tasksReference;
   }
 
@@ -35,13 +35,13 @@ export default class HomeScreen extends React.Component {
     var that = this
     //alert(firebase.auth().currentUser.uid);
 
-  
+
 
     firebase.auth().onAuthStateChanged(user => {
-      if(user){
+      if (user) {
         this.tasksReference = firebase
-        .database()
-        .ref(`/userProfile/${user.uid}/tasksList`);
+          .database()
+          .ref(`/userProfile/${user.uid}/tasksList`);
         this.userId = `${user.uid}`;
         //alert("hellop " + `${user.uid}`);
         //alert("hmm " + this.tasksReference);
@@ -56,7 +56,7 @@ export default class HomeScreen extends React.Component {
             });
           });
           that.setState({ listViewData: this.items })
-          this.setState({ loading: false})
+          this.setState({ loading: false })
           this.loadSettings();
           this.loadCategories();
         });
@@ -64,12 +64,12 @@ export default class HomeScreen extends React.Component {
     });
   }
 
-  loadSettings(){
+  loadSettings() {
     firebase.auth().onAuthStateChanged(user => {
-      if(user){
+      if (user) {
         this.tasksReference = firebase
-        .database()
-        .ref(`/userProfile/${user.uid}/settings`);
+          .database()
+          .ref(`/userProfile/${user.uid}/settings`);
         this.userId = `${user.uid}`;
         this.tasksReference.on("value", tasksList => {
           tasksList.forEach(snap => {
@@ -82,7 +82,7 @@ export default class HomeScreen extends React.Component {
   }
 
 
-  loadCategories(){
+  loadCategories() {
     var that = this
     firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
       this.categoriesList = [];
@@ -116,65 +116,65 @@ export default class HomeScreen extends React.Component {
 
   async deleteRow(secId, rowId, rowMap, data) {
     this.updateCategoryCount(data.taskCategory);
-    await firebase.database().ref('userProfile/'+this.userId+'/tasksList/' + data.id).remove();
+    await firebase.database().ref('userProfile/' + this.userId + '/tasksList/' + data.id).remove();
     rowMap[`${secId}${rowId}`].props.closeRow();
     var newData = [...this.state.listViewData];
     this.setState({ listViewData: newData });
   }
 
-    updateCategoryCount(categoryName){
-     // alert("Helo: " + categoryName)
-      let newCategoryCount = this.getDecreaseCategoryCount(this.state.categoriesToRender, categoryName);
-      alert(this.state.categoriesToRender.length + " <-> " + categoryName);
-      let categoryId = this.findCategoryId(this.state.categoriesToRender, categoryName);
-      //alert("hmm " + categoryId)
+  updateCategoryCount(categoryName) {
+    // alert("Helo: " + categoryName)
+    let newCategoryCount = this.getDecreaseCategoryCount(this.state.categoriesToRender, categoryName);
+    alert(this.state.categoriesToRender.length + " <-> " + categoryName);
+    let categoryId = this.findCategoryId(this.state.categoriesToRender, categoryName);
+    //alert("hmm " + categoryId)
 
-     // alert("HI " + newCategoryCount + "  <-> " + categoryId);
-      firebase.database().ref('userProfile/'+firebase.auth().currentUser.uid+'/categoriesList/' + categoryId).update({
-          categoryCount : newCategoryCount
-        });
+    // alert("HI " + newCategoryCount + "  <-> " + categoryId);
+    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/' + categoryId).update({
+      categoryCount: newCategoryCount
+    });
 
   }
 
   findCategoryId(categoriesList, categoryName) {
-      for (let i = 0; i < categoriesList.length; i++) {
-        if (categoriesList[i].categoryName === categoryName) {
-          return categoriesList[i].categoryKey;
-        }
+    for (let i = 0; i < categoriesList.length; i++) {
+      if (categoriesList[i].categoryName === categoryName) {
+        return categoriesList[i].categoryKey;
       }
     }
+  }
 
   getDecreaseCategoryCount(categoriesList, categoryName) {
-      
-      for (let i = 0; i < categoriesList.length; i++) {
-        if (categoriesList[i].categoryName === categoryName) {
-          let original = categoriesList[i].categoryCount;
-          return original - 1;
-        }
-      }
-      return 0;
-    }
 
-  throwAlert(secId, rowId, rowMap, data){
-    if(this.state.taskDelete == true){
+    for (let i = 0; i < categoriesList.length; i++) {
+      if (categoriesList[i].categoryName === categoryName) {
+        let original = categoriesList[i].categoryCount;
+        return original - 1;
+      }
+    }
+    return 0;
+  }
+
+  throwAlert(secId, rowId, rowMap, data) {
+    if (this.state.taskDelete == true) {
       Alert.alert(
         'Are you sure you want to delete?',
         'You wont be able to get it back',
         [
-          {text: 'Cancel', onPress: () => console.log(''), style: 'cancel'},
-          {text: 'OK', onPress: () => {this.deleteRow(secId, rowId, rowMap, data)}},
+          { text: 'Cancel', onPress: () => console.log(''), style: 'cancel' },
+          { text: 'OK', onPress: () => { this.deleteRow(secId, rowId, rowMap, data) } },
         ],
         { cancelable: false }
       )
-    }else{
+    } else {
       this.deleteRow(secId, rowId, rowMap, data);
     }
   }
 
 
 
-  completeTask(secId, rowId, rowMap, data){
-    firebase.database().ref('userProfile/'+this.userId+'/completedTasksList').push({
+  completeTask(secId, rowId, rowMap, data) {
+    firebase.database().ref('userProfile/' + this.userId + '/completedTasksList').push({
       taskTitle: data.taskTitle,
       taskDescription: data.taskDescription,
       //taskDate: data.taskDate,
@@ -186,87 +186,74 @@ export default class HomeScreen extends React.Component {
   }
 
 
-  loadCreateTaskScreen(){
-    this.props.navigation.navigate('CreateTaskScreen',{
+  loadCreateTaskScreen() {
+    this.props.navigation.navigate('CreateTaskScreen', {
       userId: this.userId
     });
   }
 
   showInformation(data) {
-    this.props.navigation.navigate('TaskInformationScreen',{
+    this.props.navigation.navigate('TaskInformationScreen', {
       data: data,
       userId: this.userId
     });
   }
 
-  test(){
+  test() {
     alert(this.state.listViewData.length);
   }
 
-  
+
 
   render() {
-    const emptyState = <Image style ={styles.images} source={require('../assets/imgs/A.png')} />;
-    if(this.state.listViewData.length == 0){
-
-    }
     return (
       <Container style={styles.container}>
-        <Header  style={styles.header}>
+        <Header style={styles.header}>
           <Body>
             <Title style={styles.title}>Your Tasks</Title>
           </Body>
         </Header>
-        {this.state.loading ? <Spinner />:
+        {this.state.loading ? <Spinner /> :
+          <Content>
+            {
+              this.state.listViewData.length == 0 ?
+                <Image style={styles.images} source={require('../assets/imgs/emptyState1.png')} />
+                :
 
-        <Content>
+                <List
+                  enableEmptySections
+                  dataSource={this.ds.cloneWithRows(this.state.listViewData)}
+                  renderRow={data =>
+                    <ListItem icon onPress={() => this.showInformation(data)}>
+                      <Body>
+                        <Text style={styles.taskText}>{data.taskTitle}</Text>
+                        <Text note style={styles.text}>{data.taskDescription}</Text>
+                      </Body>
 
-          {
-            this.state.listViewData.length == 0 ? 
-            <Image style ={styles.images} source={require('../assets/imgs/emptyState1.png')} />
-            :
-            
-          <List
-            enableEmptySections
-            dataSource={this.ds.cloneWithRows(this.state.listViewData)}
-            renderRow={data =>
-              <ListItem icon onPress={() => this.showInformation(data)}>
-            <Body>
-              <Text style={styles.taskText }>{data.taskTitle}</Text>
-                <Text note style={styles.text}>{data.taskDescription}</Text>
-              </Body>
+                      <Right>
+                        <Icon name="md-arrow-forward" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
+                      </Right>
+                    </ListItem>
+                  }
 
-                        <Right>
-            <Icon name="md-arrow-forward" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
-          </Right>  
-              </ListItem>
+                  renderRightHiddenRow={(data, secId, rowId, rowMap) =>
+                    <Button full success onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
+                      <Icon name='checkmark' />
+                    </Button>
+
+                  }
+                  renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
+                    <Button full danger onPress={() => this.throwAlert(secId, rowId, rowMap, data)}>
+                      <Icon name='trash' />
+                    </Button>
+                  }
+                  leftOpenValue={+75}
+                  rightOpenValue={-75}
+                />
             }
-            
-            renderRightHiddenRow={(data, secId, rowId, rowMap) =>
-              <Button full success onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
-                <Icon name='checkmark'/>
-              </Button>
-              
-            }
-
-
-            renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
-              <Button full danger onPress={() => this.throwAlert(secId, rowId, rowMap, data)}>
-                <Icon name='trash' />
-              </Button>
-            }
-            leftOpenValue={+75}
-            rightOpenValue={-75}
-
-            
-          />
+          </Content>
         }
-        </Content>
-      }
-
-
-        <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.loadCreateTaskScreen()}} visible={true} iconTextComponent={<Text>+</Text>} />
-        {/* <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => {this.test()}} visible={true} iconTextComponent={<Text>debug</Text>} /> */}
+        <FAB buttonColor="#445df7" iconTextColor="white" onClickAction={() => { this.loadCreateTaskScreen() }} visible={true} iconTextComponent={<Text>+</Text>} />
       </Container>
     );
   }
@@ -274,23 +261,23 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-   flex: 1,
+    flex: 1,
   },
   item: {
     padding: 10,
     fontSize: 18,
     height: 44,
   },
-  header:{
+  header: {
     backgroundColor: '#445df7',
     fontWeight: 'bold',
 
   },
-  title:{
+  title: {
     fontWeight: 'bold',
 
   },
-  images:{
+  images: {
     width: '100%',
     height: 500
   },
@@ -299,10 +286,10 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10
   },
-  text:{
+  text: {
     color: 'grey',
     paddingLeft: 10,
     paddingRight: 10
   },
-  
+
 })

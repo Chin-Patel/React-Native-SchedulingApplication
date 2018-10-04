@@ -10,6 +10,8 @@ import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, Ac
 import DatePicker from 'react-native-datepicker'
 import TaskProvider from './TaskProvider'
 import CategoryProvider from './Providers/CategoryProvider'
+import helpme from './Helper/Helper'
+import {findCategoryId, getIncreaseCategoryCount} from './Helper/CategoryUpdater'
 var categoriesThing = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
 
 var BUTTONS = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
@@ -35,82 +37,58 @@ export default class CreateTaskScreen extends React.Component {
         }
         const { navigation } = this.props;
         this.state.id = navigation.getParam('userId', 'Default');
-        //TaskProvider = new TaskProvider()
+        //helpme();
     }
 
     componentDidMount() {
-        var that = this    
+        var that = this
         firebase.auth().onAuthStateChanged(user => {
-          if(user){
-            this.tasksReference = firebase
-            .database()
-            .ref(`/userProfile/${user.uid}/categoriesList`);
-            this.userId = `${user.uid}`;
-            //alert("hellop " + `${user.uid}`);
-            //alert("hmm " + this.tasksReference);
-            this.tasksReference.on("value", tasksList => {
-              this.items = [];
-              tasksList.forEach(snap => {
-                this.items.push({
-                    id: snap.key,
-                    categoryName: snap.val().categoryName,
-                    categoryCount: snap.val().categoryCount
+            if (user) {
+                this.tasksReference = firebase
+                    .database()
+                    .ref(`/userProfile/${user.uid}/categoriesList`);
+                this.userId = `${user.uid}`;
+                this.tasksReference.on("value", tasksList => {
+                    this.items = [];
+                    tasksList.forEach(snap => {
+                        this.items.push({
+                            id: snap.key,
+                            categoryName: snap.val().categoryName,
+                            categoryCount: snap.val().categoryCount
+                        });
+                    });
+                    that.setState({ categoriesToRender: this.items })
+                    this.initArrays();
                 });
-              });
-              that.setState({ categoriesToRender: this.items })
-              this.initArrays();
-            });
-          }
+            }
         });
-      }
+    }
 
 
-    initArrays(){
-        c= [];
-        for(let i = 0; i < this.state.categoriesToRender.length; i++){
-            //alert(this.state.categoriesToRender[i].categoryName + " <-");
+    initArrays() {
+        c = [];
+        for (let i = 0; i < this.state.categoriesToRender.length; i++) {
             c.push(this.state.categoriesToRender[i].categoryName);
         }
 
     }
 
     createTask() {
-        let taskTitle = this.state.taskTitle;
-        let taskDescription = this.state.taskDescription;
-        let taskDate = this.state.date;
-        let taskCategory = this.state.clicked;
-        this.state.TaskData.createTask(taskTitle, taskDescription, taskDate, taskCategory);
+        this.state.TaskData.createTask(
+            this.state.taskTitle, 
+            this.state.taskDescription, 
+            this.state.date, 
+            this.state.clicked)
         // Update the category count
-        let newCategoryCount = this.getIncreaseCategoryCount(this.state.categoriesToRender, this.state.clicked);
-        let categoryId = this.findCategoryId(this.state.categoriesToRender, this.state.clicked);
-        this.state.CategoryData.updateCategoryCount(newCategoryCount, categoryId)
+        this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, this.state.clicked)
         this.props.navigation.navigate('HomeScreen');
     }
 
 
-    findCategoryId(categoriesList, categoryName) {
-        for (let i = 0; i < categoriesList.length; i++) {
-          if (categoriesList[i].categoryName === categoryName) {
-            return categoriesList[i].id;
-          }
-        }
-      }
-
-    getIncreaseCategoryCount(categoriesList, categoryName) {
-        
-        for (let i = 0; i < categoriesList.length; i++) {
-          if (categoriesList[i].categoryName === categoryName) {
-            let original = categoriesList[i].categoryCount;
-            return original + 1;
-          }
-        }
-        return 0;
-      }
 
     render() {
         return (
             <Root>
-
                 <Container style={styles.container}>
                     <Content>
                         <Header style={styles.header}>
@@ -122,9 +100,7 @@ export default class CreateTaskScreen extends React.Component {
                                     <Icon name='close' />
                                 </Button>
                             </Right>
-
                         </Header>
-
                         <Form>
                             <Item floatingLabel>
                                 <Label>Title</Label>
@@ -173,54 +149,29 @@ export default class CreateTaskScreen extends React.Component {
                             }}
                             onDateChange={(date) => { this.setState({ date: date }) }}
                         />
-
-
-                        {/* <Button
-                            onPress={() =>
-                                ActionSheet.show(
-                                    {
-                                        options: c,
-                                        //options: BUTTONS,
-                                        cancelButtonIndex: 2,
-                                        //destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                                        title: "Testing ActionSheet"
-                                    },
-                                    (buttonIndex) => {
-                                        this.setState({ clicked: c[buttonIndex] });
-                                        //this.doMethod();
-                                        //alert("test: " + this.state.clicked)
-                                    }
-                                )}
+                        <Button full transparent dark style={styles.categoryButton} onPress={() =>
+                            ActionSheet.show(
+                                {
+                                    options: c,
+                                    //options: BUTTONS,
+                                    cancelButtonIndex: 2,
+                                    //destructiveButtonIndex: DESTRUCTIVE_INDEX,
+                                    title: "Testing ActionSheet"
+                                },
+                                (buttonIndex) => {
+                                    this.setState({ clicked: c[buttonIndex] });
+                                    //this.doMethod();
+                                    //alert("test: " + this.state.clicked)
+                                }
+                            )}
                         >
                             <Text>{this.state.clicked}</Text>
-                        </Button> */}
-                        
-                        <Button full transparent dark style={styles.categoryButton}                             onPress={() =>
-                                ActionSheet.show(
-                                    {
-                                        options: c,
-                                        //options: BUTTONS,
-                                        cancelButtonIndex: 2,
-                                        //destructiveButtonIndex: DESTRUCTIVE_INDEX,
-                                        title: "Testing ActionSheet"
-                                    },
-                                    (buttonIndex) => {
-                                        this.setState({ clicked: c[buttonIndex] });
-                                        //this.doMethod();
-                                        //alert("test: " + this.state.clicked)
-                                    }
-                                )}
-                        >
-                            <Text>{this.state.clicked}</Text>
-          </Button>
-
-
+                        </Button>
                         <Button transparent style={styles.buttonStyle}
                             full
                             rounded
                             onPress={this.createTask.bind(this)}
                         >
-                                  
                             <Text style={{ color: 'white' }}> Create Task</Text>
                         </Button>
                     </Content>
@@ -229,7 +180,7 @@ export default class CreateTaskScreen extends React.Component {
         );
     }
 
-    doMethod(){
+    doMethod() {
         alert("HMMMM " + this.state.clicked);
     }
 }
@@ -281,10 +232,10 @@ const styles = StyleSheet.create({
         marginRight: 15,
         color: 'black'
     },
-    categoryButton:{
+    categoryButton: {
         borderWidth: 0.5,
-        borderColor:'black',
-        margin:10,
+        borderColor: 'black',
+        margin: 10,
         borderLeftWidth: 0,
         borderRightWidth: 0,
         borderTopWidth: 0,
