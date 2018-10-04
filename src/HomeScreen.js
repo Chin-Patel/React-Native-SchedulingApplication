@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, StatusBar, ListView, FlatList, Image, Alert } f
 import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title, Right, Spinner } from 'native-base'
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
-import renderIf from './renderIf';
+import CompleteTasksProvider from './Providers/CompleteTasksProvider'
 
 
 //https://www.npmjs.com/package/react-native-fab
@@ -22,7 +22,8 @@ export default class HomeScreen extends React.Component {
       taskDelete: true,
       categoryDelete: true,
       categoriesToRender: data,
-      loading: true
+      loading: true,
+      CompletedData : CompleteTasksProvider.getInstance()
     }
 
   }
@@ -33,9 +34,6 @@ export default class HomeScreen extends React.Component {
 
   componentDidMount() {
     var that = this
-    //alert(firebase.auth().currentUser.uid);
-
-
 
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
@@ -52,7 +50,8 @@ export default class HomeScreen extends React.Component {
               id: snap.key,
               taskTitle: snap.val().taskTitle,
               taskDescription: snap.val().taskDescription,
-              taskCategory: snap.val().taskCategory
+              taskCategory: snap.val().taskCategory,
+              taskDate: snap.val().taskDate
             });
           });
           that.setState({ listViewData: this.items })
@@ -105,27 +104,20 @@ export default class HomeScreen extends React.Component {
     })
   }
 
-  getCompletetionTime() {
-    var currentdate = new Date();
-    var datetime = "Completed On " + currentdate.getDate() + "/" + (currentdate.getMonth() + 1)
-      + "/" + currentdate.getFullYear() + " at "
-      + currentdate.getHours() + ":"
-      + currentdate.getMinutes();
-    return datetime;
-  }
 
-  async deleteRow(secId, rowId, rowMap, data) {
-    this.updateCategoryCount(data.taskCategory);
-    await firebase.database().ref('userProfile/' + this.userId + '/tasksList/' + data.id).remove();
+
+  deleteRow(secId, rowId, rowMap, data) {
     rowMap[`${secId}${rowId}`].props.closeRow();
     var newData = [...this.state.listViewData];
     this.setState({ listViewData: newData });
+    firebase.database().ref('userProfile/' + this.userId + '/tasksList/' + data.id).remove();
+    this.updateCategoryCount(data.taskCategory);
   }
 
   updateCategoryCount(categoryName) {
     // alert("Helo: " + categoryName)
     let newCategoryCount = this.getDecreaseCategoryCount(this.state.categoriesToRender, categoryName);
-    alert(this.state.categoriesToRender.length + " <-> " + categoryName);
+    //alert(this.state.categoriesToRender.length + " <-> " + categoryName);
     let categoryId = this.findCategoryId(this.state.categoriesToRender, categoryName);
     //alert("hmm " + categoryId)
 
@@ -174,15 +166,8 @@ export default class HomeScreen extends React.Component {
 
 
   completeTask(secId, rowId, rowMap, data) {
-    firebase.database().ref('userProfile/' + this.userId + '/completedTasksList').push({
-      taskTitle: data.taskTitle,
-      taskDescription: data.taskDescription,
-      //taskDate: data.taskDate,
-      //taskCategory: taskCategory,
-      taskCompletionTime: this.getCompletetionTime()
-    }).then(() => {
-      this.deleteRow(secId, rowId, rowMap, data);
-    });
+    this.state.CompletedData.completeTask(data);
+    this.deleteRow(secId, rowId, rowMap, data);
   }
 
 
