@@ -81,7 +81,7 @@ export default class CreateTaskScreen extends React.Component {
             this.state.date, 
             this.state.clicked)
         // Update the category count
-        this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, this.state.clicked)
+        this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, this.state.clicked, 'plus')
         this.props.navigation.navigate('HomeScreen');
     }
 

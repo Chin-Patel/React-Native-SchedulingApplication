@@ -15,3 +15,13 @@ export function getIncreaseCategoryCount(categoriesList, categoryName) {
     }
     return 0;
 }
+
+export function getDecreaseCategoryCount(categoriesList, categoryName) {
+    for (let i = 0; i < categoriesList.length; i++) {
+      if (categoriesList[i].categoryName === categoryName) {
+        let original = categoriesList[i].categoryCount;
+        return original - 1;
+      }
+    }
+    return 0;
+}

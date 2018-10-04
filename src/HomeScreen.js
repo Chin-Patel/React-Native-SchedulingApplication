@@ -4,6 +4,8 @@ import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, Lis
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
 import CompleteTasksProvider from './Providers/CompleteTasksProvider'
+import CategoryProvider from './Providers/CategoryProvider'
+import TaskProvider from './TaskProvider'
 
 
 //https://www.npmjs.com/package/react-native-fab
@@ -23,7 +25,9 @@ export default class HomeScreen extends React.Component {
       categoryDelete: true,
       categoriesToRender: data,
       loading: true,
-      CompletedData : CompleteTasksProvider.getInstance()
+      CompletedData: CompleteTasksProvider.getInstance(),
+      CategoryData: CategoryProvider.getInstance(),
+      TaskData: TaskProvider.getInstance(),
     }
 
   }
@@ -87,7 +91,7 @@ export default class HomeScreen extends React.Component {
       this.categoriesList = [];
       categories.forEach(snap => {
         this.categoriesList.push({
-          categoryKey: snap.key,
+          id: snap.key,
           categoryCount: snap.val().categoryCount,
           categoryLetter: snap.val().categoryLetter,
           categoryName: snap.val().categoryName,
@@ -97,55 +101,16 @@ export default class HomeScreen extends React.Component {
     });
   }
 
-  addRow(data) {
-    this.getTaskReference().push({
-      taskTitle: data,
-      taskDescription: "taskDescription",
-    })
-  }
-
 
 
   deleteRow(secId, rowId, rowMap, data) {
     rowMap[`${secId}${rowId}`].props.closeRow();
     var newData = [...this.state.listViewData];
     this.setState({ listViewData: newData });
-    firebase.database().ref('userProfile/' + this.userId + '/tasksList/' + data.id).remove();
-    this.updateCategoryCount(data.taskCategory);
+    this.state.TaskData.deleteTask(data);
+    this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, data.taskCategory, 'minus')
   }
 
-  updateCategoryCount(categoryName) {
-    // alert("Helo: " + categoryName)
-    let newCategoryCount = this.getDecreaseCategoryCount(this.state.categoriesToRender, categoryName);
-    //alert(this.state.categoriesToRender.length + " <-> " + categoryName);
-    let categoryId = this.findCategoryId(this.state.categoriesToRender, categoryName);
-    //alert("hmm " + categoryId)
-
-    // alert("HI " + newCategoryCount + "  <-> " + categoryId);
-    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/' + categoryId).update({
-      categoryCount: newCategoryCount
-    });
-
-  }
-
-  findCategoryId(categoriesList, categoryName) {
-    for (let i = 0; i < categoriesList.length; i++) {
-      if (categoriesList[i].categoryName === categoryName) {
-        return categoriesList[i].categoryKey;
-      }
-    }
-  }
-
-  getDecreaseCategoryCount(categoriesList, categoryName) {
-
-    for (let i = 0; i < categoriesList.length; i++) {
-      if (categoriesList[i].categoryName === categoryName) {
-        let original = categoriesList[i].categoryCount;
-        return original - 1;
-      }
-    }
-    return 0;
-  }
 
   throwAlert(secId, rowId, rowMap, data) {
     if (this.state.taskDelete == true) {
@@ -164,12 +129,10 @@ export default class HomeScreen extends React.Component {
   }
 
 
-
   completeTask(secId, rowId, rowMap, data) {
     this.state.CompletedData.completeTask(data);
     this.deleteRow(secId, rowId, rowMap, data);
   }
-
 
   loadCreateTaskScreen() {
     this.props.navigation.navigate('CreateTaskScreen', {
@@ -220,12 +183,10 @@ export default class HomeScreen extends React.Component {
                       </Right>
                     </ListItem>
                   }
-
                   renderRightHiddenRow={(data, secId, rowId, rowMap) =>
                     <Button full success onPress={() => this.completeTask(secId, rowId, rowMap, data)}>
                       <Icon name='checkmark' />
                     </Button>
-
                   }
                   renderLeftHiddenRow={(data, secId, rowId, rowMap) =>
                     <Button full danger onPress={() => this.throwAlert(secId, rowId, rowMap, data)}>

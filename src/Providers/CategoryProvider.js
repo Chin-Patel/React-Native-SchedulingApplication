@@ -1,6 +1,6 @@
 import * as firebase from 'firebase';
 import React, { Component } from 'react';
-import {findCategoryId, getIncreaseCategoryCount} from '../Helper/CategoryUpdater'
+import {findCategoryId, getIncreaseCategoryCount, getDecreaseCategoryCount} from '../Helper/CategoryUpdater'
 
 
 export default class CategoryProvider extends React.Component {
@@ -15,8 +15,13 @@ export default class CategoryProvider extends React.Component {
         return this.categoryInstance;
     }
 
-    updateCategoryCount(catorgoriesList, categoryToUpdate) {
-        let newCategoryCount = getIncreaseCategoryCount(catorgoriesList, categoryToUpdate);
+    updateCategoryCount(catorgoriesList, categoryToUpdate, modifier) {
+        let newCategoryCount;
+        if(modifier == 'plus'){
+            newCategoryCount = getIncreaseCategoryCount(catorgoriesList, categoryToUpdate)
+        }else if(modifier = 'minus'){
+            newCategoryCount = getDecreaseCategoryCount(catorgoriesList, categoryToUpdate)
+        }
         let categoryId = findCategoryId(catorgoriesList, categoryToUpdate);
         this.getReference(categoryId).update({
             categoryCount: newCategoryCount

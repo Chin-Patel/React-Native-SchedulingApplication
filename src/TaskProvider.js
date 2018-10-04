@@ -24,9 +24,21 @@ export default class TaskProvider extends React.Component{
         });
     }
 
+    deleteTask(data){
+        this.getTaskReference(data.id).remove();
+    }
+
     getReference() {
         return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/tasksList/');
     }
+
+    getTaskReference(id){
+        return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/tasksList/' + id);
+    }
+
+    // getReference(id){
+    //     return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/tasksList/' + id);
+    // }
 }
 
 
