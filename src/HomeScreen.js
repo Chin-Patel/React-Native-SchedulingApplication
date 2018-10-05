@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, ListView, FlatList, Image, Alert } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title, Right, Spinner } from 'native-base'
+import { StyleSheet, Text, ListView, Image, Alert } from 'react-native';
+import { Container, Content, Header, Button, Icon, List, ListItem, Body, Title, Spinner } from 'native-base'
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
 import CompleteTasksProvider from './Providers/CompleteTasksProvider'
@@ -153,7 +153,7 @@ export default class HomeScreen extends React.Component {
             <Title style={styles.title}>Your Tasks</Title>
           </Body>
         </Header>
-        {this.state.loading ? <Spinner color='blue' /> :
+        {this.state.loading ? <Spinner color='#445df7' /> :
           <Content>
             {
               this.state.listViewData.length == 0 ?
@@ -163,15 +163,11 @@ export default class HomeScreen extends React.Component {
                   enableEmptySections
                   dataSource={this.ds.cloneWithRows(this.state.listViewData)}
                   renderRow={data =>
-                    <ListItem icon onPress={() => this.showInformation(data)}>
+                    <ListItem onPress={() => this.showInformation(data)}>
                       <Body>
                         <Text style={styles.taskText}>{data.taskTitle}</Text>
                         <Text note style={styles.text}>{data.taskDescription}</Text>
                       </Body>
-
-                      <Right>
-                        <Icon name="md-arrow-forward" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
-                      </Right>
                     </ListItem>
                   }
                   renderRightHiddenRow={(data, secId, rowId, rowMap) =>

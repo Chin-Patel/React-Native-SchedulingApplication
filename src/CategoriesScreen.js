@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
 import { StyleSheet, Alert } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, Input, Footer } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, Input, Footer, Spinner } from 'native-base';
 import { sortCategoryNames } from './Helper/Sorter'
 import CategoryProvider from './Providers/CategoryProvider'
-import {categoryIsValid } from './Helper/Validator'
+import { categoryIsValid } from './Helper/Validator'
 var data = []
 
 export default class CategoriesScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      categoryName: '', 
-      inputText: '', 
+      categoryName: '',
+      inputText: '',
       categoriesToRender: data,
       CategoryData: CategoryProvider.getInstance(),
-      categoryDelete: true
+      categoryDelete: true,
+      loading: true
     };
   }
 
@@ -24,20 +25,20 @@ export default class CategoriesScreen extends Component {
     this.state.categoryName = ''
   }
 
-  deleteCategory(category){
-      if (this.state.categoryDelete == true) {
-        Alert.alert(
-          'Are you sure you want to delete the category?',
-          'All the tasks inside will be deleted',
-          [
-            { text: 'Cancel', onPress: () => console.log(''), style: 'cancel' },
-            { text: 'OK', onPress: () => { this.state.CategoryData.deleteCategory(category)} },
-          ],
-          { cancelable: false }
-        )
-      } else {
-        this.state.CategoryData.deleteCategory(category);
-      }
+  deleteCategory(category) {
+    if (this.state.categoryDelete == true) {
+      Alert.alert(
+        'Are you sure you want to delete the category?',
+        'All the tasks inside will be deleted',
+        [
+          { text: 'Cancel', onPress: () => console.log(''), style: 'cancel' },
+          { text: 'OK', onPress: () => { this.state.CategoryData.deleteCategory(category) } },
+        ],
+        { cancelable: false }
+      )
+    } else {
+      this.state.CategoryData.deleteCategory(category);
+    }
   }
 
   componentDidMount() {
@@ -54,10 +55,11 @@ export default class CategoriesScreen extends Component {
       });
       that.setState({ categoriesToRender: sortCategoryNames(this.categoriesList) })
       this.loadSettings();
+      this.setState({ loading: false })
     });
   }
 
-  loadSettings(){
+  loadSettings() {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.tasksReference = firebase
@@ -75,8 +77,8 @@ export default class CategoriesScreen extends Component {
 
 
 
-  openCategory(data){
-    this.props.navigation.navigate('SelectedCategoryScreen',{
+  openCategory(data) {
+    this.props.navigation.navigate('SelectedCategoryScreen', {
       data: data
     });
   }
@@ -104,16 +106,19 @@ export default class CategoriesScreen extends Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Content>
-          <Header style={styles.header}>
-            <Body>
-              <Title style={styles.title}>Categories</Title>
-            </Body>
-          </Header>
-          {this.lapsList()}
+        <Header style={styles.header}>
+          <Body>
+            <Title style={styles.title}>Categories</Title>
+          </Body>
+        </Header>
+        {this.state.loading ? <Spinner color='#445df7' /> :
           <Content>
+            {this.lapsList()}
+            <Content>
+
+            </Content>
           </Content>
-        </Content>
+        }
         <Footer style={styles.footer}>
           <Input
             placeholder='Create Category...'
@@ -123,10 +128,10 @@ export default class CategoriesScreen extends Component {
             value={this.state.categoryName}
           />
           <Right>
-            {categoryIsValid(this.state.categoryName, this.state.categoriesToRender) == true ? 
-                <Icon name="arrow-up" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
-                :
-                <Icon name="arrow-up" style={styles.createIconDisabled}></Icon>
+            {categoryIsValid(this.state.categoryName, this.state.categoriesToRender) == true ?
+              <Icon name="arrow-up" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
+              :
+              <Icon name="arrow-up" style={styles.createIconDisabled}></Icon>
             }
           </Right>
         </Footer>

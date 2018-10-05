@@ -2,20 +2,23 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
 import { Container, Header, Content, Body, Text, Title, List, ListItem, Switch, Right } from 'native-base';
+import SettingsProvider from './Providers/SettingsProvider'
 
 export default class Settings extends React.Component {
   constructor(props) {
     super(props);
     var userId = "a";
 
-    this.state = state = { id: '', taskDelete: null, categoryDelete: null }
+    this.state = { 
+            id: '', 
+            taskDelete: null, 
+            categoryDelete: null ,
+            SettingsData: SettingsProvider.getInstance(),
+          }
   }
 
   updateSettings() {
-    firebase.database().ref('userProfile/' + this.userId + '/settings/' + this.state.id).update({
-      taskDelete: !this.state.taskDelete,
-      categoryDelete: !this.state.categoryDelete,
-    });
+    this.state.SettingsData.updateSettings(this.state.taskDelete, this.state.categoryDelete, this.state.id);
   }
 
   componentDidMount() {
