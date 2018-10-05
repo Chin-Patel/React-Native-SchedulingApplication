@@ -15,10 +15,14 @@ export default class SettingsProvider extends React.Component {
         return this.settingsInstance;
     }
 
-    updateSettings(taskDelete, categoryDelete, id){
-        alert(":() " + id )
+    updateTaskDelete(taskDelete, id){
         this.getReference(id).update({
             taskDelete: !taskDelete,
+        });
+    }
+
+    updateCategoryDelete(categoryDelete, id){
+        this.getReference(id).update({
             categoryDelete: !categoryDelete,
         });
     }

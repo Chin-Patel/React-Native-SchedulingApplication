@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, ListView, FlatList } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Left, Right, Title } from 'native-base'
+import { StyleSheet, Text, ListView } from 'react-native';
+import { Container, Content, Header, Button, Icon, List, ListItem, Body, Title, Spinner } from 'native-base'
 import * as firebase from 'firebase';
 import CompleteTasksProvider from './Providers/CompleteTasksProvider'
 import TaskProvider from './TaskProvider'
@@ -17,7 +17,9 @@ export default class CompletedTasksScreen extends React.Component {
       newContact: "",
       CompletedData: CompleteTasksProvider.getInstance(),
       TaskData: TaskProvider.getInstance(),
-      categoriesList: data
+      categoriesList: data,
+      loading: true,
+
     }
 
   }
@@ -44,6 +46,7 @@ export default class CompletedTasksScreen extends React.Component {
           });
           that.setState({ listViewData: this.items })
           this.loadCategories();
+          this.setState({ loading: false })
         });
       }
     });
@@ -94,12 +97,13 @@ export default class CompletedTasksScreen extends React.Component {
   render() {
     return (
       <Container style={styles.container}>
-        <Content>
         <Header  style={styles.header}>
           <Body>
             <Title style={styles.title}>Completed Tasks</Title>
           </Body>
         </Header>
+        {this.state.loading ? <Spinner color='#445df7' /> :
+        <Content>
           <List
             enableEmptySections
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
@@ -125,6 +129,7 @@ export default class CompletedTasksScreen extends React.Component {
             rightOpenValue={-75}
           />
         </Content>
+        }
       </Container>
     );
   }

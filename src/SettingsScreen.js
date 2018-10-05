@@ -17,9 +17,6 @@ export default class Settings extends React.Component {
           }
   }
 
-  updateSettings() {
-    this.state.SettingsData.updateSettings(this.state.taskDelete, this.state.categoryDelete, this.state.id);
-  }
 
   componentDidMount() {
     var that = this
@@ -42,6 +39,14 @@ export default class Settings extends React.Component {
         that.setState({ categoryDelete: categoryDelete })
       }
     });
+  }
+
+  updateTaskDelete(){
+    this.state.SettingsData.updateTaskDelete(this.state.taskDelete, this.state.id)
+  }
+
+  updateCategoryDelete(){
+    this.state.SettingsData.updateCategoryDelete(this.state.categoryDelete, this.state.id)
   }
 
   render() {
@@ -78,7 +83,7 @@ export default class Settings extends React.Component {
                 <Switch value={this.state.taskDelete}
                   onValueChange={taskDelete => {
                     this.setState({ taskDelete }),
-                      this.updateSettings()
+                    this.updateTaskDelete();
                   }}
                   value={this.state.taskDelete}
                 />
@@ -92,7 +97,7 @@ export default class Settings extends React.Component {
                 <Switch value={this.state.categoryDelete}
                   onValueChange={categoryDelete => {
                     this.setState({ categoryDelete }),
-                      this.updateSettings()
+                      this.updateCategoryDelete()
                   }}
                   value={this.state.categoryDelete}
                 />
