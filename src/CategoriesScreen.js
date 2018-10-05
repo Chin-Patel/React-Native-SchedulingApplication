@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import * as firebase from 'firebase';
 import { StyleSheet, Alert } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, Input, Footer, Spinner } from 'native-base';
 import { sortCategoryNames } from './Helper/Sorter'
 import CategoryProvider from './Providers/CategoryProvider'
 import { categoryIsValid } from './Helper/Validator'
+import SettingsProvider from './Providers/SettingsProvider'
+
 var data = []
 
 export default class CategoriesScreen extends Component {
@@ -16,7 +17,8 @@ export default class CategoriesScreen extends Component {
       categoriesToRender: data,
       CategoryData: CategoryProvider.getInstance(),
       categoryDelete: true,
-      loading: true
+      loading: true,
+      SettingsData: SettingsProvider.getInstance(),
     };
   }
 
@@ -42,39 +44,9 @@ export default class CategoriesScreen extends Component {
   }
 
   componentDidMount() {
-    var that = this
-    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
-      this.categoriesList = [];
-      categories.forEach(snap => {
-        this.categoriesList.push({
-          categoryKey: snap.key,
-          categoryCount: snap.val().categoryCount,
-          categoryLetter: snap.val().categoryLetter,
-          categoryName: snap.val().categoryName,
-        });
-      });
-      that.setState({ categoriesToRender: sortCategoryNames(this.categoriesList) })
-      this.loadSettings();
-      this.setState({ loading: false })
-    });
+    this.state.CategoryData.pullCategories(this);
+    this.state.SettingsData.pullSettings(this);
   }
-
-  loadSettings() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.tasksReference = firebase
-          .database()
-          .ref(`/userProfile/${user.uid}/settings`);
-        this.userId = `${user.uid}`;
-        this.tasksReference.on("value", settings => {
-          settings.forEach(snap => {
-            this.state.categoryDelete = snap.val().categoryDelete;
-          });
-        });
-      }
-    });
-  }
-
 
 
   openCategory(data) {

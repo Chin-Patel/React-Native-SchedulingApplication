@@ -6,18 +6,15 @@ import FAB from 'react-native-fab'
 import CompleteTasksProvider from './Providers/CompleteTasksProvider'
 import CategoryProvider from './Providers/CategoryProvider'
 import TaskProvider from './TaskProvider'
+import SettingsProvider from './Providers/SettingsProvider'
 
 var data = []
 var items = []
 export default class SelectedCategory extends React.Component {
   constructor(props) {
     super(props);
-
     const { navigation } = this.props;
     const data = navigation.getParam('data', 'Default');
-
-    var userId = "a";
-    var tasksReference;
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
     this.state = {
       category: data,
@@ -30,8 +27,8 @@ export default class SelectedCategory extends React.Component {
       CompletedData: CompleteTasksProvider.getInstance(),
       CategoryData: CategoryProvider.getInstance(),
       TaskData: TaskProvider.getInstance(),
+      SettingsData: SettingsProvider.getInstance()
     }
-
   }
 
   getTaskReference() {
@@ -39,63 +36,10 @@ export default class SelectedCategory extends React.Component {
   }
 
   componentDidMount() {
-    //get all the items
-    var that = this;
-    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/tasksList/').on("value", eventListSnapshot => {
-      this.categoryItems = [];
-      eventListSnapshot.forEach(snap => {
-        if(snap.val().taskCategory.toLowerCase() === this.state.category.categoryName.toLowerCase()){
-          this.categoryItems.push({
-          id: snap.key,
-          taskTitle: snap.val().taskTitle,
-          taskDescription: snap.val().taskDescription,
-          taskDate: snap.val().taskDate,
-          taskCategory: snap.val().taskCategory
-        });
-        }
-      });
-      that.setState({ listViewData: this.categoryItems })
-      this.setState({ loading: false })
-      this.loadSettings();
-      this.loadCategories();    
-    });
+    this.state.CategoryData.pullSpecificCategories(this, this.state.category.categoryName);
+    this.state.SettingsData.pullSettings(this);
+    this.state.CategoryData.pullCategories(this);
   }
-
-  loadSettings() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.tasksReference = firebase
-          .database()
-          .ref(`/userProfile/${user.uid}/settings`);
-        this.userId = `${user.uid}`;
-        this.tasksReference.on("value", tasksList => {
-          tasksList.forEach(snap => {
-            this.state.taskDelete = snap.val().taskDelete;
-            this.state.categoryDelete = snap.val().categoryDelete;
-          });
-        });
-      }
-    });
-  }
-
-
-  loadCategories() {
-    var that = this
-    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
-      this.categoriesList = [];
-      categories.forEach(snap => {
-        this.categoriesList.push({
-          id: snap.key,
-          categoryCount: snap.val().categoryCount,
-          categoryLetter: snap.val().categoryLetter,
-          categoryName: snap.val().categoryName,
-        });
-      });
-      that.setState({ categoriesToRender: this.categoriesList })
-    });
-  }
-
-
 
   deleteRow(secId, rowId, rowMap, data) {
     rowMap[`${secId}${rowId}`].props.closeRow();
@@ -104,7 +48,6 @@ export default class SelectedCategory extends React.Component {
     this.state.TaskData.deleteTask(data);
     this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, data.taskCategory, 'minus')
   }
-
 
   throwAlert(secId, rowId, rowMap, data) {
     if (this.state.taskDelete == true) {
@@ -121,7 +64,6 @@ export default class SelectedCategory extends React.Component {
       this.deleteRow(secId, rowId, rowMap, data);
     }
   }
-
 
   completeTask(secId, rowId, rowMap, data) {
     this.state.CompletedData.completeTask(data);

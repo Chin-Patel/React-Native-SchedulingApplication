@@ -34,6 +34,32 @@ export default class TaskProvider extends React.Component {
     }
 
 
+    pullTasks(self){
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+              this.tasksReference = firebase
+                .database()
+                .ref(`/userProfile/${user.uid}/tasksList`);
+              this.userId = `${user.uid}`;
+              this.tasksReference.on("value", tasksList => {
+                this.items = [];
+                tasksList.forEach(snap => {
+                  this.items.push({
+                    id: snap.key,
+                    taskTitle: snap.val().taskTitle,
+                    taskDescription: snap.val().taskDescription,
+                    taskCategory: snap.val().taskCategory,
+                    taskDate: snap.val().taskDate
+                  });
+                });
+                self.setState({ listViewData: this.items })
+                self.setState({ loading: false })
+              });
+            }
+          });
+    }
+
+
 
 
     // updateOldCategory(taskCategory) {

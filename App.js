@@ -175,14 +175,9 @@ SelectedCategoryScreen.navigationOptions = ({navigation}) => {
  } 
 }
 
+
+
 AppTabNavigator.navigationOptions = ({ navigation }) => {
-  let { routeName } = navigation.state.routes[navigation.state.index];
-
-  let headerTitle = routeName.replace('Screen', ' ');
-  // return {
-  //   headerTitle,
-  // };
-
   return {
       header: () => null
   };

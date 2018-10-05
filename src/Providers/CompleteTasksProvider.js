@@ -31,6 +31,32 @@ export default class CompleteTasksProvider extends React.Component {
         });
     }
 
+    pullCompletedTasks(self){
+        firebase.auth().onAuthStateChanged(user => {
+            if(user){
+              this.tasksReference = firebase
+              .database()
+              .ref(`/userProfile/${user.uid}/completedTasksList`);
+              this.userId = `${user.uid}`;
+              this.tasksReference.on("value", tasksList => {
+                this.items = [];
+                tasksList.forEach(snap => {
+                  this.items.push({
+                    id: snap.key,
+                    taskTitle: snap.val().taskTitle,
+                    taskDescription: snap.val().taskDescription,
+                    taskDate: snap.val().taskDate,
+                    taskCategory: snap.val().taskCategory,
+                    taskCompletionTime: snap.val().taskCompletionTime,
+                  });
+                });
+                self.setState({ listViewData: this.items })
+                self.setState({ loading: false })
+              });
+            }
+          });
+    }
+
     deleteCompletedTask(data){
         this.getCompletedTaskReference(data.id).remove();
     }
@@ -38,7 +64,9 @@ export default class CompleteTasksProvider extends React.Component {
 
     updateCategoryCount(catorgoriesList, categoryToUpdate) {
         let newCategoryCount = getIncreaseCategoryCount(catorgoriesList, categoryToUpdate);
+        
         let categoryId = findCategoryId(catorgoriesList, categoryToUpdate);
+        alert("SAD " + categoryToUpdate + " HMM " + JSON.stringify(catorgoriesList));
         this.state.CategoryData.getCategoryReference(categoryId).update({
             categoryCount: newCategoryCount
         });

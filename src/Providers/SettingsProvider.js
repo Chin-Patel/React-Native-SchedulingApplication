@@ -27,6 +27,23 @@ export default class SettingsProvider extends React.Component {
         });
     }
 
+    pullSettings(self){
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+              this.tasksReference = firebase
+                .database()
+                .ref(`/userProfile/${user.uid}/settings`);
+              this.userId = `${user.uid}`;
+              this.tasksReference.on("value", tasksList => {
+                tasksList.forEach(snap => {
+                  self.state.taskDelete = snap.val().taskDelete;
+                  self.state.categoryDelete = snap.val().categoryDelete;
+                });
+              });
+            }
+          });
+    }
+
     
 
     getReference(id){

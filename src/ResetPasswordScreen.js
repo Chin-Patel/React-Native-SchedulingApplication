@@ -12,7 +12,7 @@ export default class ResetPasswordScreen extends React.Component {
   displayAlert() {
     Alert.alert(
       'Check your email!',
-      'Welcome to Swen325 Start App ',
+      'You should have recieved a link to change your password ',
       [
         { text: 'OK', onPress: () => console.log('OK Pressed') },
       ],

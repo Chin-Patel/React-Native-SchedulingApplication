@@ -1,22 +1,18 @@
 import React from 'react';
 import { StyleSheet, Text, ListView, Image, Alert } from 'react-native';
 import { Container, Content, Header, Button, Icon, List, ListItem, Body, Title, Spinner } from 'native-base'
-import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
 import CompleteTasksProvider from './Providers/CompleteTasksProvider'
 import CategoryProvider from './Providers/CategoryProvider'
 import TaskProvider from './TaskProvider'
+import SettingsProvider from './Providers/SettingsProvider'
 
-
-//https://www.npmjs.com/package/react-native-fab
 
 var data = []
 var items = []
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
-    var userId = "a";
-    var tasksReference;
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
     this.state = {
       listViewData: data,
@@ -28,77 +24,15 @@ export default class HomeScreen extends React.Component {
       CompletedData: CompleteTasksProvider.getInstance(),
       CategoryData: CategoryProvider.getInstance(),
       TaskData: TaskProvider.getInstance(),
+      SettingsData: SettingsProvider.getInstance()
     }
-
-  }
-
-  getTaskReference() {
-    return this.tasksReference;
   }
 
   componentDidMount() {
-    var that = this
-
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.tasksReference = firebase
-          .database()
-          .ref(`/userProfile/${user.uid}/tasksList`);
-        this.userId = `${user.uid}`;
-        this.tasksReference.on("value", tasksList => {
-          this.items = [];
-          tasksList.forEach(snap => {
-            this.items.push({
-              id: snap.key,
-              taskTitle: snap.val().taskTitle,
-              taskDescription: snap.val().taskDescription,
-              taskCategory: snap.val().taskCategory,
-              taskDate: snap.val().taskDate
-            });
-          });
-          that.setState({ listViewData: this.items })
-          this.setState({ loading: false })
-          this.loadSettings();
-          this.loadCategories();
-        });
-      }
-    });
+    this.state.TaskData.pullTasks(this);
+    this.state.SettingsData.pullSettings(this);
+    this.state.CategoryData.pullCategories(this);
   }
-
-  loadSettings() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.tasksReference = firebase
-          .database()
-          .ref(`/userProfile/${user.uid}/settings`);
-        this.userId = `${user.uid}`;
-        this.tasksReference.on("value", tasksList => {
-          tasksList.forEach(snap => {
-            this.state.taskDelete = snap.val().taskDelete;
-            this.state.categoryDelete = snap.val().categoryDelete;
-          });
-        });
-      }
-    });
-  }
-
-
-  loadCategories() {
-    var that = this
-    firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
-      this.categoriesList = [];
-      categories.forEach(snap => {
-        this.categoriesList.push({
-          id: snap.key,
-          categoryCount: snap.val().categoryCount,
-          categoryLetter: snap.val().categoryLetter,
-          categoryName: snap.val().categoryName,
-        });
-      });
-      that.setState({ categoriesToRender: this.categoriesList })
-    });
-  }
-
 
 
   deleteRow(secId, rowId, rowMap, data) {

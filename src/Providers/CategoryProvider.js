@@ -59,6 +59,57 @@ export default class CategoryProvider extends React.Component {
         });
     }
 
+    pullCategoriesAndSplit(self){
+        firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
+            this.categoriesList = [];
+            categories.forEach(snap => {
+              this.categoriesList.push({
+                id: snap.key,
+                categoryCount: snap.val().categoryCount,
+                categoryLetter: snap.val().categoryLetter,
+                categoryName: snap.val().categoryName,
+              });
+            });
+            self.setState({ categoriesToRender: this.categoriesList })
+            self.initArrays();
+          });
+    }
+
+    pullCategories(self){
+        firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
+            this.categoriesList = [];
+            categories.forEach(snap => {
+              this.categoriesList.push({
+                id: snap.key,
+                categoryCount: snap.val().categoryCount,
+                categoryLetter: snap.val().categoryLetter,
+                categoryName: snap.val().categoryName,
+              });
+            });
+            self.setState({ categoriesToRender: this.categoriesList })
+            self.setState({ loading: false })
+          });
+    }
+
+    pullSpecificCategories(self, categoryName){
+        firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/tasksList/').on("value", eventListSnapshot => {
+            this.categoryItems = [];
+            eventListSnapshot.forEach(snap => {
+              if(snap.val().taskCategory.toLowerCase() === categoryName.toLowerCase()){
+                this.categoryItems.push({
+                id: snap.key,
+                taskTitle: snap.val().taskTitle,
+                taskDescription: snap.val().taskDescription,
+                taskDate: snap.val().taskDate,
+                taskCategory: snap.val().taskCategory
+              });
+              }
+            });
+            self.setState({ listViewData: this.categoryItems })
+            self.setState({ loading: false }) 
+          });
+    }
+
 
     getReference() {
         return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/');
