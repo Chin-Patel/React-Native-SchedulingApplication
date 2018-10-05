@@ -1,39 +1,30 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
-import { Container, Header, Content, Body, Text, Title, Icon, Item, Label, Input, Button, List, ListItem, Switch, Right } from 'native-base';
+import { Container, Header, Content, Body, Text, Title, List, ListItem, Switch, Right } from 'native-base';
 
 export default class Settings extends React.Component {
   constructor(props) {
     super(props);
     var userId = "a";
 
-    this.state = state = { id: '', taskDelete: true, categoryDelete: true }
-    //const { navigation } = this.props;
-    //this.state.id = navigation.getParam('userId', 'Default');
+    this.state = state = { id: '', taskDelete: null, categoryDelete: null }
   }
 
   updateSettings() {
-    //alert(firebase.database().ref('userProfile/' + this.userId + '/settings/' + this.state.id));
-    let toUp;
-    if(this.state.taskDelete == true){
-      toUp = false;
-    }else{
-      toUp = true;
-    }
     firebase.database().ref('userProfile/' + this.userId + '/settings/' + this.state.id).update({
-      taskDelete: toUp ,
-      categoryDelete: this.state.categoryDelete,
+      taskDelete: !this.state.taskDelete,
+      categoryDelete: !this.state.categoryDelete,
     });
   }
 
   componentDidMount() {
     var that = this
     firebase.auth().onAuthStateChanged(user => {
-      if(user){
+      if (user) {
         this.tasksReference = firebase
-        .database()
-        .ref(`/userProfile/${user.uid}/settings`);
+          .database()
+          .ref(`/userProfile/${user.uid}/settings`);
         this.userId = `${user.uid}`;
         var taskDelete;
         var categoryDelete;
@@ -44,7 +35,6 @@ export default class Settings extends React.Component {
             categoryDelete = snap.val().categoryDelete;
           });
         });
-        
         that.setState({ taskDelete: taskDelete })
         that.setState({ categoryDelete: categoryDelete })
       }
@@ -52,9 +42,7 @@ export default class Settings extends React.Component {
   }
 
   render() {
-
     return (
-
       <Container style={styles.container}>
         <Content>
           <Header style={styles.header}>
@@ -87,7 +75,7 @@ export default class Settings extends React.Component {
                 <Switch value={this.state.taskDelete}
                   onValueChange={taskDelete => {
                     this.setState({ taskDelete }),
-                    this.updateSettings()
+                      this.updateSettings()
                   }}
                   value={this.state.taskDelete}
                 />
@@ -98,9 +86,11 @@ export default class Settings extends React.Component {
                 <Text>Category Deletion Confirmation</Text>
               </Body>
               <Right>
-                <Switch
-                  onValueChange={categoryDelete => 
-                    this.setState({ categoryDelete })}
+                <Switch value={this.state.categoryDelete}
+                  onValueChange={categoryDelete => {
+                    this.setState({ categoryDelete }),
+                      this.updateSettings()
+                  }}
                   value={this.state.categoryDelete}
                 />
               </Right>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import * as firebase from 'firebase';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, Input, Footer } from 'native-base';
 import { sortCategoryNames } from './Helper/Sorter'
 import CategoryProvider from './Providers/CategoryProvider'
@@ -15,6 +15,7 @@ export default class CategoriesScreen extends Component {
       inputText: '', 
       categoriesToRender: data,
       CategoryData: CategoryProvider.getInstance(),
+      categoryDelete: true
     };
   }
 
@@ -24,7 +25,19 @@ export default class CategoriesScreen extends Component {
   }
 
   deleteCategory(category){
-    this.state.CategoryData.deleteCategory(category);
+      if (this.state.categoryDelete == true) {
+        Alert.alert(
+          'Are you sure you want to delete the category?',
+          'All the tasks inside will be deleted',
+          [
+            { text: 'Cancel', onPress: () => console.log(''), style: 'cancel' },
+            { text: 'OK', onPress: () => { this.state.CategoryData.deleteCategory(category)} },
+          ],
+          { cancelable: false }
+        )
+      } else {
+        this.state.CategoryData.deleteCategory(category);
+      }
   }
 
   componentDidMount() {
@@ -40,6 +53,23 @@ export default class CategoriesScreen extends Component {
         });
       });
       that.setState({ categoriesToRender: sortCategoryNames(this.categoriesList) })
+      this.loadSettings();
+    });
+  }
+
+  loadSettings(){
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        this.tasksReference = firebase
+          .database()
+          .ref(`/userProfile/${user.uid}/settings`);
+        this.userId = `${user.uid}`;
+        this.tasksReference.on("value", settings => {
+          settings.forEach(snap => {
+            this.state.categoryDelete = snap.val().categoryDelete;
+          });
+        });
+      }
     });
   }
 

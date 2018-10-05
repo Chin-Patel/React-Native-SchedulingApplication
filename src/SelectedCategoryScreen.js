@@ -7,9 +7,6 @@ import CompleteTasksProvider from './Providers/CompleteTasksProvider'
 import CategoryProvider from './Providers/CategoryProvider'
 import TaskProvider from './TaskProvider'
 
-
-//https://www.npmjs.com/package/react-native-fab
-
 var data = []
 var items = []
 export default class SelectedCategory extends React.Component {
