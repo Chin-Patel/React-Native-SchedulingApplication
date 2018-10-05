@@ -1,18 +1,14 @@
 import React from 'react';
 import { Root } from 'native-base'
-
 import { StyleSheet } from 'react-native';
-//https://www.npmjs.com/package/react-native-modal-datetime-picker
-import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as firebase from 'firebase';
 import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, ActionSheet, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
-//https://www.npmjs.com/package/react-native-datepicker
 import DatePicker from 'react-native-datepicker'
-var categoriesThing = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
+import TaskProvider from './TaskProvider'
+import CategoryProvider from './Providers/CategoryProvider'
+import {taskIsValid} from './Helper/Validator'
+import {sortArrayOfNames} from './Helper/Sorter'
 
-var BUTTONS = ["Option 0", "Option 1", "Option 2", "Delete", "Cancel"];
-//var DESTRUCTIVE_INDEX = 3;
-//var CANCEL_INDEX = 4;
 var data = []
 var c = [];
 export default class CreateTaskInCategoryScreen extends React.Component {
@@ -25,112 +21,76 @@ export default class CreateTaskInCategoryScreen extends React.Component {
             errorMessage: null,
             isDateTimePickerVisible: false,
             date: '',
-            id: '',
-            clicked: 'Default',
-            categoriesToRender: data
+            category: '',
+            categoriesToRender: data,
+            TaskData: TaskProvider.getInstance(),
+            CategoryData: CategoryProvider.getInstance()
         }
         const { navigation } = this.props;
-        this.state.id = navigation.getParam('userId', 'Default');
+        this.state.category = navigation.getParam('category', 'Default');
     }
 
     componentDidMount() {
-        var that = this    
+        var that = this
         firebase.auth().onAuthStateChanged(user => {
-          if(user){
-            this.tasksReference = firebase
-            .database()
-            .ref(`/userProfile/${user.uid}/categoriesList`);
-            this.userId = `${user.uid}`;
-            this.tasksReference.on("value", tasksList => {
-              this.items = [];
-              tasksList.forEach(snap => {
-                this.items.push({
-                    id: snap.key,
-                    categoryName: snap.val().categoryName,
-                    categoryCount: snap.val().categoryCount
+            if (user) {
+                this.tasksReference = firebase
+                    .database()
+                    .ref(`/userProfile/${user.uid}/categoriesList`);
+                this.userId = `${user.uid}`;
+                this.tasksReference.on("value", tasksList => {
+                    this.items = [];
+                    tasksList.forEach(snap => {
+                        this.items.push({
+                            id: snap.key,
+                            categoryName: snap.val().categoryName,
+                            categoryCount: snap.val().categoryCount
+                        });
+                    });
+                    that.setState({ categoriesToRender: this.items })
+                    this.initArrays();
                 });
-              });
-              that.setState({ categoriesToRender: this.items })
-              this.initArrays();
-            });
-          }
+            }
         });
-      }
+    }
 
 
-    initArrays(){
-        c= [];
-        for(let i = 0; i < this.state.categoriesToRender.length; i++){
+    initArrays() {
+        c = [];
+        for (let i = 0; i < this.state.categoriesToRender.length; i++) {
             c.push(this.state.categoriesToRender[i].categoryName);
         }
-
+        c = sortArrayOfNames(c);
     }
 
     createTask() {
-        let taskTitle = this.state.taskTitle;
-        let taskDescription = this.state.taskDescription;
-        let taskDate = this.state.date;
-        let taskCategory = this.state.clicked;
-        // let taskCategory = this.state.category;
-        firebase.database().ref('userProfile/' + this.state.id + '/tasksList/').push({
-            taskDate: "" + taskDate,
-            taskTitle: taskTitle,
-            taskDescription: taskDescription,
-            taskCategory: taskCategory
-        }).then(()=>{
-            this.updateCategoryCount();
-            this.props.navigation.navigate('HomeScreen')
-         }
-            );
+        this.state.TaskData.createTask(
+            this.state.taskTitle, 
+            this.state.taskDescription, 
+            this.state.date, 
+            this.state.category)
+        // Update the category count
+        this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, this.state.category, 'plus')
+        this.props.navigation.navigate('HomeScreen');
     }
 
-    updateCategoryCount(){
 
-        let newCategoryCount = this.getIncreaseCategoryCount(this.state.categoriesToRender, this.state.clicked);
-        let categoryId = this.findCategoryId(this.state.categoriesToRender, this.state.clicked);
-        firebase.database().ref('userProfile/'+firebase.auth().currentUser.uid+'/categoriesList/' + categoryId).update({
-            categoryCount : newCategoryCount
-          });
-
-    }
-
-    findCategoryId(categoriesList, categoryName) {
-        for (let i = 0; i < categoriesList.length; i++) {
-          if (categoriesList[i].categoryName === categoryName) {
-            return categoriesList[i].id;
-          }
-        }
-      }
-
-    getIncreaseCategoryCount(categoriesList, categoryName) {
-        
-        for (let i = 0; i < categoriesList.length; i++) {
-          if (categoriesList[i].categoryName === categoryName) {
-            let original = categoriesList[i].categoryCount;
-            return original + 1;
-          }
-        }
-        return 0;
-      }
 
     render() {
         return (
             <Root>
-
                 <Container style={styles.container}>
                     <Content>
                         <Header style={styles.header}>
                             <Body>
-                                <Title style={styles.title}>Create A Task</Title>
+                                <Title style={styles.title}>{this.state.category}</Title>
                             </Body>
                             <Right>
                                 <Button transparent onPress={() => this.props.navigation.navigate('HomeScreen')}>
                                     <Icon name='close' />
                                 </Button>
                             </Right>
-
                         </Header>
-
                         <Form>
                             <Item floatingLabel>
                                 <Label>Title</Label>
@@ -171,31 +131,47 @@ export default class CreateTaskInCategoryScreen extends React.Component {
                                     borderRightWidth: 0,
                                     borderTopWidth: 0,
                                     padding: 5,
-                                    alignItems: 'flex-start'
+                                    alignItems: 'flex-start',
+                                },
+                                placeholderText: {
+                                    color: '#234456'
                                 }
                             }}
                             onDateChange={(date) => { this.setState({ date: date }) }}
                         />
+                        <Form>
+                            <Item floatingLabel>
+                                <Label>Category</Label>
+                                <Input
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    disabled
+                                    value={this.state.category}
+                                    style = {styles.text}
+                                />
+                            </Item>
+                        </Form>
 
-
-                        <Button>
-                            <Text>{this.state.clicked}</Text>
-                        </Button>
-                        <Button style={styles.buttonStyle}
-                            full
-                            rounded
-                            onPress={this.createTask.bind(this)}
-                        >
-                            <Text style={{ color: 'white' }}> Create Task</Text>
-                        </Button>
+                        {taskIsValid(this.state.taskTitle, this.state.taskDescription) == true ? 
+                            <Button transparent style={styles.buttonStyle}
+                                full
+                                rounded
+                                onPress={this.createTask.bind(this)}
+                            >
+                                <Text style={{ color: 'white' }}> Create Task</Text>
+                            </Button>
+                            :
+                            <Button disabled
+                                full
+                                rounded
+                            >
+                                <Text style={{ color: 'white' }}> Create Task</Text>
+                            </Button>
+                        }
                     </Content>
                 </Container>
             </Root>
         );
-    }
-
-    doMethod(){
-        //alert("HMMMM " + this.state.clicked);
     }
 }
 
@@ -240,8 +216,19 @@ const styles = StyleSheet.create({
         textAlignVertical: "top"
     },
     date: {
-        width: 200,
+        width: '100%',
         marginLeft: 15,
+        marginTop: 10,
+        marginRight: 15,
         color: 'black'
+    },
+    categoryButton: {
+        borderWidth: 0.5,
+        borderColor: 'black',
+        margin: 10,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        borderTopWidth: 0,
+        justifyContent: "flex-start"
     }
 })
