@@ -2,6 +2,7 @@ import * as firebase from 'firebase';
 import React, { Component } from 'react';
 import { findCategoryId, getIncreaseCategoryCount, getDecreaseCategoryCount } from '../Helper/CategoryUpdater'
 import TaskProvider from '../TaskProvider';
+import {splitJSON } from '../Helper/Formatter'
 
 export default class CategoryProvider extends React.Component {
     static categoryInstance;
@@ -71,7 +72,8 @@ export default class CategoryProvider extends React.Component {
               });
             });
             self.setState({ categoriesToRender: this.categoriesList })
-            self.initArrays();
+            self.setState({ categorysToDisplay: splitJSON(this.categoriesList)})
+            //self.initArrays();
           });
     }
 

@@ -15,3 +15,11 @@ export function formatCategory(taskCategory) {
 export function formatDate(taskDate){
     return taskDate == '' ? getTodaysDate() : taskDate;
 }
+
+export function splitJSON(categoriesList){
+    let categoryNames = [];
+    for(let i = 0; i < categoriesList.length; i++){
+        categoryNames.push(categoriesList[i].categoryName);
+    }
+    return categoryNames;
+}

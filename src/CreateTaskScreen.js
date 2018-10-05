@@ -25,43 +25,15 @@ export default class CreateTaskScreen extends React.Component {
             clicked: 'Default',
             categoriesToRender: data,
             TaskData: TaskProvider.getInstance(),
-            CategoryData: CategoryProvider.getInstance()
+            CategoryData: CategoryProvider.getInstance(),
+            categorysToDisplay: [],
         }
         const { navigation } = this.props;
         this.state.id = navigation.getParam('userId', 'Default');
     }
 
     componentDidMount() {
-        var that = this
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                this.tasksReference = firebase
-                    .database()
-                    .ref(`/userProfile/${user.uid}/categoriesList`);
-                this.userId = `${user.uid}`;
-                this.tasksReference.on("value", tasksList => {
-                    this.items = [];
-                    tasksList.forEach(snap => {
-                        this.items.push({
-                            id: snap.key,
-                            categoryName: snap.val().categoryName,
-                            categoryCount: snap.val().categoryCount
-                        });
-                    });
-                    that.setState({ categoriesToRender: this.items })
-                    this.initArrays();
-                });
-            }
-        });
-    }
-
-
-    initArrays() {
-        c = [];
-        for (let i = 0; i < this.state.categoriesToRender.length; i++) {
-            c.push(this.state.categoriesToRender[i].categoryName);
-        }
-        c = sortArrayOfNames(c);
+        this.state.CategoryData.pullCategoriesAndSplit(this);
     }
 
     createTask() {
@@ -74,8 +46,6 @@ export default class CreateTaskScreen extends React.Component {
         this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, this.state.clicked, 'plus')
         this.props.navigation.navigate('HomeScreen');
     }
-
-
 
     render() {
         return (
@@ -143,12 +113,12 @@ export default class CreateTaskScreen extends React.Component {
                         <Button full transparent dark style={styles.categoryButton} onPress={() =>
                             ActionSheet.show(
                                 {
-                                    options: c,
-                                    cancelButtonIndex: c.indexOf('Default'),
+                                    options: this.state.categorysToDisplay,
+                                    cancelButtonIndex: this.state.categorysToDisplay.indexOf('Default'),
                                     title: "Choose a category"
                                 },
                                 (buttonIndex) => {
-                                    this.setState({ clicked: c[buttonIndex] });
+                                    this.setState({ clicked: this.state.categorysToDisplay[buttonIndex] });
                                 }
                             )}
                         >

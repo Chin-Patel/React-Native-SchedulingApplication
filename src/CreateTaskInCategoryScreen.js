@@ -24,44 +24,19 @@ export default class CreateTaskInCategoryScreen extends React.Component {
             category: '',
             categoriesToRender: data,
             TaskData: TaskProvider.getInstance(),
-            CategoryData: CategoryProvider.getInstance()
+            CategoryData: CategoryProvider.getInstance(),
+            data: ''
         }
         const { navigation } = this.props;
         this.state.category = navigation.getParam('category', 'Default');
+        this.state.data = navigation.getParam('data', 'Default');
+
     }
 
     componentDidMount() {
-        var that = this
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                this.tasksReference = firebase
-                    .database()
-                    .ref(`/userProfile/${user.uid}/categoriesList`);
-                this.userId = `${user.uid}`;
-                this.tasksReference.on("value", tasksList => {
-                    this.items = [];
-                    tasksList.forEach(snap => {
-                        this.items.push({
-                            id: snap.key,
-                            categoryName: snap.val().categoryName,
-                            categoryCount: snap.val().categoryCount
-                        });
-                    });
-                    that.setState({ categoriesToRender: this.items })
-                    this.initArrays();
-                });
-            }
-        });
+        this.state.CategoryData.pullCategories(this);
     }
 
-
-    initArrays() {
-        c = [];
-        for (let i = 0; i < this.state.categoriesToRender.length; i++) {
-            c.push(this.state.categoriesToRender[i].categoryName);
-        }
-        c = sortArrayOfNames(c);
-    }
 
     createTask() {
         this.state.TaskData.createTask(
@@ -71,7 +46,11 @@ export default class CreateTaskInCategoryScreen extends React.Component {
             this.state.category)
         // Update the category count
         this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, this.state.category, 'plus')
-        this.props.navigation.navigate('HomeScreen');
+        //this.props.navigation.navigate('HomeScreen');
+        this.props.navigation.navigate('SelectedCategoryScreen', {
+            data: this.state.data
+        });
+        
     }
 
 

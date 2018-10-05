@@ -72,7 +72,8 @@ export default class SelectedCategory extends React.Component {
 
   loadCreateTaskScreen() {
     this.props.navigation.navigate('CreateTaskInCategoryScreen', {
-      category: this.state.category.categoryName
+      category: this.state.category.categoryName,
+      data : this.state.data
     });
   }
 
