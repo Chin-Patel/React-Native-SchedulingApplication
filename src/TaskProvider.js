@@ -24,6 +24,33 @@ export default class TaskProvider extends React.Component {
         });
     }
 
+    updateTask(taskTitle, taskDescription, taskDate, taskCategory, data){
+        this.getTaskReference(data.id).update({
+            taskTitle : taskTitle,
+            taskDescription : taskDescription,
+            taskDate : taskDate,
+            taskCategory : taskCategory
+        });
+    }
+
+
+
+
+    // updateOldCategory(taskCategory) {
+    //     //update old category
+    //     let newCategoryCount = this.helper.getCategoryCount(this.categoriesList, taskCategory);
+    //     newCategoryCount--;
+    //     let categoryId = this.helper.findCategoryId(this.categoriesList, taskCategory);
+    //     this.categoriesProvider.updateCategoryCount(categoryId, newCategoryCount, taskCategory);
+    //   }
+    
+    //   updateNewCategory(taskCategory) {
+    //     //update new category
+    //     let newCategoryCount = this.helper.getIncreaseCategoryCount(this.categoriesList, taskCategory);
+    //     let categoryId = this.helper.findCategoryId(this.categoriesList, taskCategory);
+    //     this.categoriesProvider.updateCategoryCount(categoryId, newCategoryCount, taskCategory);
+    //   }
+
     getKeySet(category) {
         this.getReference().on("value", tasksList => {
             let keySet = [];

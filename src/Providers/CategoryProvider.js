@@ -32,33 +32,6 @@ export default class CategoryProvider extends React.Component {
         });
     }
 
-    // updateCategoryCount(categoryToUpdate, modifier) {
-    //     this.getReference().on("value", tasksList => {
-    //         let categoriesList = [];
-    //         tasksList.forEach(snap => {
-    //             categoriesList.push({
-    //                 id: snap.key,
-    //                 categoryName: snap.val().categoryName,
-    //                 categoryCount: snap.val().categoryCount
-    //             });
-    //         });
-    //         let newCategoryCount;
-    //         if (modifier == 'plus') {
-    //             newCategoryCount = getIncreaseCategoryCount(categoriesList, categoryToUpdate)
-    //         } else if (modifier = 'minus') {
-    //             newCategoryCount = getDecreaseCategoryCount(categoriesList, categoryToUpdate)
-    //         }
-    //         //alert("SIZE IS " + categoriesList.length + " " + JSON.stringify(categoriesList) + " " + newCategoryCount);
-
-    //         let categoryId = findCategoryId(categoriesList, categoryToUpdate);
-    //         //alert(categoryId);
-    //         this.getCategoryReference('-LNxYa_AoUg6DcI-4MTd').update({
-    //             categoryCount: newCategoryCount
-    //         });
-
-    //     });
-    // }
-
     createCategory(categoryName) {
         this.getReference().push({
             categoryName: categoryName,

@@ -1,139 +1,183 @@
 import React from 'react';
+import { Root } from 'native-base'
 import { StyleSheet } from 'react-native';
-//https://www.npmjs.com/package/react-native-modal-datetime-picker
-import DateTimePicker from 'react-native-modal-datetime-picker';
 import * as firebase from 'firebase';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
-//https://www.npmjs.com/package/react-native-datepicker
+import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, ActionSheet, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
 import DatePicker from 'react-native-datepicker'
+import TaskProvider from './TaskProvider'
+import CategoryProvider from './Providers/CategoryProvider'
+import { taskIsValid } from './Helper/Validator'
+import { sortArrayOfNames } from './Helper/Sorter'
 
 
 export default class TaskInformation extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = state = {data: null, 
-            saveState: "Saved", 
-            userId: "", taskTitle: '', 
-            taskDescription: '', 
-            errorMessage: null, 
-            isDateTimePickerVisible: false, 
-            date: ''}
+        this.state = state = {
+            data: null,
+            saveState: "Saved",
+            taskTitle: '',
+            taskDescription: '',
+            taskDate: '',
+            taskCategory: '',
+            isDateTimePickerVisible: false,
+            date: '',
+            TaskData: TaskProvider.getInstance(),
+            categoriesList: [],
+            categorysToDisplay: [],
+            CategoryData: CategoryProvider.getInstance(),
+            currentCategory: ''
+        }
         const { navigation } = this.props;
         this.state.data = navigation.getParam('data', 'Default');
-        this.state.userId = navigation.getParam('userId', '');
+        this.state.categoriesList = navigation.getParam('categoriesList', 'Default');
+        this.populateCategoryNames();
         this.state.taskTitle = this.state.data.taskTitle;
         this.state.taskDescription = this.state.data.taskDescription;
         this.state.taskDate = this.state.data.taskDate;
+        this.state.taskCategory = this.state.data.taskCategory;
     }
 
-    unsave(){
-        this.state.saveState = "Save";
+    populateCategoryNames() {
+        this.setState({ categoriesList: [] })
+        for (let i = 0; i < this.state.categoriesList.length; i++) {
+            this.state.categorysToDisplay.push(this.state.categoriesList[i].categoryName);
+        }
+        //alert(JSON.stringify(this.state.categorysToDisplay));
     }
 
-    updateTask(){
-        this.state.saveState = "Saved";
-        firebase.database().ref('userProfile/'+this.state.userId+'/tasksList/' + this.state.data.id).update({
-            taskTitle: this.state.taskTitle,
-            taskDescription: this.state.taskDescription,
-            //taskDate: this.state.data.taskDate,
-        });
+
+
+    unsave() {
+        this.setState({ saveState: "Save" })
     }
 
-    createTask() {
-        let taskTitle = this.state.taskTitle;
-        let taskDescription = this.state.taskDescription;
-        let taskDate = this.state.date;
-        // let taskCategory = this.state.category;
-        firebase.database().ref('userProfile/' + this.state.id + '/tasksList/').push({
-            //taskCategory : taskCategory,
-            taskDate: "" + taskDate,
-            taskTitle: taskTitle,
-            taskDescription: taskDescription
-        }).then(this.props.navigation.navigate('HomeScreen'));
+    updateTask() {
+        this.setState({ saveState: "Saved" });
+        this.state.TaskData.updateTask(this.state.taskTitle,
+            this.state.taskDescription,
+            this.state.taskDate,
+            this.state.taskCategory,
+            this.state.data,
+        );
+        
+        
+        //Update categories
+        if (this.state.taskCategory != this.state.data.taskCategory) {
+            this.state.CategoryData.updateCategoryCount(
+                this.state.categoriesList,
+                this.state.data.taskCategory,
+                'minus'
+            );
+            this.state.CategoryData.updateCategoryCount(
+                this.state.categoriesList,
+                this.state.taskCategory,
+                'plus'
+            );
+            //TODO FIX
+            this.state.data.taskCategory = this.state.taskCategory;
+            //alert(this.state.data.taskCategory + " == " + this.state.taskCategory);
+        }
     }
 
     render() {
         return (
-            <Container style={styles.container}>
-                <Content>
-                    <Header style={styles.header}>
-                    <Left style={styles.headerLeft}>
-                    <Button transparent onPress={() => this.props.navigation.navigate('HomeScreen')}>
-              <Icon name='arrow-back' />
-            </Button>
-          </Left>
-                        <Body>
-                            <Title style={styles.title}>Edit Task</Title>
-                        </Body>
+            <Root>
+                <Container style={styles.container}>
+                    <Content>
+                        <Header style={styles.header}>
+                            <Body>
+                                <Title style={styles.title}>Edit: {this.state.taskTitle}</Title>
+                            </Body>
+                            <Right>
+                                <Button transparent onPress={() => this.props.navigation.navigate('HomeScreen')}>
+                                    <Icon name='close' />
+                                </Button>
+                            </Right>
+                        </Header>
+                        <Form>
+                            <Item floatingLabel>
+                                <Label>Title</Label>
+                                <Input
+                                    autoCorrect={false}
+                                    autoCapitalize="none"
+                                    onChangeText={taskTitle =>
+                                        this.setState({ taskTitle },
+                                            this.unsave()
+                                        )}
+                                    value={this.state.taskTitle}
+                                />
+                            </Item>
 
-
-                    </Header>
-
-                    <Form>
-                        <Item floatingLabel>
-                            <Label>Title</Label>
-                            <Input
-                                autoCorrect={false}
-                                autoCapitalize="none"
-                                onChangeText={taskTitle => 
-                                    this.setState({ taskTitle },
+                            <Item floatingLabel>
+                                <Label>Details</Label>
+                                <Input
+                                    multiline={true}
+                                    numberOfLines={5}
+                                    onChangeText={taskDescription =>
+                                        this.setState({ taskDescription },
+                                            this.unsave()
+                                        )}
+                                    value={this.state.taskDescription}
+                                    style={styles.textArea}
+                                />
+                            </Item>
+                        </Form>
+                        <DatePicker
+                            style={styles.date}
+                            date={this.state.taskDate}
+                            mode="date"
+                            placeholder="Event Date"
+                            format="DD-MM-YYYY"
+                            minDate="01-01-2001"
+                            maxDate="31-12-2030"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            showIcon={false}
+                            hideText={false}
+                            customStyles={{
+                                dateInput: {
+                                    borderLeftWidth: 0,
+                                    borderRightWidth: 0,
+                                    borderTopWidth: 0,
+                                    padding: 5,
+                                    alignItems: 'flex-start',
+                                },
+                                placeholderText: {
+                                    color: '#234456'
+                                }
+                            }}
+                            onDateChange={(date) => {
+                                this.setState({ taskDate: date }),
                                     this.unsave()
-                                )}
-                                value={this.state.taskTitle}
-                            />
-                        </Item>
-
-                        <Item floatingLabel>
-                            <Label>Details</Label>
-                            <Input
-                                multiline={true}
-                                numberOfLines={5}
-                                onChangeText={taskDescription => 
-                                    this.setState({ taskDescription },
-                                    this.unsave()
-                                )}
-                                value={this.state.taskDescription}
-                                style={styles.textArea}
-                            />
-                        </Item>
-                    </Form>
-                    <DatePicker
-                        style={styles.date}
-                        date={this.state.date}
-                        mode="date"
-                        placeholder="Event Date"
-                        format="DD-MM-YYYY"
-                        minDate="01-01-2001"
-                        maxDate="31-12-2030"
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        showIcon={false}
-                        hideText={false}
-                        customStyles={{
-                            dateInput: {
-                                borderLeftWidth: 0,
-                                borderRightWidth: 0,
-                                borderTopWidth: 0,
-                                padding: 5,
-                                alignItems: 'flex-start'
-                            }
-                        }}
-                        onDateChange={(date) => { 
-                            this.setState({ date: date }),
-                            this.unsave()
-                         }}
-                    />
-
-                    <Button style={styles.buttonStyle}
-                        full
-                        rounded
-                        onPress={this.updateTask.bind(this)}
-                    >
-                        <Text style={{ color: 'white' }}> {this.state.saveState}</Text>
-                    </Button>
-                </Content>
-            </Container>
+                            }} />
+                        <Button full transparent dark style={styles.categoryButton} onPress={() =>
+                            ActionSheet.show(
+                                {
+                                    options: this.state.categorysToDisplay,
+                                    cancelButtonIndex: this.state.categorysToDisplay.indexOf('Default'),
+                                    title: "Choose a category"
+                                },
+                                (buttonIndex) => {
+                                        this.setState({ taskCategory: this.state.categorysToDisplay[buttonIndex] },
+                                        this.unsave()
+                                    );
+                                }
+                            )}
+                        >
+                            <Text>{this.state.taskCategory}</Text>
+                        </Button>
+                        <Button style={styles.buttonStyle}
+                            full
+                            rounded
+                            onPress={this.updateTask.bind(this)}
+                        >
+                            <Text style={{ color: 'white' }}> {this.state.saveState}</Text>
+                        </Button>
+                    </Content>
+                </Container>
+            </Root>
         );
     }
 }
@@ -179,13 +223,19 @@ const styles = StyleSheet.create({
         textAlignVertical: "top"
     },
     date: {
-        width: 200,
+        width: '100%',
         marginLeft: 15,
+        marginTop: 10,
+        marginRight: 15,
         color: 'black'
     },
-    headerLeft: {
-        flex: 0,
-        paddingLeft: 6,
-        width: 62
+    categoryButton: {
+        borderWidth: 0.5,
+        borderColor: 'black',
+        margin: 10,
+        borderLeftWidth: 0,
+        borderRightWidth: 0,
+        borderTopWidth: 0,
+        justifyContent: "flex-start"
     }
 })

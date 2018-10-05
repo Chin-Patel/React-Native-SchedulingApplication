@@ -141,7 +141,7 @@ export default class HomeScreen extends React.Component {
   showInformation(data) {
     this.props.navigation.navigate('TaskInformationScreen', {
       data: data,
-      userId: this.userId
+      categoriesList: this.state.categoriesToRender
     });
   }
 
