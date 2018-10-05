@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, StatusBar, ListView, FlatList, Image, Alert } from 'react-native';
-import { Container, Content, Header, Form, Input, Item, Button, Label, Icon, List, ListItem, Body, Title, Right, Spinner } from 'native-base'
+import { Container, Content, Header, Button, Left, Icon, List, ListItem, Body, Title, Right, Spinner } from 'native-base'
 import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
 import CompleteTasksProvider from './Providers/CompleteTasksProvider'
@@ -88,6 +88,11 @@ export default class SelectedCategory extends React.Component {
     return (
       <Container style={styles.container}>
         <Header style={styles.header}>
+        <Left>
+            <Button transparent onPress={() => this.props.navigation.navigate('CategoriesScreen')}>
+              <Icon name='arrow-back' />
+            </Button>
+          </Left>
           <Body>
             <Title style={styles.title}>{this.state.category.categoryName}</Title>
           </Body>

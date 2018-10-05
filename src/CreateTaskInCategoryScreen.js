@@ -2,7 +2,7 @@ import React from 'react';
 import { Root } from 'native-base'
 import { StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, ActionSheet, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
+import { Container, Header, Content, Body, Text, Title, Icon, Form, Item, Label, Input, Button, Right } from 'native-base';
 import DatePicker from 'react-native-datepicker'
 import TaskProvider from './TaskProvider'
 import CategoryProvider from './Providers/CategoryProvider'
@@ -10,7 +10,6 @@ import {taskIsValid} from './Helper/Validator'
 import {sortArrayOfNames} from './Helper/Sorter'
 
 var data = []
-var c = [];
 export default class CreateTaskInCategoryScreen extends React.Component {
 
     constructor(props) {
@@ -37,7 +36,6 @@ export default class CreateTaskInCategoryScreen extends React.Component {
         this.state.CategoryData.pullCategories(this);
     }
 
-
     createTask() {
         this.state.TaskData.createTask(
             this.state.taskTitle, 
@@ -46,11 +44,16 @@ export default class CreateTaskInCategoryScreen extends React.Component {
             this.state.category)
         // Update the category count
         this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, this.state.category, 'plus')
-        //this.props.navigation.navigate('HomeScreen');
         this.props.navigation.navigate('SelectedCategoryScreen', {
             data: this.state.data
         });
         
+    }
+
+    close(){
+        this.props.navigation.navigate('SelectedCategoryScreen', {
+            data: this.state.data
+        });
     }
 
 
@@ -65,7 +68,7 @@ export default class CreateTaskInCategoryScreen extends React.Component {
                                 <Title style={styles.title}>{this.state.category}</Title>
                             </Body>
                             <Right>
-                                <Button transparent onPress={() => this.props.navigation.navigate('HomeScreen')}>
+                                <Button transparent onPress={() => this.close()}>
                                     <Icon name='close' />
                                 </Button>
                             </Right>

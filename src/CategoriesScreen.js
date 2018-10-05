@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, Input, Footer, Spinner } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, Input, Footer, Spinner, Left, Button } from 'native-base';
 import { sortCategoryNames } from './Helper/Sorter'
 import CategoryProvider from './Providers/CategoryProvider'
 import { categoryIsValid } from './Helper/Validator'
@@ -79,6 +79,7 @@ export default class CategoriesScreen extends Component {
     return (
       <Container style={styles.container}>
         <Header style={styles.header}>
+
           <Body>
             <Title style={styles.title}>Categories</Title>
           </Body>
