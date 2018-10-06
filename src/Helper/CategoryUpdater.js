@@ -50,7 +50,6 @@ export function getDecreaseCategoryCount(categoriesList, categoryName) {
 export function checkExists(categoriesList, categoryName){
     for(let i = 0; i < categoriesList.length; i++){
         if(categoriesList[i].categoryName.toLowerCase() === categoryName.toLowerCase()){
-            alert("RETURNED TRUE");
             return true;
         } 
     }
