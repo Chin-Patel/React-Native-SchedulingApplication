@@ -13,8 +13,7 @@ export default class LoginScreen extends React.Component {
         const { email, password } = this.state
         firebase
             .auth()
-            .signInWithEmailAndPassword("test@test.com", "123456")
-            //.signInWithEmailAndPassword(email, password)
+            .signInWithEmailAndPassword(email, password)
             .then(() => this.props.navigation.navigate('HomeScreen'))
             .catch(error => this.setState({ errorMessage: error.message }))
     }
@@ -23,7 +22,6 @@ export default class LoginScreen extends React.Component {
         return (
             <Container style={styles.container}>
                 <ImageBackground source={require('../../assets/imgs/bg.jpg')} style={{ width: '100%', height: '100%' }}>
-                    {/* <Image source={require('../assets/imgs/D.png')} />; */}
                     <Image style={styles.images} source={require('../../assets/imgs/A.png')} />
                     <Form>
                         <Item floatingLabel>
@@ -31,10 +29,8 @@ export default class LoginScreen extends React.Component {
                             <Input
                                 autoCorrect={false}
                                 autoCapitalize="none"
-                                //placeholder="Email"
                                 onChangeText={email => this.setState({ email })}
-                                //value={this.state.email}
-                                value={"test@test.com"}
+                                value={this.state.email}
                             />
 
                         </Item>
@@ -45,10 +41,8 @@ export default class LoginScreen extends React.Component {
                                 secureTextEntry={true}
                                 autoCorrect={false}
                                 autoCapitalize="none"
-                                //placeholder="Password"
                                 onChangeText={password => this.setState({ password })}
-                                //value={this.state.password}
-                                value={"123456"}
+                                value={this.state.password}
                             />
                         </Item>
 

@@ -53,7 +53,7 @@ export default class CategoryProvider extends React.Component {
     }
 
     deleteCategory(category) {
-        this.getCategoryReference(category.categoryKey).remove();
+        this.getCategoryReference(category.id).remove();
         this.deleteChildren(category.categoryName);
     }
 

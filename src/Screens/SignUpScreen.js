@@ -2,12 +2,19 @@ import React from 'react';
 import { StyleSheet } from 'react-native'
 import * as firebase from 'firebase';
 import { Container, Header, Content, Body, Text, Title, Icon, Item, Label, Form, Input, Button, Left } from 'native-base';
+import SettingsProvider from '../Providers/SettingsProvider'
+import CategoryProvider from '../Providers/CategoryProvider'
 
 
 export default class SignUpScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { email: '', password: '', errorMessage: null }
+    this.state = { email: '', 
+            password: '', 
+            errorMessage: null,
+            CategoryData: CategoryProvider.getInstance(),
+            SettingsData: SettingsProvider.getInstance(),
+          }
 
   }
 
@@ -17,27 +24,19 @@ export default class SignUpScreen extends React.Component {
       .auth()
       .createUserWithEmailAndPassword(email, password)
       .then(user => {
-        //this.setDefaults(user.uid);
-        firebase.database().ref(`/userProfile/${user.uid}/settings`).push({
+        this.state.CategoryData.createCategory('Default');
+        this.state.CategoryData.createCategory("Home");
+        this.state.CategoryData.createCategory("Work");
+        this.state.CategoryData.createCategory("Travel");
+        this.state.CategoryData.createCategory("Important");
+        this.state.SettingsData.getReference().push({
           taskDelete: true,
           categoryDelete: true,
-        });
+        })
         this.props.navigation.navigate('LoginScreen')
       })
       .catch(error => this.setState({ errorMessage: error.message }))
   }
-
-  setDefaults() {
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        alert("in here");
-        this.tasksReference = firebase
-          .database()
-          .ref(`/userProfile/${user.uid}/settings`);
-      }
-    });
-  }
-
 
   render() {
     return (
@@ -62,9 +61,7 @@ export default class SignUpScreen extends React.Component {
                 onChangeText={email => this.setState({ email })}
                 value={this.state.email}
               />
-
             </Item>
-
             <Item floatingLabel>
               <Label>Password</Label>
               <Input
