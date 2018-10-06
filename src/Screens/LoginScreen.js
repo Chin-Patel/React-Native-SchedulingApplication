@@ -22,9 +22,9 @@ export default class LoginScreen extends React.Component {
     render() {
         return (
             <Container style={styles.container}>
-                <ImageBackground source={require('../assets/imgs/bg.jpg')} style={{ width: '100%', height: '100%' }}>
+                <ImageBackground source={require('../../assets/imgs/bg.jpg')} style={{ width: '100%', height: '100%' }}>
                     {/* <Image source={require('../assets/imgs/D.png')} />; */}
-                    <Image style={styles.images} source={require('../assets/imgs/A.png')} />
+                    <Image style={styles.images} source={require('../../assets/imgs/A.png')} />
                     <Form>
                         <Item floatingLabel>
                             <Label>Email</Label>

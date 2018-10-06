@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, ListView, Image } from 'react-native';
 import { Container, Content, Header, Button, Icon, List, ListItem, Body, Title, Spinner } from 'native-base'
-import CompleteTasksProvider from './Providers/CompleteTasksProvider'
-import TaskProvider from './TaskProvider'
-import CategoryProvider from './Providers/CategoryProvider'
+import CompleteTasksProvider from '../Providers/CompleteTasksProvider'
+import TaskProvider from '../Providers/TaskProvider'
+import CategoryProvider from '../Providers/CategoryProvider'
 
 export default class CompletedTasksScreen extends React.Component {
   constructor(props) {
@@ -20,8 +20,8 @@ export default class CompletedTasksScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.state.CompletedData.pullCompletedTasks(this);
-    this.state.CategoryData.pullCategories(this);
+    this.state.CompletedData.pullCompletedTasks(this, true);
+    this.state.CategoryData.pullCategories(this, false, false);
   }
 
 
@@ -61,7 +61,7 @@ export default class CompletedTasksScreen extends React.Component {
         <Content>
           {
              this.state.listViewData.length == 0 ?
-             <Image style={styles.images} source={require('../assets/imgs/emptyState2.png')} />
+             <Image style={styles.images} source={require('../../assets/imgs/emptyState2.png')} />
              :
           
           <List

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { Container, Header, Content, Body, Text, Title, List, ListItem, Switch, Right } from 'native-base';
-import SettingsProvider from './Providers/SettingsProvider'
+import { Container, Header, Content, Body, Text, Title, List, ListItem, Switch, Right, Spinner } from 'native-base';
+import SettingsProvider from '../Providers/SettingsProvider'
 
 export default class Settings extends React.Component {
   constructor(props) {
@@ -11,6 +11,7 @@ export default class Settings extends React.Component {
       taskDelete: null,
       categoryDelete: null,
       SettingsData: SettingsProvider.getInstance(),
+      loading: true
     }
   }
 
@@ -30,12 +31,13 @@ export default class Settings extends React.Component {
   render() {
     return (
       <Container style={styles.container}>
+        <Header style={styles.header}>
+          <Body>
+            <Title style={styles.title}>Settings</Title>
+          </Body>
+        </Header>
+        {this.state.loading ? <Spinner color='#445df7' /> :
         <Content>
-          <Header style={styles.header}>
-            <Body>
-              <Title style={styles.title}>Settings</Title>
-            </Body>
-          </Header>
           <List>
             <ListItem itemDivider>
               <Text>Manage Account</Text>
@@ -63,7 +65,6 @@ export default class Settings extends React.Component {
                     this.setState({ taskDelete }),
                       this.updateTaskDelete();
                   }}
-                  value={this.state.taskDelete}
                 />
               </Right>
             </ListItem>
@@ -77,7 +78,6 @@ export default class Settings extends React.Component {
                     this.setState({ categoryDelete }),
                       this.updateCategoryDelete()
                   }}
-                  value={this.state.categoryDelete}
                 />
               </Right>
             </ListItem>
@@ -91,6 +91,7 @@ export default class Settings extends React.Component {
             </ListItem>
           </List>
         </Content>
+        }
       </Container>
     );
   }

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, Input, Footer, Spinner } from 'native-base';
-import CategoryProvider from './Providers/CategoryProvider'
-import { categoryIsValid } from './Helper/Validator'
-import SettingsProvider from './Providers/SettingsProvider'
+import CategoryProvider from '../Providers/CategoryProvider'
+import { categoryIsValid } from '../Helper/Validator'
+import SettingsProvider from '../Providers/SettingsProvider'
 
 
 export default class CategoriesScreen extends Component {
@@ -44,7 +44,7 @@ export default class CategoriesScreen extends Component {
   }
 
   componentDidMount() {
-    this.state.CategoryData.pullCategories(this);
+    this.state.CategoryData.pullCategories(this, false, true);
     this.state.SettingsData.pullSettings(this);
   }
 
@@ -66,9 +66,13 @@ export default class CategoriesScreen extends Component {
               </Text>
               <Text>{data.categoryCount} Items</Text>
             </Body>
-            <Right>
-              <Icon name="close" onPress={() => this.deleteCategory(data)} />
-            </Right>
+            {data.categoryName == 'Default' ?
+              <Text></Text>
+              :
+              <Right>
+                <Icon name="close" onPress={() => this.deleteCategory(data)} />
+              </Right>
+            }
           </CardItem>
         </Card>
       );

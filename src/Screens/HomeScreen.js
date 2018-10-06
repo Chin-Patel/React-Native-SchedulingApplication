@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, ListView, Image, Alert } from 'react-native';
 import { Container, Content, Header, Button, Icon, List, ListItem, Body, Title, Spinner } from 'native-base'
 import FAB from 'react-native-fab'
-import CompleteTasksProvider from './Providers/CompleteTasksProvider'
-import CategoryProvider from './Providers/CategoryProvider'
-import TaskProvider from './TaskProvider'
-import SettingsProvider from './Providers/SettingsProvider'
+import CompleteTasksProvider from '../Providers/CompleteTasksProvider'
+import CategoryProvider from '../Providers/CategoryProvider'
+import TaskProvider from '../Providers/TaskProvider'
+import SettingsProvider from '../Providers/SettingsProvider'
 
 export default class HomeScreen extends React.Component {
   constructor(props) {
@@ -27,7 +27,7 @@ export default class HomeScreen extends React.Component {
   componentDidMount() {
     this.state.TaskData.pullTasks(this);
     this.state.SettingsData.pullSettings(this);
-    this.state.CategoryData.pullCategories(this);
+    this.state.CategoryData.pullCategories(this, false, false);
   }
 
 
@@ -87,7 +87,7 @@ export default class HomeScreen extends React.Component {
           <Content>
             {
               this.state.listViewData.length == 0 ?
-                <Image style={styles.images} source={require('../assets/imgs/emptyState1.png')} />
+                <Image style={styles.images} source={require('../../assets/imgs/emptyState1.png')} />
                 :
                 <List
                   enableEmptySections

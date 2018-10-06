@@ -3,8 +3,8 @@ import { Root } from 'native-base'
 import { StyleSheet } from 'react-native';
 import { Container, Header, Content, Body, Text, Title, Icon, ActionSheet, Form, Item, Label, Input, Button, Right } from 'native-base';
 import DatePicker from 'react-native-datepicker'
-import TaskProvider from './TaskProvider'
-import CategoryProvider from './Providers/CategoryProvider'
+import TaskProvider from '../Providers/TaskProvider'
+import CategoryProvider from '../Providers/CategoryProvider'
 
 export default class TaskInformation extends React.Component {
     constructor(props) {
@@ -21,7 +21,8 @@ export default class TaskInformation extends React.Component {
             categoriesList: [],
             categorysToDisplay: [],
             CategoryData: CategoryProvider.getInstance(),
-            currentCategory: ''
+            currentCategory: '',
+            oldCategory: ''
         }
         const { navigation } = this.props;
         this.state.data = navigation.getParam('data', 'Default');
@@ -31,6 +32,8 @@ export default class TaskInformation extends React.Component {
         this.state.taskDescription = this.state.data.taskDescription;
         this.state.taskDate = this.state.data.taskDate;
         this.state.taskCategory = this.state.data.taskCategory;
+        this.setState ({ oldCategory : this.state.taskCategory})
+        this.state.oldCategory = this.state.taskCategory
     }
 
     populateCategoryNames() {
@@ -41,6 +44,7 @@ export default class TaskInformation extends React.Component {
     }
 
     unsave() {
+        //alert(this.state.taskCategory)
         this.setState({ saveState: "Save" })
     }
 
@@ -54,10 +58,10 @@ export default class TaskInformation extends React.Component {
         );
         
         //Update categories
-        if (this.state.taskCategory != this.state.data.taskCategory) {
+        if (this.state.taskCategory != this.state.oldCategory) {
             this.state.CategoryData.updateCategoryCount(
                 this.state.categoriesList,
-                this.state.data.taskCategory,
+                this.state.oldCategory,
                 'minus'
             );
             this.state.CategoryData.updateCategoryCount(
@@ -65,10 +69,9 @@ export default class TaskInformation extends React.Component {
                 this.state.taskCategory,
                 'plus'
             );
-            //TODO FIX
-            this.state.data.taskCategory = this.state.taskCategory;
-            //alert(this.state.data.taskCategory + " == " + this.state.taskCategory);
+            this.state.oldCategory = this.state.taskCategory
         }
+        this.props.navigation.navigate('HomeScreen')
     }
 
     render() {

@@ -1,7 +1,7 @@
 import * as firebase from 'firebase';
 import React from 'react';
 import { getCompletetionTime } from '../Helper/DateHelper'
-import TaskProvider from '../TaskProvider'
+import TaskProvider from './TaskProvider'
 import CategoryProvider from './CategoryProvider'
 
 /*
@@ -34,7 +34,7 @@ export default class CompleteTasksProvider extends React.Component {
         });
     }
 
-    pullCompletedTasks(self) {
+    pullCompletedTasks(self, disableLoader) {
         this.getReference().on("value", tasksList => {
             this.items = [];
             tasksList.forEach(snap => {
@@ -48,7 +48,9 @@ export default class CompleteTasksProvider extends React.Component {
                 });
             });
             self.setState({ listViewData: this.items })
-            self.setState({ loading: false })
+            if(disableLoader){
+                self.setState({ loading: false })
+            }
         });
     }
 

@@ -1,6 +1,6 @@
 import * as firebase from 'firebase';
 import React from 'react';
-import { formatTitle, formatDescription, formatCategory, formatDate } from './Helper/Formatter'
+import { formatTitle, formatDescription, formatCategory, formatDate } from '../Helper/Formatter'
 
 
 export default class TaskProvider extends React.Component {

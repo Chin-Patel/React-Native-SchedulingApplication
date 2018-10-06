@@ -1,8 +1,9 @@
 import * as firebase from 'firebase';
 import React from 'react';
 import { findCategoryId, getIncreaseCategoryCount, getDecreaseCategoryCount } from '../Helper/CategoryUpdater'
-import TaskProvider from '../TaskProvider';
+import TaskProvider from './TaskProvider';
 import {splitJSON } from '../Helper/Formatter'
+import {sortArrayOfNames, sortCategoryNames} from '../Helper/Sorter'
 
 /*
 * This class is part of the datalayer and holds functionalities 
@@ -73,7 +74,7 @@ export default class CategoryProvider extends React.Component {
         });
     }
 
-    pullCategories(self, split){
+    pullCategories(self, split, disableLoader){
         this.getReference().on("value", categories => {
             this.categoriesList = [];
             categories.forEach(snap => {
@@ -84,9 +85,11 @@ export default class CategoryProvider extends React.Component {
                 categoryName: snap.val().categoryName,
               });
             });
-            self.setState({ categoriesToRender: this.categoriesList })
-            self.setState({ loading: false })
-            if(split) self.setState({ categorysToDisplay: splitJSON(this.categoriesList)})
+            self.setState({ categoriesToRender: sortCategoryNames(this.categoriesList) })
+            if(disableLoader){
+                self.setState({ loading: false })
+            }
+            if(split) self.setState({ categorysToDisplay: sortArrayOfNames(splitJSON(this.categoriesList))})
           });
     }
 

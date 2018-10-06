@@ -3,9 +3,9 @@ import { Root } from 'native-base'
 import { StyleSheet } from 'react-native';
 import { Container, Header, Content, Body, Text, Title, Icon, ActionSheet, Form, Item, Label, Input, Button, Right } from 'native-base';
 import DatePicker from 'react-native-datepicker'
-import TaskProvider from './TaskProvider'
-import CategoryProvider from './Providers/CategoryProvider'
-import { taskIsValid } from './Helper/Validator'
+import TaskProvider from '../Providers/TaskProvider'
+import CategoryProvider from '../Providers/CategoryProvider'
+import { taskIsValid } from '../Helper/Validator'
 
 export default class CreateTaskScreen extends React.Component {
 
@@ -24,7 +24,7 @@ export default class CreateTaskScreen extends React.Component {
     }
 
     componentDidMount() {
-        this.state.CategoryData.pullCategories(this, true);
+        this.state.CategoryData.pullCategories(this, true, false);
     }
 
     createTask() {

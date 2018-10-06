@@ -1,18 +1,17 @@
 import React from 'react';
 import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from 'react-navigation'
-import HomeScreen from './src/HomeScreen';
-import LoginScreen from './src/LoginScreen';
-import SignUpScreen from './src/SignUpScreen';
-import ResetPasswordScreen from './src/ResetPasswordScreen';
-import CompletedTasksScreen from './src/CompletedTasksScreen';
-import SettingsScreen from './src/SettingsScreen';
-import CreateTaskScreen from './src/CreateTaskScreen';
-import TaskInformationScreen from './src/TaskInformation';
-import SelectedCategoryScreen from './src/SelectedCategoryScreen';
-import CreateTaskInCategoryScreen from './src/CreateTaskInCategoryScreen';
-import ViewCompletedTaskScreen from './src/ViewCompletedTaskScreen';
-//Main screens
-import CategoriesScreen from './src/CategoriesScreen';
+import HomeScreen from './src/Screens/HomeScreen';
+import LoginScreen from './src/Screens/LoginScreen';
+import SignUpScreen from './src/Screens/SignUpScreen';
+import ResetPasswordScreen from './src/Screens/ResetPasswordScreen';
+import CompletedTasksScreen from './src/Screens/CompletedTasksScreen';
+import SettingsScreen from './src/Screens/SettingsScreen';
+import CreateTaskScreen from './src/Screens/CreateTaskScreen';
+import TaskInformationScreen from './src/Screens/TaskInformation';
+import SelectedCategoryScreen from './src/Screens/SelectedCategoryScreen';
+import CreateTaskInCategoryScreen from './src/Screens/CreateTaskInCategoryScreen';
+import ViewCompletedTaskScreen from './src/Screens/ViewCompletedTaskScreen';
+import CategoriesScreen from './src/Screens/CategoriesScreen';
 import * as firebase from 'firebase';
 import {  Icon,  } from 'native-base'
 

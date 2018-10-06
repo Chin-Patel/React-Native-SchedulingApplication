@@ -44,7 +44,7 @@ export default class SettingsProvider extends React.Component {
                 self.state.id = snap.key;
                 self.state.taskDelete = snap.val().taskDelete;
                 self.state.categoryDelete = snap.val().categoryDelete;
-                alert(self.state.taskDelete);
+                self.setState({ loading: false })
             });
         });
     }

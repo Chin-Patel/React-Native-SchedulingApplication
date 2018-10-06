@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, Text, ListView, Image, Alert } from 'react-native';
 import { Container, Content, Header, Button, Left, Icon, List, ListItem, Body, Title, Right, Spinner } from 'native-base'
 import FAB from 'react-native-fab'
-import CompleteTasksProvider from './Providers/CompleteTasksProvider'
-import CategoryProvider from './Providers/CategoryProvider'
-import TaskProvider from './TaskProvider'
-import SettingsProvider from './Providers/SettingsProvider'
+import CompleteTasksProvider from '../Providers/CompleteTasksProvider'
+import CategoryProvider from '../Providers/CategoryProvider'
+import TaskProvider from '../Providers/TaskProvider'
+import SettingsProvider from '../Providers/SettingsProvider'
 
 export default class SelectedCategory extends React.Component {
   constructor(props) {
@@ -31,7 +31,7 @@ export default class SelectedCategory extends React.Component {
   componentDidMount() {
     this.state.TaskData.pullSpecificTasks(this, this.state.category.categoryName);
     this.state.SettingsData.pullSettings(this);
-    this.state.CategoryData.pullCategories(this);
+    this.state.CategoryData.pullCategories(this, false, false);
   }
 
   deleteRow(secId, rowId, rowMap, data) {
@@ -94,21 +94,17 @@ export default class SelectedCategory extends React.Component {
           <Content>
             {
               this.state.listViewData.length == 0 ?
-                <Image style={styles.images} source={require('../assets/imgs/Categorystate.jpg')} />
+                <Image style={styles.images} source={require('../../assets/imgs/Categorystate.jpg')} />
                 :
                 <List
                   enableEmptySections
                   dataSource={this.ds.cloneWithRows(this.state.listViewData)}
                   renderRow={data =>
-                    <ListItem icon onPress={() => this.showInformation(data)}>
+                    <ListItem onPress={() => this.showInformation(data)}>
                       <Body>
                         <Text style={styles.taskText}>{data.taskTitle}</Text>
                         <Text note style={styles.text}>{data.taskDescription}</Text>
                       </Body>
-
-                      <Right>
-                        <Icon name="md-arrow-forward" onPress={() => this.createCategory()} style={styles.createIcon}></Icon>
-                      </Right>
                     </ListItem>
                   }
                   renderRightHiddenRow={(data, secId, rowId, rowMap) =>
