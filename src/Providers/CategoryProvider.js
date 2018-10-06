@@ -1,9 +1,13 @@
 import * as firebase from 'firebase';
-import React, { Component } from 'react';
+import React from 'react';
 import { findCategoryId, getIncreaseCategoryCount, getDecreaseCategoryCount } from '../Helper/CategoryUpdater'
 import TaskProvider from '../TaskProvider';
 import {splitJSON } from '../Helper/Formatter'
 
+/*
+* This class is part of the datalayer and holds functionalities 
+* to push categories to firebase as well as pull, update, and delete categories from firebase.
+*/
 export default class CategoryProvider extends React.Component {
     static categoryInstance;
     constructor(props) {
@@ -12,6 +16,10 @@ export default class CategoryProvider extends React.Component {
             TaskData: TaskProvider.getInstance(),
         }
     }
+
+    /*
+    * Singleton to ensure theres only one instance of this provider
+    */
     static getInstance() {
         if (CategoryProvider.categoryInstance == null) {
             CategoryProvider.categoryInstance = new CategoryProvider();
@@ -19,6 +27,9 @@ export default class CategoryProvider extends React.Component {
         return this.categoryInstance;
     }
 
+    /*
+    * Updates the category count for the given category that needs to be updated
+    */
     updateCategoryCount(catorgoriesList, categoryToUpdate, modifier) {
         let newCategoryCount;
         if (modifier == 'plus') {
@@ -27,7 +38,6 @@ export default class CategoryProvider extends React.Component {
             newCategoryCount = getDecreaseCategoryCount(catorgoriesList, categoryToUpdate)
         }
         let categoryId = findCategoryId(catorgoriesList, categoryToUpdate);
-        //alert("=> " + newCategoryCount)
         this.getCategoryReference(categoryId).update({
             categoryCount: newCategoryCount
         });
@@ -46,6 +56,9 @@ export default class CategoryProvider extends React.Component {
         this.deleteChildren(category.categoryName);
     }
 
+    /*
+    * Deletes all the tasks within a category
+    */
     deleteChildren(category) {
         this.state.TaskData.getReference().on("value", tasksList => {
             let keySet = [];
@@ -60,25 +73,8 @@ export default class CategoryProvider extends React.Component {
         });
     }
 
-    pullCategoriesAndSplit(self){
-        firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
-            this.categoriesList = [];
-            categories.forEach(snap => {
-              this.categoriesList.push({
-                id: snap.key,
-                categoryCount: snap.val().categoryCount,
-                categoryLetter: snap.val().categoryLetter,
-                categoryName: snap.val().categoryName,
-              });
-            });
-            self.setState({ categoriesToRender: this.categoriesList })
-            self.setState({ categorysToDisplay: splitJSON(this.categoriesList)})
-            //self.initArrays();
-          });
-    }
-
-    pullCategories(self){
-        firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/').on("value", categories => {
+    pullCategories(self, split){
+        this.getReference().on("value", categories => {
             this.categoriesList = [];
             categories.forEach(snap => {
               this.categoriesList.push({
@@ -90,40 +86,17 @@ export default class CategoryProvider extends React.Component {
             });
             self.setState({ categoriesToRender: this.categoriesList })
             self.setState({ loading: false })
+            if(split) self.setState({ categorysToDisplay: splitJSON(this.categoriesList)})
           });
     }
-
-    pullSpecificCategories(self, categoryName){
-        firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/tasksList/').on("value", eventListSnapshot => {
-            this.categoryItems = [];
-            eventListSnapshot.forEach(snap => {
-              if(snap.val().taskCategory.toLowerCase() === categoryName.toLowerCase()){
-                this.categoryItems.push({
-                id: snap.key,
-                taskTitle: snap.val().taskTitle,
-                taskDescription: snap.val().taskDescription,
-                taskDate: snap.val().taskDate,
-                taskCategory: snap.val().taskCategory
-              });
-              }
-            });
-            self.setState({ listViewData: this.categoryItems })
-            self.setState({ loading: false }) 
-          });
-    }
-
 
     getReference() {
         return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/');
     }
 
-
     getCategoryReference(categoryId) {
         return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/categoriesList/' + categoryId);
     }
-
-
-
 }
 
 

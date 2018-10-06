@@ -1,27 +1,21 @@
 import React from 'react';
 import { Root } from 'native-base'
 import { StyleSheet } from 'react-native';
-import * as firebase from 'firebase';
 import { Container, Header, Content, Body, Text, Title, Icon, Form, Item, Label, Input, Button, Right } from 'native-base';
 import DatePicker from 'react-native-datepicker'
 import TaskProvider from './TaskProvider'
 import CategoryProvider from './Providers/CategoryProvider'
-import {taskIsValid} from './Helper/Validator'
-import {sortArrayOfNames} from './Helper/Sorter'
+import { taskIsValid } from './Helper/Validator'
 
-var data = []
 export default class CreateTaskInCategoryScreen extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = state = {
             taskTitle: '',
             taskDescription: '',
-            errorMessage: null,
-            isDateTimePickerVisible: false,
             date: '',
             category: '',
-            categoriesToRender: data,
+            categoriesToRender: [],
             TaskData: TaskProvider.getInstance(),
             CategoryData: CategoryProvider.getInstance(),
             data: ''
@@ -33,24 +27,24 @@ export default class CreateTaskInCategoryScreen extends React.Component {
     }
 
     componentDidMount() {
-        this.state.CategoryData.pullCategories(this);
+        this.state.CategoryData.pullCategories(this, false);
     }
 
     createTask() {
         this.state.TaskData.createTask(
-            this.state.taskTitle, 
-            this.state.taskDescription, 
-            this.state.date, 
+            this.state.taskTitle,
+            this.state.taskDescription,
+            this.state.date,
             this.state.category)
         // Update the category count
         this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, this.state.category, 'plus')
         this.props.navigation.navigate('SelectedCategoryScreen', {
             data: this.state.data
         });
-        
+
     }
 
-    close(){
+    close() {
         this.props.navigation.navigate('SelectedCategoryScreen', {
             data: this.state.data
         });
@@ -129,12 +123,12 @@ export default class CreateTaskInCategoryScreen extends React.Component {
                                     autoCapitalize="none"
                                     disabled
                                     value={this.state.category}
-                                    style = {styles.text}
+                                    style={styles.text}
                                 />
                             </Item>
                         </Form>
 
-                        {taskIsValid(this.state.taskTitle, this.state.taskDescription) == true ? 
+                        {taskIsValid(this.state.taskTitle, this.state.taskDescription) == true ?
                             <Button transparent style={styles.buttonStyle}
                                 full
                                 rounded

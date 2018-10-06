@@ -1,15 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, StatusBar, ListView, FlatList, Image, Alert } from 'react-native';
+import { StyleSheet, Text, ListView, Image, Alert } from 'react-native';
 import { Container, Content, Header, Button, Left, Icon, List, ListItem, Body, Title, Right, Spinner } from 'native-base'
-import * as firebase from 'firebase';
 import FAB from 'react-native-fab'
 import CompleteTasksProvider from './Providers/CompleteTasksProvider'
 import CategoryProvider from './Providers/CategoryProvider'
 import TaskProvider from './TaskProvider'
 import SettingsProvider from './Providers/SettingsProvider'
 
-var data = []
-var items = []
 export default class SelectedCategory extends React.Component {
   constructor(props) {
     super(props);
@@ -18,11 +15,11 @@ export default class SelectedCategory extends React.Component {
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
     this.state = {
       category: data,
-      listViewData: data,
+      listViewData: [],
       newContact: "",
       taskDelete: true,
       categoryDelete: true,
-      categoriesToRender: data,
+      categoriesToRender: [],
       loading: true,
       CompletedData: CompleteTasksProvider.getInstance(),
       CategoryData: CategoryProvider.getInstance(),
@@ -31,12 +28,8 @@ export default class SelectedCategory extends React.Component {
     }
   }
 
-  getTaskReference() {
-    return this.tasksReference;
-  }
-
   componentDidMount() {
-    this.state.CategoryData.pullSpecificCategories(this, this.state.category.categoryName);
+    this.state.TaskData.pullSpecificTasks(this, this.state.category.categoryName);
     this.state.SettingsData.pullSettings(this);
     this.state.CategoryData.pullCategories(this);
   }
@@ -73,7 +66,7 @@ export default class SelectedCategory extends React.Component {
   loadCreateTaskScreen() {
     this.props.navigation.navigate('CreateTaskInCategoryScreen', {
       category: this.state.category.categoryName,
-      data : this.state.data
+      data: this.state.data
     });
   }
 
@@ -88,7 +81,7 @@ export default class SelectedCategory extends React.Component {
     return (
       <Container style={styles.container}>
         <Header style={styles.header}>
-        <Left>
+          <Left>
             <Button transparent onPress={() => this.props.navigation.navigate('CategoriesScreen')}>
               <Icon name='arrow-back' />
             </Button>
@@ -101,7 +94,7 @@ export default class SelectedCategory extends React.Component {
           <Content>
             {
               this.state.listViewData.length == 0 ?
-                <Image style={styles.images} source={require('../assets/imgs/emptyState1.png')} />
+                <Image style={styles.images} source={require('../assets/imgs/Categorystate.jpg')} />
                 :
                 <List
                   enableEmptySections
@@ -156,7 +149,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-
   },
   images: {
     width: '100%',
@@ -172,5 +164,4 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10
   },
-
 })

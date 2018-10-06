@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native'
 import * as firebase from 'firebase';
-import { Container, Header, Content, Body, Text, Title, Icon, Item, Label, Form, Input, Button, List, ListItem, Switch, Left } from 'native-base';
+import { Container, Header, Content, Body, Text, Title, Icon, Item, Label, Form, Input, Button, Left } from 'native-base';
 
 
 export default class SignUpScreen extends React.Component {
@@ -27,15 +27,13 @@ export default class SignUpScreen extends React.Component {
       .catch(error => this.setState({ errorMessage: error.message }))
   }
 
-  setDefaults(){
+  setDefaults() {
     firebase.auth().onAuthStateChanged(user => {
-
-      if(user){
+      if (user) {
         alert("in here");
         this.tasksReference = firebase
-        .database()
-        .ref(`/userProfile/${user.uid}/settings`);
-
+          .database()
+          .ref(`/userProfile/${user.uid}/settings`);
       }
     });
   }
@@ -61,7 +59,6 @@ export default class SignUpScreen extends React.Component {
               <Input
                 autoCorrect={false}
                 autoCapitalize="none"
-                //placeholder="Email"
                 onChangeText={email => this.setState({ email })}
                 value={this.state.email}
               />
@@ -71,19 +68,16 @@ export default class SignUpScreen extends React.Component {
             <Item floatingLabel>
               <Label>Password</Label>
               <Input
-                              secureTextEntry
-
+                secureTextEntry
                 autoCorrect={false}
                 autoCapitalize="none"
                 onChangeText={password => this.setState({ password })}
                 value={this.state.password}
               />
-
             </Item>
             <Button style={styles.buttonStyle}
               full
               rounded
-              //success
               onPress={this.handleSignUp}
             >
               <Text style={{ color: 'white' }}> Create Account</Text>
@@ -112,7 +106,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-
   },
   signout: {
     color: 'red'

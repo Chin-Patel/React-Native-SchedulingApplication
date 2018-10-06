@@ -1,7 +1,7 @@
 import React from 'react';
 import { Root } from 'native-base'
 import { StyleSheet } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
+import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, Form, Item, Label, Input, Button, Right } from 'native-base';
 
 export default class ViewCompletedTaskScreen extends React.Component {
     constructor(props) {
@@ -28,8 +28,8 @@ export default class ViewCompletedTaskScreen extends React.Component {
                         </Right>
                     </Header>
                     <Content>
-                    <Card style={styles.card}>
-          <CardItem style={styles.cardItem}>
+                        <Card style={styles.card}>
+                            <CardItem style={styles.cardItem}>
                                 <Body>
                                     <Text>
                                         This task has been completed
@@ -45,7 +45,7 @@ export default class ViewCompletedTaskScreen extends React.Component {
                                     autoCapitalize="none"
                                     disabled
                                     value={this.state.task.taskTitle}
-                                    style = {styles.text}
+                                    style={styles.text}
                                 />
                             </Item>
                             <Item floatingLabel>
@@ -65,7 +65,7 @@ export default class ViewCompletedTaskScreen extends React.Component {
                                     autoCapitalize="none"
                                     disabled
                                     value={this.state.task.taskDate}
-                                    style = {styles.text}
+                                    style={styles.text}
                                 />
                             </Item>
 
@@ -76,7 +76,7 @@ export default class ViewCompletedTaskScreen extends React.Component {
                                     autoCapitalize="none"
                                     disabled
                                     value={this.state.task.taskCategory}
-                                    style = {styles.text}
+                                    style={styles.text}
                                 />
                             </Item>
                         </Form>
@@ -126,7 +126,6 @@ const styles = StyleSheet.create({
         marginTop: 10,
         textAlignVertical: "top",
         color: 'grey',
-
     },
     card: {
         borderRadius: 20,
@@ -134,13 +133,13 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginTop: 10,
         elevation: 5,
-        flex: 1, justifyContent: 'center',alignItems: 'center'
-      },
+        flex: 1, justifyContent: 'center', alignItems: 'center'
+    },
     cardItem: {
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
-        flex: 1, justifyContent: 'center',alignItems: 'center'
-      },
+        flex: 1, justifyContent: 'center', alignItems: 'center'
+    },
 })

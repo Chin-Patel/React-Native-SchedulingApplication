@@ -1,17 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Image, ImageBackground } from 'react-native';
+import { StyleSheet, Text, Image, ImageBackground } from 'react-native';
 import * as firebase from 'firebase';
-import { Container, Content, Header, Form, Input, Button, Item, Label, Icon, Textarea } from 'native-base'
+import { Container, Form, Input, Button, Item, Label } from 'native-base'
 
 export default class LoginScreen extends React.Component {
-    static navigatorStyle = {
-        tabBarHidden: true
-    };
     constructor(props) {
         super(props);
         this.state = state = { email: '', password: '', errorMessage: null }
     }
-
 
     handleLogin = () => {
         const { email, password } = this.state
@@ -23,19 +19,14 @@ export default class LoginScreen extends React.Component {
             .catch(error => this.setState({ errorMessage: error.message }))
     }
 
-
-
     render() {
         return (
-
             <Container style={styles.container}>
                 <ImageBackground source={require('../assets/imgs/bg.jpg')} style={{ width: '100%', height: '100%' }}>
-
                     {/* <Image source={require('../assets/imgs/D.png')} />; */}
                     <Image style={styles.images} source={require('../assets/imgs/A.png')} />
                     <Form>
                         <Item floatingLabel>
-
                             <Label>Email</Label>
                             <Input
                                 autoCorrect={false}
@@ -43,7 +34,7 @@ export default class LoginScreen extends React.Component {
                                 //placeholder="Email"
                                 onChangeText={email => this.setState({ email })}
                                 //value={this.state.email}
-                             value={"test@test.com"}
+                                value={"test@test.com"}
                             />
 
                         </Item>
@@ -57,7 +48,7 @@ export default class LoginScreen extends React.Component {
                                 //placeholder="Password"
                                 onChangeText={password => this.setState({ password })}
                                 //value={this.state.password}
-                            value={"123456"}
+                                value={"123456"}
                             />
                         </Item>
 
@@ -75,10 +66,8 @@ export default class LoginScreen extends React.Component {
                             <Text style={{ color: 'white' }}> Login</Text>
                         </Button>
                     </Form>
-
                     <Text style={styles.textStyle} onPress={() => this.props.navigation.navigate('ResetPasswordScreen')}> Forgot Password? </Text>
                     <Text style={styles.textStyle} onPress={() => this.props.navigation.navigate('SignUpScreen')}> Create a new account </Text>
-
                 </ImageBackground>
             </Container>
         );
@@ -111,6 +100,5 @@ const styles = StyleSheet.create({
         color: 'red',
         justifyContent: 'center',
         alignSelf: 'center',
-
     }
 });

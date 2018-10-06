@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
-import { Container, Header, Content, Body, Text, Title, Icon, Item, Label, Form, Input, Button, List, ListItem, Switch, Left } from 'native-base';
+import { Container, Header, Content, Body, Text, Title, Icon, Item, Label, Form, Input, Button, Left } from 'native-base';
 
 export default class ResetPasswordScreen extends React.Component {
   constructor(props) {
@@ -51,22 +51,18 @@ export default class ResetPasswordScreen extends React.Component {
               <Input
                 autoCorrect={false}
                 autoCapitalize="none"
-                //placeholder="Email"
                 onChangeText={email => this.setState({ email })}
                 value={this.state.email}
               />
-
             </Item>
             <Button style={styles.buttonStyle}
               full
               rounded
-              //success
               onPress={this.handleResetPassword}
             >
               <Text style={{ color: 'white' }}> Reset Password</Text>
             </Button>
           </Form>
-
         </Content>
       </Container>
     );
@@ -85,7 +81,6 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#445df7',
     fontWeight: 'bold',
-
   },
   title: {
     fontWeight: 'bold',

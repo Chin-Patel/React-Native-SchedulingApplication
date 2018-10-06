@@ -7,19 +7,15 @@ import CategoryProvider from './Providers/CategoryProvider'
 import TaskProvider from './TaskProvider'
 import SettingsProvider from './Providers/SettingsProvider'
 
-
-var data = []
-var items = []
 export default class HomeScreen extends React.Component {
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
     this.state = {
-      listViewData: data,
-      newContact: "",
+      listViewData: [],
       taskDelete: true,
       categoryDelete: true,
-      categoriesToRender: data,
+      categoriesToRender: [],
       loading: true,
       CompletedData: CompleteTasksProvider.getInstance(),
       CategoryData: CategoryProvider.getInstance(),
@@ -138,11 +134,9 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#445df7',
     fontWeight: 'bold',
-
   },
   title: {
     fontWeight: 'bold',
-
   },
   images: {
     width: '100%',
@@ -158,5 +152,4 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10
   },
-
 })

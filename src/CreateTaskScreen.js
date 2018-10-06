@@ -1,16 +1,12 @@
 import React from 'react';
 import { Root } from 'native-base'
 import { StyleSheet } from 'react-native';
-import * as firebase from 'firebase';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, ActionSheet, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
+import { Container, Header, Content, Body, Text, Title, Icon, ActionSheet, Form, Item, Label, Input, Button, Right } from 'native-base';
 import DatePicker from 'react-native-datepicker'
 import TaskProvider from './TaskProvider'
 import CategoryProvider from './Providers/CategoryProvider'
-import {taskIsValid} from './Helper/Validator'
-import {sortArrayOfNames} from './Helper/Sorter'
+import { taskIsValid } from './Helper/Validator'
 
-var data = []
-var c = [];
 export default class CreateTaskScreen extends React.Component {
 
     constructor(props) {
@@ -18,29 +14,24 @@ export default class CreateTaskScreen extends React.Component {
         this.state = state = {
             taskTitle: '',
             taskDescription: '',
-            errorMessage: null,
-            isDateTimePickerVisible: false,
             date: '',
-            id: '',
             clicked: 'Default',
-            categoriesToRender: data,
+            categoriesToRender: [],
             TaskData: TaskProvider.getInstance(),
             CategoryData: CategoryProvider.getInstance(),
             categorysToDisplay: [],
         }
-        const { navigation } = this.props;
-        this.state.id = navigation.getParam('userId', 'Default');
     }
 
     componentDidMount() {
-        this.state.CategoryData.pullCategoriesAndSplit(this);
+        this.state.CategoryData.pullCategories(this, true);
     }
 
     createTask() {
         this.state.TaskData.createTask(
-            this.state.taskTitle, 
-            this.state.taskDescription, 
-            this.state.date, 
+            this.state.taskTitle,
+            this.state.taskDescription,
+            this.state.date,
             this.state.clicked)
         // Update the category count
         this.state.CategoryData.updateCategoryCount(this.state.categoriesToRender, this.state.clicked, 'plus')
@@ -124,8 +115,7 @@ export default class CreateTaskScreen extends React.Component {
                         >
                             <Text>{this.state.clicked}</Text>
                         </Button>
-
-                        {taskIsValid(this.state.taskTitle, this.state.taskDescription) == true ? 
+                        {taskIsValid(this.state.taskTitle, this.state.taskDescription) == true ?
                             <Button transparent style={styles.buttonStyle}
                                 full
                                 rounded
@@ -140,19 +130,11 @@ export default class CreateTaskScreen extends React.Component {
                             >
                                 <Text style={{ color: 'white' }}> Create Task</Text>
                             </Button>
-        
                         }
-
-
-                        
                     </Content>
                 </Container>
             </Root>
         );
-    }
-
-    doMethod() {
-        //alert("HMMMM " + this.state.clicked);
     }
 }
 

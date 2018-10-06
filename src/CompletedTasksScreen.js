@@ -1,22 +1,20 @@
 import React from 'react';
-import { StyleSheet, Text, ListView } from 'react-native';
+import { StyleSheet, Text, ListView, Image } from 'react-native';
 import { Container, Content, Header, Button, Icon, List, ListItem, Body, Title, Spinner } from 'native-base'
 import CompleteTasksProvider from './Providers/CompleteTasksProvider'
 import TaskProvider from './TaskProvider'
 import CategoryProvider from './Providers/CategoryProvider'
 
-var data = []
 export default class CompletedTasksScreen extends React.Component {
   constructor(props) {
     super(props);
     this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 })
     this.state = {
-      listViewData: data,
-      newContact: "",
+      listViewData: [],
       CompletedData: CompleteTasksProvider.getInstance(),
       TaskData: TaskProvider.getInstance(),
       CategoryData: CategoryProvider.getInstance(),
-      categoriesToRender: data,
+      categoriesToRender: [],
       loading: true,
     }
   }
@@ -61,6 +59,11 @@ export default class CompletedTasksScreen extends React.Component {
         </Header>
         {this.state.loading ? <Spinner color='#445df7' /> :
         <Content>
+          {
+             this.state.listViewData.length == 0 ?
+             <Image style={styles.images} source={require('../assets/imgs/emptyState2.png')} />
+             :
+          
           <List
             enableEmptySections
             dataSource={this.ds.cloneWithRows(this.state.listViewData)}
@@ -85,6 +88,7 @@ export default class CompletedTasksScreen extends React.Component {
             leftOpenValue={+75}
             rightOpenValue={-75}
           />
+          }
         </Content>
         }
       </Container>
@@ -95,6 +99,7 @@ export default class CompletedTasksScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
    flex: 1,
+
   },
   item: {
     padding: 10,
@@ -119,5 +124,10 @@ const styles = StyleSheet.create({
   },
   title:{
     fontWeight: 'bold',
-  }
+  },
+  images: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: '15%'
+  },
 })

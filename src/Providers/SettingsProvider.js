@@ -1,8 +1,10 @@
 import * as firebase from 'firebase';
-import React, { Component } from 'react';
-import { findCategoryId, getIncreaseCategoryCount, getDecreaseCategoryCount } from '../Helper/CategoryUpdater'
-import TaskProvider from '../TaskProvider';
+import React from 'react';
 
+/*
+* This class is part of the datalayer and holds functionalities regarding
+* the application settings stored in firebase.
+*/
 export default class SettingsProvider extends React.Component {
     static settingsInstance;
     constructor(props) {
@@ -15,38 +17,43 @@ export default class SettingsProvider extends React.Component {
         return this.settingsInstance;
     }
 
-    updateTaskDelete(taskDelete, id){
-        this.getReference(id).update({
+    updateTaskDelete(taskDelete, id) {
+        this.getSettingsReference(id).update({
             taskDelete: !taskDelete,
         });
     }
 
-    updateCategoryDelete(categoryDelete, id){
-        this.getReference(id).update({
+    updateCategoryDelete(categoryDelete, id) {
+        this.getSettingsReference(id).update({
             categoryDelete: !categoryDelete,
         });
     }
 
-    pullSettings(self){
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-              this.tasksReference = firebase
-                .database()
-                .ref(`/userProfile/${user.uid}/settings`);
-              this.userId = `${user.uid}`;
-              this.tasksReference.on("value", tasksList => {
-                tasksList.forEach(snap => {
-                  self.state.taskDelete = snap.val().taskDelete;
-                  self.state.categoryDelete = snap.val().categoryDelete;
-                });
-              });
-            }
-          });
+    pullSettings(self) {
+        this.getReference().on("value", tasksList => {
+            tasksList.forEach(snap => {
+                self.state.taskDelete = snap.val().taskDelete;
+                self.state.categoryDelete = snap.val().categoryDelete;
+            });
+        });
     }
 
-    
+    pullSettingsWithID(self){
+        this.getReference().on("value", tasksList => {
+            tasksList.forEach(snap => {
+                self.state.id = snap.key;
+                self.state.taskDelete = snap.val().taskDelete;
+                self.state.categoryDelete = snap.val().categoryDelete;
+                alert(self.state.taskDelete);
+            });
+        });
+    }
 
-    getReference(id){
+    getReference() {
+        return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/settings/');
+    }
+
+    getSettingsReference(id) {
         return firebase.database().ref('userProfile/' + firebase.auth().currentUser.uid + '/settings/' + id);
     }
 }

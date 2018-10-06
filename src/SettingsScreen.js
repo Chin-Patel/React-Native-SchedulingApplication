@@ -1,51 +1,29 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import * as firebase from 'firebase';
 import { Container, Header, Content, Body, Text, Title, List, ListItem, Switch, Right } from 'native-base';
 import SettingsProvider from './Providers/SettingsProvider'
 
 export default class Settings extends React.Component {
   constructor(props) {
     super(props);
-    var userId = "a";
-
-    this.state = { 
-            id: '', 
-            taskDelete: null, 
-            categoryDelete: null ,
-            SettingsData: SettingsProvider.getInstance(),
-          }
+    this.state = {
+      id: '',
+      taskDelete: null,
+      categoryDelete: null,
+      SettingsData: SettingsProvider.getInstance(),
+    }
   }
 
 
   componentDidMount() {
-    var that = this
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.tasksReference = firebase
-          .database()
-          .ref(`/userProfile/${user.uid}/settings`);
-        this.userId = `${user.uid}`;
-        var taskDelete;
-        var categoryDelete;
-        this.tasksReference.on("value", tasksList => {
-          tasksList.forEach(snap => {
-            this.state.id = snap.key;
-            taskDelete = snap.val().taskDelete;
-            categoryDelete = snap.val().categoryDelete;
-          });
-        });
-        that.setState({ taskDelete: taskDelete })
-        that.setState({ categoryDelete: categoryDelete })
-      }
-    });
+    this.state.SettingsData.pullSettingsWithID(this);
   }
 
-  updateTaskDelete(){
+  updateTaskDelete() {
     this.state.SettingsData.updateTaskDelete(this.state.taskDelete, this.state.id)
   }
 
-  updateCategoryDelete(){
+  updateCategoryDelete() {
     this.state.SettingsData.updateCategoryDelete(this.state.categoryDelete, this.state.id)
   }
 
@@ -83,7 +61,7 @@ export default class Settings extends React.Component {
                 <Switch value={this.state.taskDelete}
                   onValueChange={taskDelete => {
                     this.setState({ taskDelete }),
-                    this.updateTaskDelete();
+                      this.updateTaskDelete();
                   }}
                   value={this.state.taskDelete}
                 />

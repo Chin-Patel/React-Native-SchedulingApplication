@@ -1,5 +1,5 @@
 import * as firebase from 'firebase';
-import React, { Component } from 'react';
+import React from 'react';
 import { formatTitle, formatDescription, formatCategory, formatDate } from './Helper/Formatter'
 
 
@@ -24,38 +24,49 @@ export default class TaskProvider extends React.Component {
         });
     }
 
-    updateTask(taskTitle, taskDescription, taskDate, taskCategory, data){
+    updateTask(taskTitle, taskDescription, taskDate, taskCategory, data) {
         this.getTaskReference(data.id).update({
-            taskTitle : taskTitle,
-            taskDescription : taskDescription,
-            taskDate : taskDate,
-            taskCategory : taskCategory
+            taskTitle: taskTitle,
+            taskDescription: taskDescription,
+            taskDate: taskDate,
+            taskCategory: taskCategory
         });
     }
 
 
-    pullTasks(self){
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-              this.tasksReference = firebase
-                .database()
-                .ref(`/userProfile/${user.uid}/tasksList`);
-              this.userId = `${user.uid}`;
-              this.tasksReference.on("value", tasksList => {
-                this.items = [];
-                tasksList.forEach(snap => {
-                  this.items.push({
+    pullTasks(self) {
+        this.getReference().on("value", tasksList => {
+            this.items = [];
+            tasksList.forEach(snap => {
+                this.items.push({
                     id: snap.key,
                     taskTitle: snap.val().taskTitle,
                     taskDescription: snap.val().taskDescription,
                     taskCategory: snap.val().taskCategory,
                     taskDate: snap.val().taskDate
-                  });
                 });
-                self.setState({ listViewData: this.items })
-                self.setState({ loading: false })
+            });
+            self.setState({ listViewData: this.items })
+            self.setState({ loading: false })
+        });
+    }
+
+    pullSpecificTasks(self, categoryName) {
+        this.getReference().on("value", eventListSnapshot => {
+            this.categoryItems = [];
+            eventListSnapshot.forEach(snap => {
+              if(snap.val().taskCategory.toLowerCase() === categoryName.toLowerCase()){
+                this.categoryItems.push({
+                id: snap.key,
+                taskTitle: snap.val().taskTitle,
+                taskDescription: snap.val().taskDescription,
+                taskDate: snap.val().taskDate,
+                taskCategory: snap.val().taskCategory
               });
-            }
+              }
+            });
+            self.setState({ listViewData: this.categoryItems })
+            self.setState({ loading: false }) 
           });
     }
 
@@ -69,7 +80,7 @@ export default class TaskProvider extends React.Component {
     //     let categoryId = this.helper.findCategoryId(this.categoriesList, taskCategory);
     //     this.categoriesProvider.updateCategoryCount(categoryId, newCategoryCount, taskCategory);
     //   }
-    
+
     //   updateNewCategory(taskCategory) {
     //     //update new category
     //     let newCategoryCount = this.helper.getIncreaseCategoryCount(this.categoriesList, taskCategory);
@@ -93,7 +104,7 @@ export default class TaskProvider extends React.Component {
         this.getTaskReference(data.id).remove();
     }
 
-    deleteTaskFromKey(id){
+    deleteTaskFromKey(id) {
         this.getTaskReference(id).remove();
     }
 

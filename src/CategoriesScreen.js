@@ -1,24 +1,21 @@
 import React, { Component } from 'react';
 import { StyleSheet, Alert } from 'react-native';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, Input, Footer, Spinner, Left, Button } from 'native-base';
-import { sortCategoryNames } from './Helper/Sorter'
+import { Container, Header, Content, Card, CardItem, Body, Text, Title, Right, Icon, Input, Footer, Spinner } from 'native-base';
 import CategoryProvider from './Providers/CategoryProvider'
 import { categoryIsValid } from './Helper/Validator'
 import SettingsProvider from './Providers/SettingsProvider'
 
-var data = []
 
 export default class CategoriesScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
       categoryName: '',
-      inputText: '',
-      categoriesToRender: data,
+      categoriesToRender: [],
       CategoryData: CategoryProvider.getInstance(),
+      SettingsData: SettingsProvider.getInstance(),
       categoryDelete: true,
       loading: true,
-      SettingsData: SettingsProvider.getInstance(),
     };
   }
 
@@ -27,6 +24,9 @@ export default class CategoriesScreen extends Component {
     this.state.categoryName = ''
   }
 
+  /*
+  * Throws an alert to make sure the user doesn't delete the category and tasks within it on mistake
+  */
   deleteCategory(category) {
     if (this.state.categoryDelete == true) {
       Alert.alert(
@@ -79,7 +79,6 @@ export default class CategoriesScreen extends Component {
     return (
       <Container style={styles.container}>
         <Header style={styles.header}>
-
           <Body>
             <Title style={styles.title}>Categories</Title>
           </Body>
@@ -88,7 +87,6 @@ export default class CategoriesScreen extends Component {
           <Content>
             {this.lapsList()}
             <Content>
-
             </Content>
           </Content>
         }

@@ -1,17 +1,12 @@
 import React from 'react';
 import { Root } from 'native-base'
 import { StyleSheet } from 'react-native';
-import * as firebase from 'firebase';
-import { Container, Header, Content, Card, CardItem, Body, Text, Title, Icon, ActionSheet, Textarea, Form, Item, Label, Input, Button, Left, Right } from 'native-base';
+import { Container, Header, Content, Body, Text, Title, Icon, ActionSheet, Form, Item, Label, Input, Button, Right } from 'native-base';
 import DatePicker from 'react-native-datepicker'
 import TaskProvider from './TaskProvider'
 import CategoryProvider from './Providers/CategoryProvider'
-import { taskIsValid } from './Helper/Validator'
-import { sortArrayOfNames } from './Helper/Sorter'
-
 
 export default class TaskInformation extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = state = {
@@ -21,7 +16,6 @@ export default class TaskInformation extends React.Component {
             taskDescription: '',
             taskDate: '',
             taskCategory: '',
-            isDateTimePickerVisible: false,
             date: '',
             TaskData: TaskProvider.getInstance(),
             categoriesList: [],
@@ -44,10 +38,7 @@ export default class TaskInformation extends React.Component {
         for (let i = 0; i < this.state.categoriesList.length; i++) {
             this.state.categorysToDisplay.push(this.state.categoriesList[i].categoryName);
         }
-        //alert(JSON.stringify(this.state.categorysToDisplay));
     }
-
-
 
     unsave() {
         this.setState({ saveState: "Save" })
@@ -61,7 +52,6 @@ export default class TaskInformation extends React.Component {
             this.state.taskCategory,
             this.state.data,
         );
-        
         
         //Update categories
         if (this.state.taskCategory != this.state.data.taskCategory) {
@@ -209,7 +199,6 @@ const styles = StyleSheet.create({
     },
     title: {
         fontWeight: 'bold',
-
     },
     buttonStyle: {
         backgroundColor: "#445df7",
