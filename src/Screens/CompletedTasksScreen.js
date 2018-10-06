@@ -4,6 +4,7 @@ import { Container, Content, Header, Button, Icon, List, ListItem, Body, Title, 
 import CompleteTasksProvider from '../Providers/CompleteTasksProvider'
 import TaskProvider from '../Providers/TaskProvider'
 import CategoryProvider from '../Providers/CategoryProvider'
+import {checkExists} from '../Helper/CategoryUpdater'
 
 export default class CompletedTasksScreen extends React.Component {
   constructor(props) {
@@ -33,6 +34,9 @@ export default class CompletedTasksScreen extends React.Component {
   }
 
   swap(secId, rowId, rowMap, data){
+    if(!checkExists(this.state.categoriesToRender, data.taskCategory)){
+      data.taskCategory = 'Default'
+    }
     this.state.TaskData.createTask(
       data.taskTitle,
       data.taskDescription,
@@ -41,6 +45,7 @@ export default class CompletedTasksScreen extends React.Component {
     );
     this.deleteRow(secId, rowId, rowMap, data);
     this.state.CompletedData.updateCategoryCount(this.state.categoriesToRender, data.taskCategory);
+
   }
 
   showInformation(task) {

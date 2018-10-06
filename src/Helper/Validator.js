@@ -19,7 +19,7 @@ export function categoryIsValid(categoryName, categoriesList) {
 
 function alreadyExists(categoryName, categoriesList) {
     for (let i = 0; i < categoriesList.length; i++) {
-        if (categoriesList[i].categoryName === categoryName) return true;
+        if (categoriesList[i].categoryName.toLowerCase() === categoryName.toLowerCase()) return true;
     }
     return false;
 }
