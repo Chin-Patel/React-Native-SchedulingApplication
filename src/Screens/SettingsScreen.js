@@ -44,11 +44,6 @@ export default class Settings extends React.Component {
             </ListItem>
             <ListItem>
               <Body>
-                <Text>Account Details</Text>
-              </Body>
-            </ListItem>
-            <ListItem>
-              <Body>
                 <Text style={styles.signout} onPress={() => this.props.navigation.navigate('LoginScreen')}>Sign Out</Text>
               </Body>
             </ListItem>

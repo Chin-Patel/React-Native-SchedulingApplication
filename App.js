@@ -13,7 +13,7 @@ import CreateTaskInCategoryScreen from './src/Screens/CreateTaskInCategoryScreen
 import ViewCompletedTaskScreen from './src/Screens/ViewCompletedTaskScreen';
 import CategoriesScreen from './src/Screens/CategoriesScreen';
 import * as firebase from 'firebase';
-import {  Icon,  } from 'native-base'
+import { Icon, } from 'native-base'
 
 console.disableYellowBox = true;
 
@@ -31,32 +31,30 @@ const AuthStackNavigator = createStackNavigator({
   LoginScreen: {
     screen: LoginScreen,
     navigationOptions: {
-      headerMode: 'none',
-      visible: false,
-      
+      header: null,
     }
   },
-  SignUpScreen: SignUpScreen,
-  ResetPasswordScreen: ResetPasswordScreen
+  SignUpScreen: {
+    screen: SignUpScreen,
+    navigationOptions: {
+      header: null,
+    }
+  },
+  ResetPasswordScreen: {
+    screen: ResetPasswordScreen,
+    navigationOptions: {
+      header: null,
+    }
+  }
 })
 
-LoginScreen.navigationOptions = ({navigation}) => {
-  return {
-    header: () => null
- } 
-}
-
-CategoriesScreen.navigationOptions = ({navigation}) => {
-  return {
-    header: () => null
- } 
-}
 
 const AppTabNavigator = createBottomTabNavigator({
   HomeScreen: {
     screen: HomeScreen,
     navigationOptions: {
       tabBarLabel: 'HOME',
+      header: null,
       tabBarIcon: ({ tintColor }) => (
         <Icon name="home" color={tintColor} size={24} />
       )
@@ -68,6 +66,7 @@ const AppTabNavigator = createBottomTabNavigator({
       tabBarLabel: 'Categories',
       headerMode: 'none',
       visible: false,
+      header: null,
       tabBarIcon: ({ tintColor }) => (
         <Icon name="md-apps" color={tintColor} size={24} />
       )
@@ -78,6 +77,7 @@ const AppTabNavigator = createBottomTabNavigator({
     navigationOptions: {
       tabBarLabel: 'Completed Tasks',
       headerMode: 'none',
+      header: null,
       visible: false,
       tabBarIcon: ({ tintColor }) => (
         <Icon name="md-bulb" color={tintColor} size={24} />
@@ -88,13 +88,19 @@ const AppTabNavigator = createBottomTabNavigator({
     screen: SettingsScreen,
     navigationOptions: {
       tabBarLabel: 'Settings',
+      header: null,
       tabBarIcon: ({ tintColor }) => (
         <Icon name="md-settings" color={tintColor} size={24} />
-        
       )
     }
   }
 })
+
+AppTabNavigator.navigationOptions = ({ navigation }) => {
+  return {
+    header: () => null
+  };
+};
 
 const AppStackNavigator = createStackNavigator({
   AppTabNavigator: {
@@ -104,88 +110,40 @@ const AppStackNavigator = createStackNavigator({
     screen: CreateTaskScreen,
     navigationOptions: {
       tabBarLabel: 'Create Task',
+      header: null
     }
   },
-  TaskInformationScreen:  {
+  TaskInformationScreen: {
     screen: TaskInformationScreen,
-    navigationOptions:{
+    navigationOptions: {
       tabBarLabel: 'Task',
+      header: null
     }
   },
   SelectedCategoryScreen: {
     screen: SelectedCategoryScreen,
-    navigationOptions:{
-      tabBarLabel: 'SelectedCategoryScreen'
+    navigationOptions: {
+      tabBarLabel: 'SelectedCategoryScreen',
+      header: null
     }
   },
-  CreateTaskInCategoryScreen:{
+  CreateTaskInCategoryScreen: {
     screen: CreateTaskInCategoryScreen,
-    navigationOptions:{
-      tabBarLabel: 'CreateTaskInCategoryScreen'
+    navigationOptions: {
+      tabBarLabel: 'CreateTaskInCategoryScreen',
+      header: null
     }
   },
-  ViewCompletedTaskScreen:{
+  ViewCompletedTaskScreen: {
     screen: ViewCompletedTaskScreen,
-    navigationOptions:{
-      tabBarLabel: 'ViewCompletedTaskScreen'
+    navigationOptions: {
+      tabBarLabel: 'ViewCompletedTaskScreen',
+      header: null
     }
   }
 })
 
-ViewCompletedTaskScreen.navigationOptions = ({navigation}) => {
-  return {
-    header: () => null
- } 
-}
-
-CreateTaskInCategoryScreen.navigationOptions = ({navigation}) => {
-  return {
-    header: () => null
- } 
-}
-
-CreateTaskScreen.navigationOptions = ({navigation}) => {
-  return {
-    header: () => null
- } 
-}
-
-ResetPasswordScreen.navigationOptions = ({navigation}) => {
-  return {
-    header: () => null
- } 
-}
-
-TaskInformationScreen.navigationOptions = ({navigation}) => {
-  return {
-    header: () => null
- } 
-}
-
-SignUpScreen.navigationOptions = ({navigation}) => {
-  return {
-    header: () => null
- } 
-}
-
-SelectedCategoryScreen.navigationOptions = ({navigation}) => {
-  return {
-    header: () => null
- } 
-}
-
-
-
-AppTabNavigator.navigationOptions = ({ navigation }) => {
-  return {
-      header: () => null
-  };
-};
-
-
 export default createSwitchNavigator({
   Auth: AuthStackNavigator,
   App: AppStackNavigator,
-  
-
 })
